@@ -5,8 +5,6 @@ package view;
  * 
  * Class responsible for drawing single line
  * 
- * While making x1 equals x2 after drawing a line it get confused
- * 
  * To correct
  */
 
