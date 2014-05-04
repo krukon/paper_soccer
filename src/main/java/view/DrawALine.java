@@ -15,6 +15,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
  
@@ -33,16 +34,25 @@ public class DrawALine extends Application {
         	
 			@Override
 			public void handle(MouseEvent event) {
-				x2 = event.getSceneX();
-				y2 = event.getSceneY();
-
-				root.getChildren().add(new Line(x1, y1 , x2, y2));
-				//x1 = x2;
-				//y1 = y2;
+				//toDo get some space around
+				x2 = event.getX();
+				y2 = event.getY();
+				
+				//toDo check if move is valid
+				Line line = new Line(x1, y1 , x2, y2);
+				line.setStroke(Color.DARKGREEN);
+				line.setStrokeWidth(2.5);
+				
+				root.getChildren().add(line);
+				x1 = x2;
+				y1 = y2;
 			}
 
         	
 		});
+        
+        // test why line is always centered
+        // ???????????????????????????
         
         root.getChildren().add(new Line(10, 10, 10, 390));
         root.getChildren().add(new Line(10, 390, 290, 390));
