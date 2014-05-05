@@ -2,6 +2,9 @@ package helpers;
 
 /**
  * Interface representing a player (human or computer).
+ * TODO name convention
+ * 
+ * 
  * @author jakub
  *
  */
@@ -9,7 +12,7 @@ package helpers;
 public interface Player {
 	
 	/**
-	 * Starts new game on the field with given width and size.
+	 * Starts new game on the field with given width and height.
 	 * @param width width of the field
 	 * @param height height of the field
 	 */

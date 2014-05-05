@@ -8,9 +8,15 @@ package helpers;
  */
 
 public class GameResult {
-	private Player winner;
-	private int myResult;
-	private int opponentResult;
+	final private Player winner;
+	final private int myResult;
+	final private int opponentResult;
+	
+	public GameResult(Player winner, int myResult, int opponenResult) {
+		this.winner = winner;
+		this.myResult = myResult;
+		this.opponentResult = opponenResult;
+	}
 	
 	/**
 	 * @return the winner of the game

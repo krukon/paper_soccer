@@ -8,6 +8,11 @@ package helpers;
  */
 
 public class Move {
-	public Point start;
-	public Point end;
+	public final Point start;
+	public final Point end;
+	
+	Move (Point start, Point end) {
+		this.start = start;
+		this.end = end;
+	}
 }
