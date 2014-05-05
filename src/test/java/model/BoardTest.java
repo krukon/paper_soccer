@@ -34,4 +34,111 @@ public class BoardTest {
 		assertEquals(100, board.getHeight());
 	}
 
+	@Test
+	public void movementValidation() {
+		Board board = new Board(8, 10);
+		assertTrue(board.canMoveTo(1, 1));
+		assertTrue(board.canMoveTo(0, 1));
+		assertTrue(board.canMoveTo(1, 0));
+		assertTrue(board.canMoveTo(-1, 1));
+
+		assertFalse(board.canMoveTo(2, 2));
+		assertFalse(board.canMoveTo(1, 100));
+		assertFalse(board.canMoveTo(0, 0));
+		assertFalse(board.canMoveTo(-100, -100));
+
+		boolean thrown = false;
+		try {
+			board.moveTo(1, 1);
+			assertFalse(board.canMoveTo(0, 0));
+		} catch (IllegalMove e) { thrown = true; }
+		assertFalse(thrown);
+	}
+
+	@Test
+	public void makingMoves() {
+		Board board = new Board(8, 10);
+		boolean thrown = false;
+		try {
+			assertFalse(board.moveTo(1, 1));
+			assertFalse(board.moveTo(1, 0));
+			assertTrue(board.moveTo(0, 0));
+		} catch (IllegalMove e) { thrown = true; }
+		assertFalse(thrown);
+
+		thrown = false;
+		try {
+			board.moveTo(1, 1);
+		} catch (IllegalMove e) { thrown = true; }
+		assertTrue(thrown);
+
+		thrown = false;
+		try {
+			assertFalse(board.moveTo(-1, -1));
+		} catch (IllegalMove e) { thrown = true; }
+		assertFalse(thrown);
+	}
+
+	@Test
+	public void boundsOfTheField() {
+		Board board = new Board(4, 4);
+		boolean thrown = false;
+		try {
+			assertFalse(board.moveTo(1, 0));
+			assertTrue(board.moveTo(2, 0));
+			assertFalse(board.canMoveTo(2, 1));
+			assertFalse(board.canMoveTo(3, 1));
+			assertFalse(board.canMoveTo(3, 0));
+			assertFalse(board.canMoveTo(3, -1));
+			assertFalse(board.canMoveTo(2, -1));
+		} catch (IllegalMove e) { thrown = true; }
+		assertFalse(thrown);
+	}
+
+	@Test
+	public void scoringGoal() {
+		Board board = new Board(4, 4);
+		boolean thrown = false;
+		try {
+			board.moveTo(0, 1);
+			board.moveTo(1, 2);
+			assertFalse(board.isGameOver());
+			board.moveTo(0, 3);
+			assertTrue(board.isGameOver());
+		} catch (IllegalMove e) { thrown = true; }
+		assertFalse(thrown);
+	}
+
+	@Test
+	public void getingStuckInCorner() {
+		Board board = new Board(4, 4);
+		boolean thrown = false;
+		try {
+			board.moveTo(0, 1);
+			board.moveTo(1, 2);
+			assertFalse(board.isGameOver());
+			board.moveTo(0, 3);
+			assertTrue(board.isGameOver());
+		} catch (IllegalMove e) { thrown = true; }
+		assertFalse(thrown);
+	}
+
+	@Test
+	public void freezeGameWhenOver() {
+		Board board = new Board(4, 4);
+		boolean thrown = false;
+		try {
+			board.moveTo(0, 1);
+			board.moveTo(1, 2);
+			board.moveTo(0, 3);
+			assertTrue(board.isGameOver());
+			assertFalse(board.canMoveTo(0, 2));
+		} catch (IllegalMove e) { thrown = true; }
+		assertFalse(thrown);
+		thrown = false;
+		try {
+			board.moveTo(0, 2);
+		} catch (IllegalMove e) { thrown = true; }
+		assertTrue(thrown);
+	}
 }
