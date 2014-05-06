@@ -3,7 +3,6 @@ package helpers;
 /**
  * Interface representing a player (human or computer).
  * 
- * 
  * @author jakub
  *
  */
