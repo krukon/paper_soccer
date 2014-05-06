@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 /**
  * Created by mateusz on 06.05.2014.
  */
-public class drawField extends Application {
+public class DrawField extends Application {
     public static String windowName;
     public static int height, width;
     private Stage stage;
@@ -23,8 +23,8 @@ public class drawField extends Application {
     private Group root;
 
     public static void main(String[] args) {
-        drawField.width = 8;
-        drawField.height = 10;
+        DrawField.width = 8;
+        DrawField.height = 10;
         launch(args);
     }
 
@@ -37,29 +37,29 @@ public class drawField extends Application {
         stage.setScene(scene);
         //xZero = width/2;
         //yZero = height/2;
-        crateSize = Math.min(pixelHeight/((double)(drawField.height+4)), pixelWidth/((double)(drawField.width+4)));
+        crateSize = Math.min(pixelHeight/((double)(DrawField.height+4)), pixelWidth/((double)(DrawField.width+4)));
         System.out.println(crateSize);
         stage.show();
 
-        this.field();
+        this.drawField();
         scene.widthProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
                 System.out.println("Width: " + newSceneWidth);
                 pixelWidth = newSceneWidth.doubleValue();
-                crateSize = Math.min(pixelHeight/((double)(drawField.height+4)), pixelWidth/((double)(drawField.width+4)));
+                crateSize = Math.min(pixelHeight/((double)(DrawField.height+4)), pixelWidth/((double)(DrawField.width+4)));
                 root.getChildren().removeAll();
                 root.getChildren().clear();
-                field();
+                drawField();
             }
         });
         scene.heightProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
                 System.out.println("Height: " + newSceneHeight);
                 pixelHeight = newSceneHeight.doubleValue();
-                crateSize = Math.min(pixelHeight/((double)(drawField.height+4)), pixelWidth/((double)(drawField.width+4)));
+                crateSize = Math.min(pixelHeight/((double)(DrawField.height+4)), pixelWidth/((double)(DrawField.width+4)));
                 root.getChildren().removeAll();
                 root.getChildren().clear();
-                field();
+                drawField();
             }
         });
     }
@@ -86,7 +86,7 @@ public class drawField extends Application {
     }
 
     // drawField
-    private void field() {
+    private void drawField() {
         int x = width / 2;
         int y = height / 2;
         drawLine(-x, y, -1, y);
@@ -106,14 +106,14 @@ public class drawField extends Application {
 
     private void drawPoints() {
         for(int i = -1; i<=width+1; i++){
-            for(int j = -2; j<=height+2; j++){
-                Point(-width/2+i, -height/2+j);
+            for(int j = -1; j<=height+1; j++){
+                drawPoint(-width/2+i, -height/2+j);
             }
         }
     }
 
     // drawPoint
-    private void Point(int x, int y) {
+    private void drawPoint(int x, int y) {
         Line line = new Line(translateX(x), translateY(y), translateX(x), translateY(y));
         line.setStroke(Color.WHITE);
         if(x==0 && y==0) line.setStrokeWidth(4.0);
