@@ -2,7 +2,6 @@ package helpers;
 
 /**
  * Interface representing a player (human or computer).
- * TODO name convention
  * 
  * 
  * @author jakub
@@ -27,7 +26,7 @@ public interface Player {
 	 * Notifies player about game result.
 	 * @param result result of the current game
 	 */
-	void notifyGameResult(GameResult result);
+	void finishGame(GameResult result);
 	
 	/**
 	 * Registers move of the opponent.

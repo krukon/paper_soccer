@@ -8,14 +8,14 @@ package helpers;
  */
 
 public class GameResult {
-	final private Player winner;
-	final private int myResult;
-	final private int opponentResult;
+	private final Player winner;
+	private final int myResult;
+	private final int opponentResult;
 	
-	public GameResult(Player winner, int myResult, int opponenResult) {
+	public GameResult(Player winner, int myResult, int opponentResult) {
 		this.winner = winner;
 		this.myResult = myResult;
-		this.opponentResult = opponenResult;
+		this.opponentResult = opponentResult;
 	}
 	
 	/**
