@@ -32,7 +32,6 @@ public class DrawALine extends Application {
         Canvas canvas = new Canvas(300, 250);
         root.setOnMouseClicked(new EventHandler<MouseEvent>() {
         	
-			@Override
 			public void handle(MouseEvent event) {
 				//toDo get some space around
 				x2 = event.getX();

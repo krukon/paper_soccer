@@ -11,11 +11,18 @@ import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.text.Font;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
 
 public class MainMenu extends Application {
+	static BorderPane border;
+	private GridPane mainMenu;
+	private TwoPlayers twoPlayers = new TwoPlayers();
+	
+	final int prefWidth = 400;
+	final int prefHeight = 550;
 	
 	public static void main(String[] args) {
 		Application.launch(MainMenu.class, args);
@@ -23,18 +30,27 @@ public class MainMenu extends Application {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		GridPane grid = new GridPane();
-		grid.setPrefSize(400, 550);
-		grid.setAlignment(Pos.CENTER);
-		grid.add(generateTitleLabel(), 0, 0);
-		grid.add(generateTwoPlayersButton(), 0, 1);
-		grid.add(generateExitButton(), 0, 6);
-		Scene scene = new Scene(grid);
+		border = new BorderPane();
+		border.setCenter(addGridPane());
+		
+		Scene scene = new Scene(border);
+		
 		stage.setTitle("Paper Soccer");
-		grid.setStyle("-fx-background-color: GREEN;");
-		//grid.setStyle("-fx-background-image: url('menuBackground.jpg');");
 		stage.setScene(scene);
 		stage.show();
+	}
+	
+	private GridPane addGridPane() {
+		mainMenu = new GridPane();
+		mainMenu.setPrefSize(prefWidth, prefHeight);
+		mainMenu.setAlignment(Pos.CENTER);
+		mainMenu.setStyle("-fx-background-color: GREEN;");
+		
+		mainMenu.add(generateTitleLabel(), 0, 0);
+		mainMenu.add(generateTwoPlayersButton(), 0, 1);
+		mainMenu.add(generateExitButton(), 0, 6);
+		
+		return mainMenu;
 	}
 	
 	private HBox generateExitButton() {
@@ -43,7 +59,6 @@ public class MainMenu extends Application {
 
 		exit.setOnAction(new EventHandler<ActionEvent>() {
 			
-			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("Exit");
 				System.exit(0);
@@ -53,7 +68,8 @@ public class MainMenu extends Application {
 		HBox buttonBox = new HBox();
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.getChildren().add(exit);
-		buttonBox.setPadding(new Insets(10, 10, 10, 10));;
+		buttonBox.setPadding(new Insets(10, 10, 10, 10));
+		
 		return buttonBox;
 
 	}
@@ -64,9 +80,9 @@ public class MainMenu extends Application {
 		
 		play.setOnAction(new EventHandler<ActionEvent>() {
 			
-			@Override
 			public void handle(ActionEvent event) {
-				System.out.println("Play pressed");
+				System.out.println("Two players");
+				twoPlayers.getTwoPlayerWindow();
 				
 			}
 		});
@@ -75,6 +91,7 @@ public class MainMenu extends Application {
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.getChildren().add(play);
 		buttonBox.setPadding(new Insets(10, 10, 10, 10));
+		
 		return buttonBox;
 	}
 
@@ -87,6 +104,7 @@ public class MainMenu extends Application {
 		labelBox.setAlignment(Pos.CENTER);
 		labelBox.getChildren().add(label);
 		labelBox.setPadding(new Insets(10, 10, 100, 10));
+		
 		return labelBox;
 	}
 }

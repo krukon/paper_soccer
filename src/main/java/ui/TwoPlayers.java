@@ -2,49 +2,37 @@ package ui;
 
 /**
  * Class representing a multiplayer offline window.
+ * 
  * @author jakub
  */
 
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
-public class TwoPlayers extends Application {
-	private String appTitle = "Paper soccer";
+public class TwoPlayers {
 	private Text windowTitle = new Text("Enter your names \n and board size");
 	private Insets insets = new Insets(25, 25, 25, 25);
+	
+	private DrawField board = new DrawField();
 	
 	private TextField playerOneName = new TextField();
 	private TextField playerTwoName = new TextField();
 	private TextField boardWidth = new TextField();
 	private TextField boardHeight = new TextField();
-
-	@Override
-	public void start(Stage primaryStage) {
-		primaryStage.setTitle(appTitle);
-		
-		BorderPane border = new BorderPane();
-		border.setPadding(insets);
-		
-		border.setTop(addWindowTitle());
-		border.setCenter(addGridPane());
-		border.setBottom(addStartButton());
-		
-		Scene scene = new Scene(border);
-		primaryStage.setScene(scene);
-		
-		primaryStage.show();
+	
+	public void getTwoPlayerWindow() {
+		MainMenu.border.setPadding(insets);
+		MainMenu.border.setTop(addWindowTitle());
+		MainMenu.border.setCenter(addGridPane());
+		MainMenu.border.setBottom(addStartButton());
 	}
 	
 	private HBox addWindowTitle() {
@@ -62,9 +50,9 @@ public class TwoPlayers extends Application {
 		startButton.setOnAction(new EventHandler<ActionEvent>() {
 			
 			//TODO Check names and board size
-			@Override
 			public void handle(ActionEvent event) {
-				System.out.println("Button pressed");	
+				System.out.println("Board");
+				MainMenu.border.setCenter(board.getRoot());
 			}
 		});
 		
