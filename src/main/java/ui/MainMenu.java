@@ -42,6 +42,7 @@ public class MainMenu extends Application {
 		
 		stage.setTitle("Paper Soccer");
 		stage.setScene(scene);
+		stage.setResizable(false);
 		stage.show();
 	}
 	
