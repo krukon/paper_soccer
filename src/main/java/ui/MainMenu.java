@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,6 +18,7 @@ import javafx.scene.layout.HBox;
 
 
 public class MainMenu extends Application {
+	static Group view;
 	static BorderPane border;
 	private GridPane mainMenu;
 	private TwoPlayers twoPlayers = new TwoPlayers();
@@ -30,10 +32,13 @@ public class MainMenu extends Application {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
+		view = new Group();
+		
 		border = new BorderPane();
 		border.setCenter(addGridPane());
+		view.getChildren().add(border);
 		
-		Scene scene = new Scene(border);
+		Scene scene = new Scene(view, Color.GREEN);
 		
 		stage.setTitle("Paper Soccer");
 		stage.setScene(scene);

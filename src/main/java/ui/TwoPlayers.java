@@ -52,7 +52,9 @@ public class TwoPlayers {
 			//TODO Check names and board size
 			public void handle(ActionEvent event) {
 				System.out.println("Board");
-				MainMenu.border.setCenter(board.getRoot());
+				MainMenu.view.getChildren().clear();
+				//MainMenu.view.setStyle("-fx-background-color: slateblue");
+				MainMenu.view.getChildren().addAll(board.getRoot().getChildren());
 			}
 		});
 		
