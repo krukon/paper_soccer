@@ -13,28 +13,36 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
-public class TwoPlayers {
+public class TwoPlayersWindow extends BorderPane {
 	private Text windowTitle = new Text("Enter your names \n and board size");
 	private Insets insets = new Insets(25, 25, 25, 25);
 	
-	private DrawField board = new DrawField();
+	private TextField playerOneName;
+	private TextField playerTwoName;
+	private TextField boardWidth;
+	private TextField boardHeight;
 	
-	private TextField playerOneName = new TextField();
-	private TextField playerTwoName = new TextField();
-	private TextField boardWidth = new TextField();
-	private TextField boardHeight = new TextField();
-	
-	public void getTwoPlayerWindow() {
-		MainMenu.border.setPadding(insets);
-		MainMenu.border.setTop(addWindowTitle());
-		MainMenu.border.setCenter(addGridPane());
-		MainMenu.border.setBottom(addStartButton());
+	public TwoPlayersWindow() {
+		playerOneName = new TextField();
+		playerTwoName = new TextField();
+		boardWidth = new TextField();
+		boardHeight = new TextField();
+		
+		setPadding(insets);
+		setTop(addWindowTitle());
+		setCenter(addGridPane());
+		setBottom(addStartButton());
 	}
 	
+	/**
+	 * Constructs window title.
+	 * @return HBox with a title
+	 */
 	private HBox addWindowTitle() {
 		HBox textBox = new HBox();
 		textBox.setAlignment(Pos.CENTER);
@@ -43,6 +51,10 @@ public class TwoPlayers {
 		return textBox;
 	}
 	
+	/**
+	 * Constructs a button to start new match
+	 * @return HBox with a button
+	 */
 	private HBox addStartButton() {
 		Button startButton = new Button("START");
 		startButton.setMinSize(100, 50);
@@ -50,11 +62,10 @@ public class TwoPlayers {
 		startButton.setOnAction(new EventHandler<ActionEvent>() {
 			
 			//TODO Check names and board size
+			@Override
 			public void handle(ActionEvent event) {
-				System.out.println("Board");
-				MainMenu.view.getChildren().clear();
-				//MainMenu.view.setStyle("-fx-background-color: slateblue");
-				MainMenu.view.getChildren().addAll(board.getRoot().getChildren());
+				System.out.println("COnstructing board...");
+			
 			}
 		});
 		
@@ -65,6 +76,10 @@ public class TwoPlayers {
 		return buttonBox;
 	}
 	
+	/**
+	 * Adds labels for text fields to grid.
+	 * @param grid grid to place labels
+	 */
 	private void addPlayersLabels(GridPane grid) {
 		Label playerOne = new Label("Player one:");
 		Label playerTwo = new Label("Player two:");
@@ -72,11 +87,19 @@ public class TwoPlayers {
 		grid.add(playerTwo, 0, 1);
 	}
 	
+	/**
+	 * Adds text fields to grid. 
+	 * @param grid grid to place text fields
+	 */
 	private void addPlayersTextFields(GridPane grid) {
 		grid.add(playerOneName, 1, 0);
 		grid.add(playerTwoName, 1, 1);
 	}
 	
+	/**
+	 * Adds board text fields and labels to grid.
+	 * @param grid grid to place text fields and labels
+	 */
 	private void addBoardSize(GridPane grid) {
 		Label width = new Label("Width:");
 		Label height = new Label("Height");
@@ -87,6 +110,10 @@ public class TwoPlayers {
 		grid.add(boardHeight, 1, 6);
 	}
 	
+	/**
+	 * Constructs base grid and its components for window.
+	 * @return constructed grid with components
+	 */
 	private GridPane addGridPane() {
 		GridPane grid = new GridPane();
 		grid.setMinSize(300, 400);

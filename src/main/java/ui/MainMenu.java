@@ -1,53 +1,28 @@
 package ui;
 
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import javafx.scene.text.Font;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
 
-public class MainMenu extends Application {
-	static Group view;
-	static BorderPane border;
-	private GridPane mainMenu;
-	private TwoPlayers twoPlayers = new TwoPlayers();
+public class MainMenu extends BorderPane {	
+	private final int prefWidth = 400;
+	private final int prefHeight = 550;
 	
-	final int prefWidth = 400;
-	final int prefHeight = 550;
-	
-	public static void main(String[] args) {
-		Application.launch(MainMenu.class, args);
-		}
-	
-	@Override
-	public void start(Stage stage) throws Exception {
-		view = new Group();
-		
-		border = new BorderPane();
-		border.setCenter(addGridPane());
-		view.getChildren().add(border);
-		
-		Scene scene = new Scene(view, Color.GREEN);
-		
-		stage.setTitle("Paper Soccer");
-		stage.setScene(scene);
-		stage.setResizable(false);
-		stage.show();
+	public MainMenu() {
+		setCenter(addGridPane());
 	}
 	
 	private GridPane addGridPane() {
-		mainMenu = new GridPane();
+		GridPane mainMenu = new GridPane();
 		mainMenu.setPrefSize(prefWidth, prefHeight);
 		mainMenu.setAlignment(Pos.CENTER);
 		mainMenu.setStyle("-fx-background-color: GREEN;");
@@ -65,6 +40,7 @@ public class MainMenu extends Application {
 
 		exit.setOnAction(new EventHandler<ActionEvent>() {
 			
+			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("Exit");
 				System.exit(0);
@@ -86,9 +62,10 @@ public class MainMenu extends Application {
 		
 		play.setOnAction(new EventHandler<ActionEvent>() {
 			
+			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("Two players");
-				twoPlayers.getTwoPlayerWindow();
+				//twoPlayers.getTwoPlayerWindow();
 				
 			}
 		});
