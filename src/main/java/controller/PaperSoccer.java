@@ -16,9 +16,15 @@ public class PaperSoccer {
 	public static final String sync = "SYNCHRONIZING STRING"; //object on which thread can synchronize, probably should be replaced
 	
 	public static void main(String[] args) throws InterruptedException {
-		newGame(args);
-		synchronized (sync) { sync.wait(); } //waits until main window construction is finished
+		synchronized (sync) {
+			newGame(args);
+			sync.wait(); //waits until main window construction is finished
+		}
 		addMainMenu();
+	}
+	
+	public static MainWindow getMainWindow() {
+		return mainWindow;
 	}
 	
 	/**

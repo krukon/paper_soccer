@@ -1,5 +1,6 @@
 package ui;
 
+import controller.PaperSoccer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -65,7 +66,7 @@ public class MainMenu extends BorderPane {
 			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("Two players");
-				//twoPlayers.getTwoPlayerWindow();
+				PaperSoccer.getMainWindow().showTwoPlayersWindow();
 				
 			}
 		});
