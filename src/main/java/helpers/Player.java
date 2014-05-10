@@ -17,15 +17,15 @@ public interface Player {
 	void startNewGame(int width, int height);
 	
 	/**
-	 * @return player's next move
-	 */
-	Move getNextMove();
-	
-	/**
 	 * Notifies player about game result.
 	 * @param result result of the current game
 	 */
 	void finishGame(GameResult result);
+
+	/**
+	 * @return player's next move
+	 */
+	Move getNextMove();
 	
 	/**
 	 * Registers move of the opponent.
