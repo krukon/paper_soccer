@@ -1,5 +1,8 @@
 # Created by http://www.gitignore.io
 
+# Project settings #
+.classpath
+
 ### Java ###
 *.class
 
