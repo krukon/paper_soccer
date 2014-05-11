@@ -52,7 +52,7 @@ public class GameWindow extends Application implements Player {
 	private Point head;
 	private Point click;
 	private String playerName;
-	private Object syncMove = new Object();
+	private final Object syncMove = new Object();
 	private int fieldWidth;
 	private int fieldHeight;
 
