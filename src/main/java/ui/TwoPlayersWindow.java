@@ -72,7 +72,7 @@ public class TwoPlayersWindow extends BorderPane {
 					int width = Integer.parseInt(boardWidth.getCharacters().toString());
 					int height = Integer.parseInt(boardHeight.getCharacters().toString());
 					
-					System.out.println("Constructing board " + width + " x " + height);
+					System.out.println("Constructing board " + width + " x " + height);					
 				} catch (Exception e) {
 					System.out.println("Size is not an integer");
 				}

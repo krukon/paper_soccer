@@ -19,14 +19,10 @@ public class MainWindow extends Application {
 	private final int prefHeight = 550;
 	
 	private Group mainView;
-	private MainMenu mainMenu;
-	private TwoPlayersWindow twoPlayersWindow;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		mainView = new Group();
-		mainMenu = new MainMenu();
-		twoPlayersWindow = new TwoPlayersWindow();
 		
 		Scene scene = new Scene(mainView, prefWidth, prefHeight, Color.GREEN);
 		
@@ -52,7 +48,7 @@ public class MainWindow extends Application {
 	 */
 	public void showMenu() {
 		mainView.getChildren().clear();
-		mainView.getChildren().add(mainMenu);
+		mainView.getChildren().add(new MainMenu());
 	}
 	
 	/**
@@ -60,7 +56,7 @@ public class MainWindow extends Application {
 	 */
 	public void showTwoPlayersWindow() {
 		mainView.getChildren().clear();
-		mainView.getChildren().add(twoPlayersWindow);
+		mainView.getChildren().add(new TwoPlayersWindow());
 	}
 
 }

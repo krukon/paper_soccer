@@ -53,6 +53,7 @@ public class PaperSoccer {
 	 */
 	private static void addMainMenu() {
 		Platform.runLater(new Runnable() {
+			
 			@Override
 			public void run() {
 				System.out.println("Run new task - menu.");
