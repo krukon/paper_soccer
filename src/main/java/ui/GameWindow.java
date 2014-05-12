@@ -443,6 +443,7 @@ public class GameWindow extends Application implements Player {
 			return (int)high;
 		} else return null;
 	}
+
     /**
      * Translate pixel offset value on the window into y coordinate (with (0, 0) point in center)
      * @param y y pixel offset
@@ -459,6 +460,14 @@ public class GameWindow extends Application implements Player {
 			return -(int)high;
 		} else return null;
     }
+	
+	/**
+	 * Checks if point with given coordinates is part of field
+	 * @params x y point coordinates
+	 * @return true if point is part of field
+	 *
+	 * @author cianciara
+	 */
 	private boolean isPointInField(int x, int y){
 		return (Math.abs(x) <= fieldWidth/2 && Math.abs(y) <= fieldHeight/2) || (Math.abs(x) <= 1 && Math.abs(y) == fieldHeight/2 + 1);
 	}
