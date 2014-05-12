@@ -44,11 +44,8 @@ public class GameWindow extends Application implements Player {
 	private double pixelWidth = 400;
 	private double pixelHeight = 600;
 	private double gridSize;
-    private final int addedToHeight = 2;
-    private final int addedToWidth = 2;
-    private Point lastUnderMouse = null;
     private Shape currentHighlightPoint = null;
-
+	private final double errorMargin = 0.1;
 	// Player private fields:
 
 	private List<Move> moves;
@@ -144,28 +141,15 @@ public class GameWindow extends Application implements Player {
             public void handle(MouseEvent e) {
 				double mouseX = e.getX();
 				double mouseY = e.getY();
-				if(getRelativeX(mouseX)!=null && getRelativeY(mouseY)!=null){
-					if(lastUnderMouse!=null && (lastUnderMouse.x!=getRelativeX(mouseX) || lastUnderMouse.y!=getRelativeY(mouseY)) ){
-						root.getChildren().remove(currentHighlightPoint);
-						currentHighlightPoint = new Circle(translateX(getRelativeX(mouseX)), translateY(getRelativeY(mouseY)), 4, Color.BLACK);
-						lastUnderMouse = new Point(getRelativeX(e.getX()), getRelativeY(e.getY()));
-						root.getChildren().add(currentHighlightPoint);
-					}
-					else if(lastUnderMouse!=null && lastUnderMouse.x==getRelativeX(mouseX) && lastUnderMouse.y==getRelativeY(mouseY)){
-						root.getChildren().remove(currentHighlightPoint);
-						currentHighlightPoint = new Circle(translateX(getRelativeX(mouseX)), translateY(getRelativeY(mouseY)), 4, Color.BLACK);
-						root.getChildren().add(currentHighlightPoint);
-					}
-					else if(lastUnderMouse==null){
-						lastUnderMouse = new Point(getRelativeX(mouseX), getRelativeY(mouseY));
-						currentHighlightPoint = new Circle(translateX(getRelativeX(mouseX)), translateY(getRelativeY(mouseY)), 4, Color.BLACK);
-						root.getChildren().add(currentHighlightPoint);
-					}
+				Integer relativeX = getRelativeX(mouseX);
+				Integer relativeY = getRelativeY(mouseY);
+				if(relativeX!=null && relativeY!=null && Math.abs(relativeX)<=fieldWidth/2 && Math.abs(relativeY)<=fieldHeight/2){
+					root.getChildren().remove(currentHighlightPoint);
+					currentHighlightPoint = new Circle(translateX(relativeX), translateY(relativeY), 4, Color.BLACK);
+					root.getChildren().add(currentHighlightPoint);
 				}
 				else {
-					if(lastUnderMouse!=null){
-						root.getChildren().remove(currentHighlightPoint);
-					}
+					root.getChildren().remove(currentHighlightPoint);
 				}
             }
         });
@@ -453,10 +437,10 @@ public class GameWindow extends Application implements Player {
     private Integer getRelativeX(double x){
         double result = (x-translateX(0))/gridSize;
 		double low = Math.floor(result), high = Math.ceil(result);
-		if(Math.abs(low-result)<0.4){
-			return new Integer((int)low);
+		if(Math.abs(low-result)<errorMargin){
+			return (int)low;
 		} else if(Math.abs(high-result)<0.4){
-			return new Integer((int)high);
+			return (int)high;
 		} else return null;
 	}
     /**
@@ -469,10 +453,10 @@ public class GameWindow extends Application implements Player {
     private Integer getRelativeY(double y){
       	double result = (y-translateY(0))/gridSize;
 		double low = (Math.floor(result)), high = (Math.ceil(result));
-		if(Math.abs(low-result)<0.4){
-			return new Integer(-(int)low);
+		if(Math.abs(low-result)<errorMargin){
+			return -(int)low;
 		} else if(Math.abs(high-result)<0.4){
-			return new Integer(-(int)high);
+			return -(int)high;
 		} else return null;
     }
 }
