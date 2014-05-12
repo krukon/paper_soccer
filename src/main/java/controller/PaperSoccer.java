@@ -1,4 +1,4 @@
-package controller;
+package controller;	
 
 import javafx.application.Platform;
 import ui.MainWindow;
@@ -39,7 +39,7 @@ public class PaperSoccer {
 	 * Starts new JavaFX thread and creates main window.
 	 * @param args method main's args
 	 */
-	private static void newGame(String[] args) {
+	private static void newGame(final String[] args) {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {

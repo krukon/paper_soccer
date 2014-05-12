@@ -19,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -70,7 +71,7 @@ public class GameResultDialog extends Stage {
 	 * @deprecated
 	 * Only for game result dialog tests.
 	 */
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(final String[] args) throws InterruptedException {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -112,6 +113,12 @@ public class GameResultDialog extends Stage {
 					public String getName() {
 						// TODO Auto-generated method stub
 						return "XXX";
+					}
+
+					@Override
+					public Color getColor() {
+						// TODO Auto-generated method stub
+						return null;
 					}
 					
 				};

@@ -28,7 +28,7 @@ import javafx.stage.Stage;
  * Window displaying the field of the game. Responsible
  * for interaction with user. Can communicate with Controller
  * through implemented Player interface.
- * 
+ * 	
  * @author krukon, cianciara
  */
 public class GameWindow extends Application implements Player {
@@ -80,15 +80,16 @@ public class GameWindow extends Application implements Player {
 					Thread.sleep(4000);
 					player.startNewGame(8, 10);
 					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(0,0), new Point(1,1)));
+					player.registerMove(new Move(new Point(0,0), new Point(1,1), player));
 					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(1,1), new Point(1,2)));
+					player.registerMove(new Move(new Point(1,1), new Point(1,2), player));
 					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(1,2), new Point(0,3)));
+					player.registerMove(new Move(new Point(1,2), new Point(0,3), player));
 					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(0,3), new Point(0,2)));
+					player.registerMove(new Move(new Point(0,3), new Point(0,2), player));
 					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(0,2), new Point(-1,1)));
+					player.registerMove(new Move(new Point(0,2), new Point(-1,1), player));
+					
 				} catch (InterruptedException e) { }
 
 				final Move x = player.getNextMove();
@@ -211,7 +212,7 @@ public class GameWindow extends Application implements Player {
 		});
 		try {
 			synchronized (syncMove) { syncMove.wait(); }
-			return new Move(head, click);
+			return new Move(head, click, player);
 		} catch (Exception e) {
 		} finally {
 			click = null;
@@ -255,6 +256,25 @@ public class GameWindow extends Application implements Player {
 	public String getName() {
 		return playerName;
 	}
+
+	/**
+	 * Get player's name
+	 * 
+	 * @author ljk
+	 */
+	private int x = 0;
+	
+	@Override
+	public Color getColor() {
+		x++;
+		
+		if(x%2==0)
+			return Color.BLACK;
+		else
+			return Color.RED;
+		
+	}
+
 
 	/**
 	 * Draw all lines representing moves registered by the player
@@ -350,10 +370,10 @@ public class GameWindow extends Application implements Player {
 	 * 
 	 * @param move the move to be drawn
 	 * 
-	 * @author krukon
+	 * @author krukon, ljk
 	 */
 	private void drawMove(Move move) {
-		drawLine(Color.BLUE, move.start, move.end);
+		drawLine(player.getColor(), move.start, move.end);
 	}
 
 	/**
