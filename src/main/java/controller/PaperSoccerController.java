@@ -5,21 +5,21 @@ import helpers.Move;
 import helpers.Player;
 
 
-/*
+/**
  * Class responsible for controlling information flow between model and views
  * @author wTendera
  */
 
 public class PaperSoccerController {
-	Player host;
-	Player guest;
-	Player currentPlayer;
-	Game game;
-	int width;
-	int height;
+	private Player host;
+	private Player guest;
+	private Player currentPlayer;
+	private Game game;
+	private int width;
+	private int height;
 	
 	
-	/*
+	/**
 	 * @param Player host, who will host game in on-line game
 	 * @param Player guest, who will join existing games
 	 * @param width of the map
@@ -33,7 +33,7 @@ public class PaperSoccerController {
 		game = new Game(host, guest, width, height);
 	}
 	
-	/*
+	/**
 	 * Function responsible for running a single game
 	 */
 	public void runGame() {
@@ -43,8 +43,11 @@ public class PaperSoccerController {
 		while(!game.isGameOver()) {
 			currentPlayer = game.getCurrentPlayer();
 			Move move = currentPlayer.getNextMove();
-			if(game.isValidMove(move)) 
+			if(game.isValidMove(move))  {
+				host.registerMove(move);
+				guest.registerMove(move);
 				game.registerMove(move);
+			}
 		}
 		host.finishGame(game.getResult(host));
 		guest.finishGame(game.getResult(guest));

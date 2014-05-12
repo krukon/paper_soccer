@@ -177,7 +177,19 @@ public class Board {
 	private int getY(int y) {
 		return height + y + 1;
 	}
-
+	
+	/**
+	 * return coordinate x of head
+	 */
+	public int getHeadX() {
+		return headX;
+	}
+	/**
+	 * return coordinate y of head
+	 */
+	public int getHeadY() {
+		return height;
+	}
 	/**
 	 * Check if point (x, y) belongs to the field
 	 * @param x x coordinate
