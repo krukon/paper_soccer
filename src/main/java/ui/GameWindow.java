@@ -142,41 +142,42 @@ public class GameWindow extends Application implements Player {
 		root.addEventHandler(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-                try{
-                    double mouseX = e.getX();
-                    double mouseY = e.getY();
-                    if(lastUnderMouse!=null && (lastUnderMouse.x!=getRelativeX(mouseX) || lastUnderMouse.y!=getRelativeY(mouseY))){
-                        root.getChildren().remove(currentHighlightPoint);
-                        currentHighlightPoint = new Circle(translateX(getRelativeX(mouseX)), translateY(getRelativeY(mouseY)), 4, Color.BLACK);
-                        lastUnderMouse = new Point(getRelativeX(e.getX()), getRelativeY(e.getY()));
-                        root.getChildren().add(currentHighlightPoint);
-                    }
-                    else if(lastUnderMouse==null){
-                        getRelativeY(mouseY);
-                        getRelativeX(mouseX);
-                        lastUnderMouse = new Point(getRelativeX(mouseX), getRelativeY(mouseY));
-                        currentHighlightPoint = new Circle(translateX(getRelativeX(mouseX)), translateY(getRelativeY(mouseY)), 4, Color.BLACK);
-                        root.getChildren().add(currentHighlightPoint);
-                    }
-                } catch (Exception wrongPosition){
-                    if(lastUnderMouse!=null){
-                        root.getChildren().remove(currentHighlightPoint);
-                    }
-                }
+				double mouseX = e.getX();
+				double mouseY = e.getY();
+				if(getRelativeX(mouseX)!=null && getRelativeY(mouseY)!=null){
+					if(lastUnderMouse!=null && (lastUnderMouse.x!=getRelativeX(mouseX) || lastUnderMouse.y!=getRelativeY(mouseY)) ){
+						root.getChildren().remove(currentHighlightPoint);
+						currentHighlightPoint = new Circle(translateX(getRelativeX(mouseX)), translateY(getRelativeY(mouseY)), 4, Color.BLACK);
+						lastUnderMouse = new Point(getRelativeX(e.getX()), getRelativeY(e.getY()));
+						root.getChildren().add(currentHighlightPoint);
+					}
+					else if(lastUnderMouse!=null && lastUnderMouse.x==getRelativeX(mouseX) && lastUnderMouse.y==getRelativeY(mouseY)){
+						root.getChildren().remove(currentHighlightPoint);
+						currentHighlightPoint = new Circle(translateX(getRelativeX(mouseX)), translateY(getRelativeY(mouseY)), 4, Color.BLACK);
+						root.getChildren().add(currentHighlightPoint);
+					}
+					else if(lastUnderMouse==null){
+						lastUnderMouse = new Point(getRelativeX(mouseX), getRelativeY(mouseY));
+						currentHighlightPoint = new Circle(translateX(getRelativeX(mouseX)), translateY(getRelativeY(mouseY)), 4, Color.BLACK);
+						root.getChildren().add(currentHighlightPoint);
+					}
+				}
+				else {
+					if(lastUnderMouse!=null){
+						root.getChildren().remove(currentHighlightPoint);
+					}
+				}
             }
         });
 		root.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-
 			@Override
-
 			public void handle(MouseEvent e) {
-				// TODO Recover click's x and y coordinates from position of the mouse
-                try{
-                    click = new Point(getRelativeX(e.getX()), getRelativeY(e.getY()));
-                    System.out.println(getRelativeX(e.getX()) + " " + getRelativeY(e.getY()));
-                } catch (Exception wrongClick){
-                    click = null;
-                }
+				if(getRelativeX(e.getX())!=null && getRelativeY(e.getY())!=null){
+					System.out.println(getRelativeX(e.getX())+" "+ getRelativeY(e.getY()));
+					click = new Point(getRelativeX(e.getX()), getRelativeY(e.getY()));
+				} else {
+					click = null;
+				}
 				if (!gameOver && click != null) {
 					synchronized (syncMove) { syncMove.notifyAll(); }
 				}
@@ -445,33 +446,33 @@ public class GameWindow extends Application implements Player {
     /**
      * Translate pixel offset value on the window into x coordinate (with (0, 0) point in center)
      * @param x x pixel offset
-     * @return coordinate if possible, if not throws exception
+     * @return coordinate if possible, if not null
      *
      * @author cianciara
      */
-    private int getRelativeX(double x) throws Exception{
-        for(int i = 0; i<=fieldWidth+2; i++){
-            if(x <= ((double)i*gridSize + gridSize*0.4 + translateX(-(fieldWidth+2)/2)) &&
-                    x >=((double)i*gridSize - gridSize*0.4 + translateX(-(fieldWidth+2)/2))){
-                return (i-(fieldWidth+addedToWidth)/2);
-            }
-        }
-        throw new Exception();
-    }
+    private Integer getRelativeX(double x){
+        double result = (x-translateX(0))/gridSize;
+		double low = Math.floor(result), high = Math.ceil(result);
+		if(Math.abs(low-result)<0.4){
+			return new Integer((int)low);
+		} else if(Math.abs(high-result)<0.4){
+			return new Integer((int)high);
+		} else return null;
+	}
     /**
      * Translate pixel offset value on the window into y coordinate (with (0, 0) point in center)
      * @param y y pixel offset
-     * @return coordinate if possible, if not throws exception
+     * @return coordinate if possible, if not null
      *
      * @author cianciara
      */
-    private int getRelativeY(double y) throws Exception{
-        for(int i = 0; i<=fieldHeight+2; i++){
-            if(y <= ((double)i*gridSize + gridSize*0.4 + translateY((fieldHeight + 2) / 2)) &&
-                    y >=((double)i*gridSize - gridSize*0.4)+translateY((fieldHeight + 2) / 2)){
-                return -(i-(fieldHeight+addedToHeight)/2);
-            }
-        }
-        throw new Exception();
+    private Integer getRelativeY(double y){
+      	double result = (y-translateY(0))/gridSize;
+		double low = (Math.floor(result)), high = (Math.ceil(result));
+		if(Math.abs(low-result)<0.4){
+			return new Integer(-(int)low);
+		} else if(Math.abs(high-result)<0.4){
+			return new Integer(-(int)high);
+		} else return null;
     }
 }
