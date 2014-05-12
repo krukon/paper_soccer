@@ -44,6 +44,10 @@ public class GameWindow extends Application implements Player {
 	private double pixelWidth = 400;
 	private double pixelHeight = 600;
 	private double gridSize;
+    private final int addedToHeight = 2;
+    private final int addedToWidth = 2;
+    private Point lastUnderMouse = null;
+    private Shape currentHighlightPoint = null;
 
 	// Player private fields:
 
@@ -135,13 +139,44 @@ public class GameWindow extends Application implements Player {
 				drawAllMoves();
 			}
 		});
-		
+		root.addEventHandler(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                try{
+                    double mouseX = e.getX();
+                    double mouseY = e.getY();
+                    if(lastUnderMouse!=null && (lastUnderMouse.x!=getRelativeX(mouseX) || lastUnderMouse.y!=getRelativeY(mouseY))){
+                        root.getChildren().remove(currentHighlightPoint);
+                        currentHighlightPoint = new Circle(translateX(getRelativeX(mouseX)), translateY(getRelativeY(mouseY)), 4, Color.BLACK);
+                        lastUnderMouse = new Point(getRelativeX(e.getX()), getRelativeY(e.getY()));
+                        root.getChildren().add(currentHighlightPoint);
+                    }
+                    else if(lastUnderMouse==null){
+                        getRelativeY(mouseY);
+                        getRelativeX(mouseX);
+                        lastUnderMouse = new Point(getRelativeX(mouseX), getRelativeY(mouseY));
+                        currentHighlightPoint = new Circle(translateX(getRelativeX(mouseX)), translateY(getRelativeY(mouseY)), 4, Color.BLACK);
+                        root.getChildren().add(currentHighlightPoint);
+                    }
+                } catch (Exception wrongPosition){
+                    if(lastUnderMouse!=null){
+                        root.getChildren().remove(currentHighlightPoint);
+                    }
+                }
+            }
+        });
 		root.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
 			@Override
+
 			public void handle(MouseEvent e) {
 				// TODO Recover click's x and y coordinates from position of the mouse
-				click = new Point(0, 0);
+                try{
+                    click = new Point(getRelativeX(e.getX()), getRelativeY(e.getY()));
+                    System.out.println(getRelativeX(e.getX()) + " " + getRelativeY(e.getY()));
+                } catch (Exception wrongClick){
+                    click = null;
+                }
 				if (!gameOver && click != null) {
 					synchronized (syncMove) { syncMove.notifyAll(); }
 				}
@@ -407,4 +442,36 @@ public class GameWindow extends Application implements Player {
 	private double translateY(int y) {
 		return (pixelHeight / 2) - gridSize * y;
 	}
+    /**
+     * Translate pixel offset value on the window into x coordinate (with (0, 0) point in center)
+     * @param x x pixel offset
+     * @return coordinate if possible, if not throws exception
+     *
+     * @author cianciara
+     */
+    private int getRelativeX(double x) throws Exception{
+        for(int i = 0; i<=fieldWidth+2; i++){
+            if(x <= ((double)i*gridSize + gridSize*0.4 + translateX(-(fieldWidth+2)/2)) &&
+                    x >=((double)i*gridSize - gridSize*0.4 + translateX(-(fieldWidth+2)/2))){
+                return (i-(fieldWidth+addedToWidth)/2);
+            }
+        }
+        throw new Exception();
+    }
+    /**
+     * Translate pixel offset value on the window into y coordinate (with (0, 0) point in center)
+     * @param y y pixel offset
+     * @return coordinate if possible, if not throws exception
+     *
+     * @author cianciara
+     */
+    private int getRelativeY(double y) throws Exception{
+        for(int i = 0; i<=fieldHeight+2; i++){
+            if(y <= ((double)i*gridSize + gridSize*0.4 + translateY((fieldHeight + 2) / 2)) &&
+                    y >=((double)i*gridSize - gridSize*0.4)+translateY((fieldHeight + 2) / 2)){
+                return -(i-(fieldHeight+addedToHeight)/2);
+            }
+        }
+        throw new Exception();
+    }
 }
