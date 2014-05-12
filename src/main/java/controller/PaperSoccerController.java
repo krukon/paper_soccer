@@ -1,7 +1,6 @@
 package controller;
 
-import model.Board;
-import helpers.GameResult;
+import model.Game;
 import helpers.Move;
 import helpers.Player;
 
@@ -15,17 +14,10 @@ public class PaperSoccerController {
 	Player host;
 	Player guest;
 	Player currentPlayer;
+	Game game;
 	int width;
 	int height;
 	
-	/*
-	 * TO BE DELETED!
-	 */
-	private static class Game {
-		static boolean isGameOver() {
-			return false;
-		}
-	}
 	
 	/*
 	 * @param Player host, who will host game in on-line game
@@ -38,15 +30,7 @@ public class PaperSoccerController {
 		this.guest = guest;
 		this.width = width;
 		this.height = height;
-		currentPlayer = host;
-	}
-	
-	/*
-	 *  Function responsible for registering move for players
-	 *  and swapping them
-	 */
-	private void swapPlayers() {
-		currentPlayer = currentPlayer == host ? guest : host;
+		game = new Game(host, guest, width, height);
 	}
 	
 	/*
@@ -56,24 +40,14 @@ public class PaperSoccerController {
 		host.startNewGame(width, height);
 		guest.startNewGame(width, height);
 	
-		while(!Game.isGameOver()) {
-			Move move;
-			move = currentPlayer.getNextMove();
-			if(/*Board.isValidMove(move)*/ true) {
-				host.registerMove(move);
-				guest.registerMove(move);
-				swapPlayers();
-			}
+		while(!game.isGameOver()) {
+			currentPlayer = game.getCurrentPlayer();
+			Move move = currentPlayer.getNextMove();
+			if(game.isValidMove(move)) 
+				game.registerMove(move);
 		}
-		
-		Player loser = currentPlayer;
-		Player winner = loser == host ? guest : host;
-
-		GameResult gameResultHost = new GameResult(winner, winner == host ? 1 : 0, winner == guest ? 1 : 0);
-		GameResult gameResultGuest = new GameResult(winner, winner == guest ? 1 : 0, winner == host ? 1 : 0);
-		
-		host.finishGame(gameResultHost);
-		guest.finishGame(gameResultGuest);
+		host.finishGame(game.getResult(host));
+		guest.finishGame(game.getResult(guest));
 		
 	}
 }
