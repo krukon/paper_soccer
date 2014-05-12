@@ -1,5 +1,9 @@
 package helpers;
 
+
+import javafx.scene.paint.Color;
+
+
 /**
  * Interface representing a player (human or computer).
  * 
@@ -37,4 +41,6 @@ public interface Player {
 	 * @return name of the player
 	 */
 	String getName();
+	
+	Color getColor();
 }
