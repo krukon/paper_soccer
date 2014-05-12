@@ -44,7 +44,8 @@ public class GameWindow extends Application implements Player {
 	private double pixelWidth = 400;
 	private double pixelHeight = 600;
 	private double gridSize;
-
+    private Shape currentHighlightPoint = null;
+	private final double errorMargin = 0.1;
 	// Player private fields:
 
 	private List<Move> moves;
@@ -135,13 +136,32 @@ public class GameWindow extends Application implements Player {
 				drawAllMoves();
 			}
 		});
-		
+		root.addEventHandler(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+				double mouseX = e.getX();
+				double mouseY = e.getY();
+				Integer relativeX = getRelativeX(mouseX);
+				Integer relativeY = getRelativeY(mouseY);
+				if(relativeX!=null && relativeY!=null && isPointInField(relativeX, relativeY)){
+					root.getChildren().remove(currentHighlightPoint);
+					currentHighlightPoint = new Circle(translateX(relativeX), translateY(relativeY), 4, Color.BLACK);
+					root.getChildren().add(currentHighlightPoint);
+				}
+				else {
+					root.getChildren().remove(currentHighlightPoint);
+				}
+            }
+        });
 		root.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-
 			@Override
 			public void handle(MouseEvent e) {
-				// TODO Recover click's x and y coordinates from position of the mouse
-				click = new Point(0, 0);
+				if(getRelativeX(e.getX())!=null && getRelativeY(e.getY())!=null){
+					System.out.println(getRelativeX(e.getX())+" "+ getRelativeY(e.getY()));
+					click = new Point(getRelativeX(e.getX()), getRelativeY(e.getY()));
+				} else {
+					click = null;
+				}
 				if (!gameOver && click != null) {
 					synchronized (syncMove) { syncMove.notifyAll(); }
 				}
@@ -406,5 +426,49 @@ public class GameWindow extends Application implements Player {
 	 */
 	private double translateY(int y) {
 		return (pixelHeight / 2) - gridSize * y;
+	}
+    /**
+     * Translate pixel offset value on the window into x coordinate (with (0, 0) point in center)
+     * @param x x pixel offset
+     * @return coordinate if possible, if not null
+     *
+     * @author cianciara
+     */
+    private Integer getRelativeX(double x){
+        double result = (x-translateX(0))/gridSize;
+		double low = Math.floor(result), high = Math.ceil(result);
+		if(Math.abs(low-result)<errorMargin){
+			return (int)low;
+		} else if(Math.abs(high-result)<errorMargin){
+			return (int)high;
+		} else return null;
+	}
+
+    /**
+     * Translate pixel offset value on the window into y coordinate (with (0, 0) point in center)
+     * @param y y pixel offset
+     * @return coordinate if possible, if not null
+     *
+     * @author cianciara
+     */
+    private Integer getRelativeY(double y){
+      	double result = (y-translateY(0))/gridSize;
+		double low = (Math.floor(result)), high = (Math.ceil(result));
+		if(Math.abs(low-result)<errorMargin){
+			return -(int)low;
+		} else if(Math.abs(high-result)<errorMargin){
+			return -(int)high;
+		} else return null;
+    }
+	
+	/**
+	 * Checks if point with given coordinates is part of field
+	 * @params x y point coordinates
+	 * @return true if point is part of field
+	 *
+	 * @author cianciara
+	 */
+	private boolean isPointInField(int x, int y){
+		return (Math.abs(x) <= fieldWidth/2 && Math.abs(y) <= fieldHeight/2) || (Math.abs(x) <= 1 && Math.abs(y) == fieldHeight/2 + 1);
 	}
 }
