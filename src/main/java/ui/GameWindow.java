@@ -439,7 +439,7 @@ public class GameWindow extends Application implements Player {
 		double low = Math.floor(result), high = Math.ceil(result);
 		if(Math.abs(low-result)<errorMargin){
 			return (int)low;
-		} else if(Math.abs(high-result)<0.4){
+		} else if(Math.abs(high-result)<errorMargin){
 			return (int)high;
 		} else return null;
 	}
@@ -455,7 +455,7 @@ public class GameWindow extends Application implements Player {
 		double low = (Math.floor(result)), high = (Math.ceil(result));
 		if(Math.abs(low-result)<errorMargin){
 			return -(int)low;
-		} else if(Math.abs(high-result)<0.4){
+		} else if(Math.abs(high-result)<errorMargin){
 			return -(int)high;
 		} else return null;
     }
