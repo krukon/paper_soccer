@@ -10,9 +10,11 @@ package helpers;
 public class Move {
 	public final Point start;
 	public final Point end;
+	public final Player player;
 	
-	public Move(Point start, Point end) {
+	public Move(Point start, Point end, Player player) {
 		this.start = start;
 		this.end = end;
+		this.player = player;
 	}
 }
