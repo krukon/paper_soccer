@@ -143,7 +143,7 @@ public class GameWindow extends Application implements Player {
 				double mouseY = e.getY();
 				Integer relativeX = getRelativeX(mouseX);
 				Integer relativeY = getRelativeY(mouseY);
-				if(relativeX!=null && relativeY!=null && Math.abs(relativeX)<=fieldWidth/2 && Math.abs(relativeY)<=fieldHeight/2){
+				if(relativeX!=null && relativeY!=null && isPointInField(relativeX, relativeY)){
 					root.getChildren().remove(currentHighlightPoint);
 					currentHighlightPoint = new Circle(translateX(relativeX), translateY(relativeY), 4, Color.BLACK);
 					root.getChildren().add(currentHighlightPoint);
@@ -459,4 +459,7 @@ public class GameWindow extends Application implements Player {
 			return -(int)high;
 		} else return null;
     }
+	private boolean isPointInField(int x, int y){
+		return (Math.abs(x) <= fieldWidth/2 && Math.abs(y) <= fieldHeight/2) || (Math.abs(x) <= 1 && Math.abs(y) == fieldHeight/2 + 1);
+	}
 }
