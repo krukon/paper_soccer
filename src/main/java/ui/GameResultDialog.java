@@ -22,6 +22,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.scene.paint.Color;
 
 public class GameResultDialog extends Stage {
 	
@@ -112,6 +113,12 @@ public class GameResultDialog extends Stage {
 					public String getName() {
 						// TODO Auto-generated method stub
 						return "XXX";
+					}
+					
+					@Override
+					public Color getColor() {
+						// TODO Auto-generated method stub
+						return Color.BLACK;
 					}
 					
 				};
