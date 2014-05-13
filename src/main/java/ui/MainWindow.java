@@ -39,7 +39,7 @@ public class MainWindow extends Application {
 	 * Starts new window.
 	 * @param args PaperSoccer's main method args
 	 */
-	public static void startNewGame(String[] args) {
+	public static void startNewGame(final String[] args) {
 		launch(args);
 	}
 	
