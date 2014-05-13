@@ -155,7 +155,7 @@ public class GameWindow extends BorderPane implements Player {
 		});
 		try {
 			synchronized (syncMove) { syncMove.wait(); }
-			return new Move(head, click);
+			return new Move(head, click, this);
 		} catch (Exception e) {
 		} finally {
 			click = null;
@@ -297,7 +297,10 @@ public class GameWindow extends BorderPane implements Player {
 	 * @author krukon
 	 */
 	private void drawMove(Move move) {
-		drawLine(Color.BLUE, move.start, move.end);
+		if(move.player == this)	
+			drawLine(Color.BLUE, move.start, move.end);
+		else
+			drawLine(Color.RED, move.start, move.end);
 	}
 
 	/**
