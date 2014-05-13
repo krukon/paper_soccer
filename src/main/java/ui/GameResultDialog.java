@@ -72,7 +72,7 @@ public class GameResultDialog extends Stage {
 	 * @deprecated
 	 * Only for game result dialog tests.
 	 */
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(final String[] args) throws InterruptedException {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
