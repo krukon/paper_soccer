@@ -30,7 +30,7 @@ public class GameResultDialog extends Stage {
 	public GameResultDialog(GameResult result) {
 		initModality(Modality.APPLICATION_MODAL);
 		
-		Label message = new Label("Won " + result.getWinner().getName());
+		Label message = new Label("Winner: " + result.getWinner().getName());
 		message.setFont(Font.font(30));
 		message.setAlignment(Pos.BASELINE_CENTER);
 		
