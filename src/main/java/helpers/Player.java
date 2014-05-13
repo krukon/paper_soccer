@@ -41,6 +41,4 @@ public interface Player {
 	 * @return name of the player
 	 */
 	String getName();
-	
-	Color getColor();
 }
