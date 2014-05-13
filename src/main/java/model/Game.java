@@ -28,8 +28,8 @@ public class Game {
 	 *  @param move to validate
 	 */
 	public boolean isValidMove(Move move) {
-		if(move.start.x != board.getHeadX() || move.start.y != board.getHeadY())
-			return false;	
+		if(move.start.x != board.getCurrentX() || move.start.y != board.getCurrentY())
+			return false;
 		return board.canMoveTo(move.end.x, move.end.y);
 	}
 	
