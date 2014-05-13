@@ -34,29 +34,10 @@ public class Game {
 	}
 	
 	/**
-	 * Function responsible to notify board about move
-	 * and returning if there is bounce
-	 * @param move to register
-	 * 
-	 */
-	private boolean moveTo(Move move) {
-		try {
-			return board.moveTo(move.end.x, move.end.y);
-		} catch (IllegalMove e) {}
-		return false;
-	}
-	/**
 	 *  Function responsible for returning Player who can move now;
 	 */
 	public Player getCurrentPlayer() {
 		return currentPlayer;
-	}
-	
-	/**
-	 *  Function responsible for swapping Players;
-	 */
-	private void swapPlayers() {
-		currentPlayer = currentPlayer == host ? guest : host;
 	}
 	
 	/**
@@ -70,8 +51,11 @@ public class Game {
 	 * Function responsible for registering moves for players and
 	 * swapping them if there is no bounce
 	 * @param move to register
+	 * @throws IllegalMove 
 	 */
-	public void registerMove(Move move) {
+	public void registerMove(Move move) throws IllegalMove {
+		if (!isValidMove(move))
+			throw new IllegalMove();
 		if(!moveTo(move))
 			swapPlayers();
 		if(board.isGameOver()) {
@@ -82,9 +66,29 @@ public class Game {
 	
 	public GameResult getResult(Player player) {
 		/*
-		 * if(!board.gameOver)
+		 * TODO if(!board.gameOver)
 		 * 	throw exception
 		 */
 		return new GameResult(winner, winner == player ? 1 : 0, winner != player ? 1 : 0);
+	}
+
+	/**
+	 * Function responsible to notify board about move
+	 * and returning if there is bounce
+	 * @param move to register
+	 * 
+	 */
+	private boolean moveTo(Move move) {
+		try {
+			return board.moveTo(move.end.x, move.end.y);
+		} catch (IllegalMove e) {}
+		return false;
+	}
+
+	/**
+	 *  Function responsible for swapping Players;
+	 */
+	private void swapPlayers() {
+		currentPlayer = currentPlayer == host ? guest : host;
 	}
 }

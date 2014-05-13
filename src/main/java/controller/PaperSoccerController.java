@@ -1,6 +1,7 @@
 package controller;
 
 import model.Game;
+import model.IllegalMove;
 import helpers.Move;
 import helpers.Player;
 
@@ -44,9 +45,11 @@ public class PaperSoccerController {
 			currentPlayer = game.getCurrentPlayer();
 			Move move = currentPlayer.getNextMove();
 			if(game.isValidMove(move))  {
-				host.registerMove(move);
-				guest.registerMove(move);
-				game.registerMove(move);
+				try {
+					game.registerMove(move);
+					host.registerMove(move);
+					guest.registerMove(move);
+				} catch (IllegalMove e) { }
 			}
 		}
 		host.finishGame(game.getResult(host));
