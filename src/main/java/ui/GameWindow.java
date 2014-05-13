@@ -28,7 +28,7 @@ import javafx.stage.Stage;
  * Window displaying the field of the game. Responsible
  * for interaction with user. Can communicate with Controller
  * through implemented Player interface.
- * 	
+ * 
  * @author krukon, cianciara
  */
 public class GameWindow extends Application implements Player {
@@ -72,7 +72,7 @@ public class GameWindow extends Application implements Player {
 		 * TO BE DELETED!
 		 * 
 		 */
-
+		
 		(new Thread(new Runnable() {
 
 			@Override
@@ -81,16 +81,15 @@ public class GameWindow extends Application implements Player {
 					Thread.sleep(4000);
 					player.startNewGame(8, 10);
 					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(0,0), new Point(1,1), player));
+					player.registerMove(new Move(new Point(0,0), new Point(1,1)));
 					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(1,1), new Point(1,2), player));
+					player.registerMove(new Move(new Point(1,1), new Point(1,2)));
 					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(1,2), new Point(0,3), player));
+					player.registerMove(new Move(new Point(1,2), new Point(0,3)));
 					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(0,3), new Point(0,2), player));
+					player.registerMove(new Move(new Point(0,3), new Point(0,2)));
 					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(0,2), new Point(-1,1), player));
-
+					player.registerMove(new Move(new Point(0,2), new Point(-1,1)));
 				} catch (InterruptedException e) { }
 
 				final Move x = player.getNextMove();
@@ -154,6 +153,21 @@ public class GameWindow extends Application implements Player {
 				}
             }
         });
+		root.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				if(getRelativeX(e.getX())!=null && getRelativeY(e.getY())!=null){
+					System.out.println(getRelativeX(e.getX())+" "+ getRelativeY(e.getY()));
+					click = new Point(getRelativeX(e.getX()), getRelativeY(e.getY()));
+				} else {
+					click = null;
+				}
+				if (!gameOver && click != null) {
+					synchronized (syncMove) { syncMove.notifyAll(); }
+				}
+			}
+		});
+	}
 
 	/**
 	 * Prepare window to start a new game on a specified field.
@@ -191,7 +205,7 @@ public class GameWindow extends Application implements Player {
 	public void finishGame(final GameResult result) {
 		gameOver = true;
 		Platform.runLater(new Runnable() {
-
+	
 			@Override
 			public void run() {
 				// TODO Display game result
@@ -217,7 +231,7 @@ public class GameWindow extends Application implements Player {
 		});
 		try {
 			synchronized (syncMove) { syncMove.wait(); }
-			return new Move(head, click, player);
+			return new Move(head, click);
 		} catch (Exception e) {
 		} finally {
 			click = null;
@@ -263,25 +277,6 @@ public class GameWindow extends Application implements Player {
 	}
 
 	/**
-	 * Get player's color
-	 * 
-	 * @author ljk
-	 */
-	private int x = 0;
-
-	@Override
-	public Color getColor() {
-		x++;
-
-		if(x%2==0)
-			return Color.BLACK;
-		else
-			return Color.RED;
-
-	}
-
-
-	/**
 	 * Draw all lines representing moves registered by the player
 	 * 
 	 * @author krukon
@@ -291,7 +286,7 @@ public class GameWindow extends Application implements Player {
 			for (Move move : moves)
 				drawMove(move);
 	}
-
+	
 	/**
 	 * Draw the pointer showing current position of the ball
 	 */
@@ -378,7 +373,11 @@ public class GameWindow extends Application implements Player {
 	 * @author krukon, ljk
 	 */
 	private void drawMove(Move move) {
-		drawLine(player.getColor(), move.start, move.end);
+		if(move.player==this.player)
+			drawLine(Color.BLACK, move.start, move.end);
+		else
+			drawLine(Color.RED, move.start, move.end);
+		
 	}
 
 	/**
@@ -432,8 +431,7 @@ public class GameWindow extends Application implements Player {
 	private double translateY(int y) {
 		return (pixelHeight / 2) - gridSize * y;
 	}
-
-	/**
+    /**
      * Translate pixel offset value on the window into x coordinate (with (0, 0) point in center)
      * @param x x pixel offset
      * @return coordinate if possible, if not null
