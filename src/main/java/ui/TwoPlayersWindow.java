@@ -6,7 +6,9 @@ package ui;
  * @author jakub
  */
 
+import helpers.Player;
 import controller.PaperSoccer;
+import controller.PaperSoccerController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -72,7 +74,8 @@ public class TwoPlayersWindow extends BorderPane {
 					int width = Integer.parseInt(boardWidth.getCharacters().toString());
 					int height = Integer.parseInt(boardHeight.getCharacters().toString());
 					
-					System.out.println("Constructing board " + width + " x " + height);					
+					System.out.println("Constructing board " + width + " x " + height);
+					startGame(playerOneName.getText(), playerTwoName.getText(), width, height);
 				} catch (Exception e) {
 					System.out.println("Size is not an integer");
 				}
@@ -176,5 +179,31 @@ public class TwoPlayersWindow extends BorderPane {
 		addBoardSize(grid);
 		
 		return grid;
+	}
+
+	/**
+	 * Begin new game for two players. Run controller, and
+	 * display appropriate views.
+	 *
+	 * @param playerOne name of the first player
+	 * @param playerTwo name of the second player
+	 * @param width width of the field
+	 * @param height width of the board
+	 *
+	 * @author krukon
+	 */
+	private void startGame(final String playerOne, final String playerTwo, final int width, final int height) {
+		final Player host = new GameWindow();
+		// TODO Check if guest can equal to host. To be corrected:
+		final Player guest = host;
+		// TODO Display newly built view
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				PaperSoccerController controller = new PaperSoccerController(host, guest, width, height);
+				controller.runGame();
+			}
+		}).start();
 	}
 }
