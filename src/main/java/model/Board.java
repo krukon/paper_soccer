@@ -11,6 +11,7 @@ public class Board {
 	/**
 	 * Enum representing directions of movements on the field.
 	 */
+    public static int maxHeight = 100, maxWidth = 100, minHeight = 4, minWidth = 4;
 	public static enum Direction {
 		N, NE, E, SE, S, SW, W, NW;
 
@@ -51,8 +52,8 @@ public class Board {
 	private boolean gameOver;
 	
 	public Board(int width, int height) {
-		this.width = validSize(width) / 2;
-		this.height = validSize(height) / 2;
+		this.width = width/2;
+		this.height = height / 2;
 		field = new int[2 * this.width + 1][2 * this.height + 3];
 		boundField();
 		headX = 0;
@@ -227,4 +228,26 @@ public class Board {
 	private int validSize(int size) {
 		return Math.min(Math.max(4, (size / 2) * 2), 100);
 	}
+    /**
+     * Returns true if dimension of the filed is valid.
+     * Correct dimension should be an even integer
+     * between values stored in minHeight and maxHeight
+     *
+     * @param height dimension to be validated
+     * @return true if value is valid
+     */
+    public static boolean isValidHeight(int height){
+        return (height >= Board.minHeight && height <= Board.maxHeight && (height % 2) == 0);
+    }
+    /**
+     * Returns true if dimension of the filed is valid.
+     * Correct dimension should be an even integer
+     * between values stored in minWidth and maxWidth
+     *
+     * @param width dimension to be validated
+     * @return true if value is valid
+     */
+    public static boolean isValidWidth(int width){
+        return (width >= Board.minWidth && width <= Board.maxWidth && (width % 2) == 0);
+    }
 }
