@@ -46,6 +46,7 @@ public class GameWindow extends Application implements Player {
 	private double gridSize;
     private Shape currentHighlightPoint = null;
 	private final double errorMargin = 0.1;
+
 	// Player private fields:
 
 	private List<Move> moves;
@@ -99,12 +100,17 @@ public class GameWindow extends Application implements Player {
 					@Override
 					public void run() {
 						player.registerMove(x);
+						player.finishGame(new GameResult(player, 1, 0));
 					}
 				});
 			}
 		})).start();
 		launch(args);
 
+	}
+
+	public GameWindow(String playerName) {
+		this.playerName = playerName;
 	}
 
 	/**
@@ -188,7 +194,6 @@ public class GameWindow extends Application implements Player {
 
 			@Override
 			public void run() {
-				// TODO Redraw field; Cleaning
 				prepareWindow();
 			}
 		});
@@ -208,7 +213,7 @@ public class GameWindow extends Application implements Player {
 	
 			@Override
 			public void run() {
-				// TODO Display game result
+				new GameResultDialog(result).show();
 			}
 		});
 	}
