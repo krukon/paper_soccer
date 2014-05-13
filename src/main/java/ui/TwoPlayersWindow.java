@@ -150,28 +150,28 @@ public class TwoPlayersWindow extends BorderPane {
 	private void addBoardSize(GridPane grid) {
 		Label width = new Label("Width:");
 		Label height = new Label("Height");
-		final Label correctWidth = new Label("Correct");
-		final Label correctHeight = new Label("Correct");
+		final Label correctWidth = new Label("");
+		final Label correctHeight = new Label("");
 		width.setTextFill(Color.WHITE);
 		height.setTextFill(Color.WHITE);
 		grid.add(width, 0, 5);
-		grid.add(correctWidth, 0, 6);
+		grid.add(correctWidth,0, 6, 2, 1);
 		grid.add(height, 0, 7);
-		grid.add(correctHeight, 0, 8);
+		grid.add(correctHeight, 0, 8, 2, 1);
 		boardWidth.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observableValue, String s, String newValue) {
 				try{
 					if(!newValue.isEmpty()){
-						correctWidth.setText("Wrong");
+						correctWidth.setText("Incorrect value");
 						startButton.setDisable(true);
 					}
 					if(!newValue.isEmpty() && Board.isValidWidth(Integer.parseInt(newValue))){
-						correctWidth.setText("Correct");
+						correctWidth.setText("");
 						startButton.setDisable(false);
 					}
 				} catch (Exception e){
-					correctWidth.setText("Wrong");
+					correctWidth.setText("Incorrect value");
 					startButton.setDisable(true);
 				}
 			}
@@ -181,15 +181,15 @@ public class TwoPlayersWindow extends BorderPane {
 			public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
 				try{
 					if(!newValue.isEmpty() && !Board.isValidHeight(Integer.parseInt(newValue))){
-						correctHeight.setText("Wrong");
+						correctHeight.setText("Incorrect value");
 						startButton.setDisable(true);
 					}
 					if(!newValue.isEmpty() && Board.isValidHeight(Integer.parseInt(newValue))){
-						correctHeight.setText("Correct");
+						correctHeight.setText("");
 						startButton.setDisable(false);
 					}
 				} catch (Exception e){
-					correctHeight.setText("Wrong");
+					correctHeight.setText("Incorrect value");
 					startButton.setDisable(true);
 				}
 			}
