@@ -34,7 +34,8 @@ import javafx.stage.Stage;
 public class GameWindow extends Application implements Player {
 	private static String windowName = "Paper Soccer";
 	private static Player player;
-
+	private static Player player2;
+	
 	// UI private fields:
 
 	private Stage stage;
@@ -81,15 +82,15 @@ public class GameWindow extends Application implements Player {
 					Thread.sleep(4000);
 					player.startNewGame(8, 10);
 					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(0,0), new Point(1,1)));
+					player.registerMove(new Move(new Point(0,0), new Point(1,1), player));
 					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(1,1), new Point(1,2)));
+					player.registerMove(new Move(new Point(1,1), new Point(1,2), player2));
 					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(1,2), new Point(0,3)));
+					player.registerMove(new Move(new Point(1,2), new Point(0,3), player));
 					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(0,3), new Point(0,2)));
+					player.registerMove(new Move(new Point(0,3), new Point(0,2), player));
 					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(0,2), new Point(-1,1)));
+					player.registerMove(new Move(new Point(0,2), new Point(-1,1), player2));
 				} catch (InterruptedException e) { }
 
 				final Move x = player.getNextMove();
@@ -231,7 +232,7 @@ public class GameWindow extends Application implements Player {
 		});
 		try {
 			synchronized (syncMove) { syncMove.wait(); }
-			return new Move(head, click);
+			return new Move(head, click, player);
 		} catch (Exception e) {
 		} finally {
 			click = null;
@@ -370,10 +371,14 @@ public class GameWindow extends Application implements Player {
 	 * 
 	 * @param move the move to be drawn
 	 * 
-	 * @author krukon
+	 * @author krukon, ljk
 	 */
 	private void drawMove(Move move) {
-		drawLine(Color.BLUE, move.start, move.end);
+		if(move.player == player)
+			drawLine(Color.BLACK, move.start, move.end);
+		else
+			drawLine(Color.RED, move.start, move.end);
+		
 	}
 
 	/**
