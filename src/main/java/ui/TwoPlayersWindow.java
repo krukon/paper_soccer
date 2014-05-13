@@ -7,6 +7,8 @@ package ui;
  */
 
 import controller.PaperSoccer;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -19,6 +21,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import model.Board;
 
 public class TwoPlayersWindow extends BorderPane {
 	private Text windowTitle = new Text("Enter your names \n and board size");
@@ -28,12 +31,12 @@ public class TwoPlayersWindow extends BorderPane {
 	private TextField playerTwoName;
 	private TextField boardWidth;
 	private TextField boardHeight;
-	
+	private Button startButton;
 	public TwoPlayersWindow() {
 		playerOneName = new TextField();
 		playerTwoName = new TextField();
-		boardWidth = new TextField();
-		boardHeight = new TextField();
+		boardWidth = new TextField("8");
+		boardHeight = new TextField("10");
 		
 		windowTitle.setFill(Color.WHITE);
 		
@@ -60,7 +63,7 @@ public class TwoPlayersWindow extends BorderPane {
 	 * @return constructed button
 	 */
 	private Button getStartButton() {
-		Button startButton = new Button("START");
+		startButton = new Button("START");
 		startButton.setMinSize(100, 50);
 		
 		startButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -147,15 +150,52 @@ public class TwoPlayersWindow extends BorderPane {
 	private void addBoardSize(GridPane grid) {
 		Label width = new Label("Width:");
 		Label height = new Label("Height");
-		
+		final Label correctWidth = new Label("");
+		final Label correctHeight = new Label("");
 		width.setTextFill(Color.WHITE);
 		height.setTextFill(Color.WHITE);
-		
 		grid.add(width, 0, 5);
-		grid.add(height, 0, 6);
-		
+		grid.add(correctWidth,0, 6, 2, 1);
+		grid.add(height, 0, 7);
+		grid.add(correctHeight, 0, 8, 2, 1);
+		boardWidth.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observableValue, String s, String newValue) {
+				try{
+					if(!newValue.isEmpty()){
+						correctWidth.setText("Incorrect value");
+						startButton.setDisable(true);
+					}
+					if(!newValue.isEmpty() && Board.isValidWidth(Integer.parseInt(newValue))){
+						correctWidth.setText("");
+						startButton.setDisable(false);
+					}
+				} catch (Exception e){
+					correctWidth.setText("Incorrect value");
+					startButton.setDisable(true);
+				}
+			}
+		});
+		boardHeight.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+				try{
+					if(!newValue.isEmpty() && !Board.isValidHeight(Integer.parseInt(newValue))){
+						correctHeight.setText("Incorrect value");
+						startButton.setDisable(true);
+					}
+					if(!newValue.isEmpty() && Board.isValidHeight(Integer.parseInt(newValue))){
+						correctHeight.setText("");
+						startButton.setDisable(false);
+					}
+				} catch (Exception e){
+					correctHeight.setText("Incorrect value");
+					startButton.setDisable(true);
+				}
+			}
+		});
 		grid.add(boardWidth, 1, 5);
-		grid.add(boardHeight, 1, 6);
+		grid.add(boardHeight, 1, 7);
 	}
 	
 	/**
