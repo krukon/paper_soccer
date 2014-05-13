@@ -7,7 +7,8 @@ package model;
  *
  */
 public class Board {
-	
+
+	public static final int maxHeight = 100, maxWidth = 100, minHeight = 4, minWidth = 4;
 	/**
 	 * Enum representing directions of movements on the field.
 	 */
@@ -51,8 +52,8 @@ public class Board {
 	private boolean gameOver;
 	
 	public Board(int width, int height) {
-		this.width = validSize(width) / 2;
-		this.height = validSize(height) / 2;
+		this.width = validWidth(width) / 2;
+		this.height = validHeight(height) / 2;
 		field = new int[2 * this.width + 1][2 * this.height + 3];
 		boundField();
 		headX = 0;
@@ -232,11 +233,43 @@ public class Board {
 	 * Returns valid dimension for the filed.
 	 * Correct dimension should be an even integer
 	 * between 4 and 100
-	 * 
+	 *
 	 * @param size dimension to be validated
 	 * @return validated dimension of the field
 	 */
-	private int validSize(int size) {
-		return Math.min(Math.max(4, (size / 2) * 2), 100);
+	private int validHeight(int size) {
+		return Math.min(Math.max(minHeight, (size / 2) * 2), maxHeight);
+	}
+	/**
+	 * Returns valid dimension for the filed.
+	 * Correct dimension should be an even integer
+	 * between 4 and 100
+	 *
+	 * @param size dimension to be validated
+	 * @return validated dimension of the field
+	 */
+	private int validWidth(int size) {
+		return Math.min(Math.max(minWidth, (size / 2) * 2), maxWidth);
+	}
+	/**
+	 * Returns true if dimension of the filed is valid.
+	 * Correct dimension should be an even integer
+	 * between values stored in minHeight and maxHeight
+	 * @param height dimension to be validated
+	 * @return true if value is valid
+	 */
+	public static boolean isValidHeight(int height){
+		return (height >= Board.minHeight && height <= Board.maxHeight && (height % 2) == 0);
+	}
+	/**
+	 * Returns true if dimension of the filed is valid.
+	 * Correct dimension should be an even integer
+	 * between values stored in minWidth and maxWidth
+	 *
+	 * @param width dimension to be validated
+	 * @return true if value is valid
+	 */
+	public static boolean isValidWidth(int width){
+		return (width >= Board.minWidth && width <= Board.maxWidth && (width % 2) == 0);
 	}
 }
