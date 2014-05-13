@@ -63,5 +63,10 @@ public class MainWindow extends Application {
 		mainView.getChildren().clear();
 		mainView.getChildren().add(gameWindow);
 	}
-
+	
+	public void showSinglePlayerWindow() {
+		mainView.getChildren().clear();
+		mainView.getChildren().add(new SinglePlayerWindow());
+	}
+	
 }
