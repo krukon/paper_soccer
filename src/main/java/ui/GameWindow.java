@@ -8,10 +8,7 @@ import helpers.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -33,13 +30,9 @@ import javafx.stage.Stage;
  * @author krukon, cianciara
  */
 public class GameWindow extends BorderPane implements Player {
-	private static String windowName = "Paper Soccer";
-	private static Player player;
 
 	// UI private fields:
 
-	private Stage stage;
-	private Scene scene;
 	private Group root;
 	private Shape ball;
 	private double pixelWidth = 400;
@@ -47,7 +40,7 @@ public class GameWindow extends BorderPane implements Player {
 	private double gridSize;
     private Shape currentHighlightPoint = null;
 	private final double errorMargin = 0.1;
-	
+
 	// Player private fields:
 
 	private List<Move> moves;
@@ -65,7 +58,6 @@ public class GameWindow extends BorderPane implements Player {
 	 * @param playerName the name of the player
 	 */
 	public GameWindow(String playerName) {
-		player = this;
 		root = new Group();
 		this.setCenter(root);
 		this.playerName = playerName;
@@ -121,7 +113,6 @@ public class GameWindow extends BorderPane implements Player {
 
 			@Override
 			public void run() {
-				// TODO Redraw field; Cleaning
 				prepareWindow();
 			}
 		});
@@ -141,7 +132,7 @@ public class GameWindow extends BorderPane implements Player {
 	
 			@Override
 			public void run() {
-				// TODO Display game result
+				new GameResultDialog(result).show();
 			}
 		});
 	}
