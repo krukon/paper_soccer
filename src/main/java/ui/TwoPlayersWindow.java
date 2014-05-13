@@ -193,10 +193,11 @@ public class TwoPlayersWindow extends BorderPane {
 	 * @author krukon
 	 */
 	private void startGame(final String playerOne, final String playerTwo, final int width, final int height) {
-		final Player host = new GameWindow();
+		GameWindow view = new GameWindow(playerOne);
+		final Player host = view;
 		// TODO Check if guest can equal to host. To be corrected:
 		final Player guest = host;
-		// TODO Display newly built view
+		PaperSoccer.getMainWindow().showTwoPlayersGameWindow(view);
 		new Thread(new Runnable() {
 
 			@Override

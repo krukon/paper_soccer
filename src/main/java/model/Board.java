@@ -75,6 +75,20 @@ public class Board {
 	}
 
 	/**
+	 * return coordinate x of head
+	 */
+	public int getCurrentX() {
+		return headX;
+	}
+
+	/**
+	 * return coordinate y of head
+	 */
+	public int getCurrentY() {
+		return headY;
+	}
+
+	/**
 	 * @return full height of the field
 	 */
 	public int getHeight() {
@@ -178,18 +192,6 @@ public class Board {
 		return height + y + 1;
 	}
 	
-	/**
-	 * return coordinate x of head
-	 */
-	public int getHeadX() {
-		return headX;
-	}
-	/**
-	 * return coordinate y of head
-	 */
-	public int getHeadY() {
-		return height;
-	}
 	/**
 	 * Check if point (x, y) belongs to the field
 	 * @param x x coordinate

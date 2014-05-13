@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -31,7 +32,7 @@ import javafx.stage.Stage;
  * 
  * @author krukon, cianciara
  */
-public class GameWindow extends Application implements Player {
+public class GameWindow extends BorderPane implements Player {
 	private static String windowName = "Paper Soccer";
 	private static Player player;
 
@@ -46,6 +47,7 @@ public class GameWindow extends Application implements Player {
 	private double gridSize;
     private Shape currentHighlightPoint = null;
 	private final double errorMargin = 0.1;
+	
 	// Player private fields:
 
 	private List<Move> moves;
@@ -58,84 +60,15 @@ public class GameWindow extends Application implements Player {
 	private int fieldHeight;
 
 	/**
-	 * @deprecated
+	 * Construct a view for the game
+	 * 
+	 * @param playerName the name of the player
 	 */
-	public static void main(String[] args) {
-		/*
-		 * Example to show the logic of communication between
-		 * Controller and this View. JavaFX thread needs some
-		 * time in the beginning to start the window, and to
-		 * register itself under GameWindow.player. The new
-		 * thread is to mock Controller's behavior by sending
-		 * moves to View and requesting next move from the View.
-		 * 
-		 * TO BE DELETED!
-		 * 
-		 */
-		
-		(new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				try {
-					Thread.sleep(4000);
-					player.startNewGame(8, 10);
-					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(0,0), new Point(1,1)));
-					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(1,1), new Point(1,2)));
-					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(1,2), new Point(0,3)));
-					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(0,3), new Point(0,2)));
-					Thread.sleep(2000);
-					player.registerMove(new Move(new Point(0,2), new Point(-1,1)));
-				} catch (InterruptedException e) { }
-
-				final Move x = player.getNextMove();
-
-				Platform.runLater(new Runnable() {
-
-					@Override
-					public void run() {
-						player.registerMove(x);
-					}
-				});
-			}
-		})).start();
-		launch(args);
-
-	}
-
-	/**
-	 * @deprecated
-	 */
-	@Override
-	public void start(final Stage primaryStage) {
+	public GameWindow(String playerName) {
 		player = this;
-		stage = primaryStage;
 		root = new Group();
-		scene = new Scene(root, pixelWidth, pixelHeight, Color.GREEN);
-		stage.setTitle(windowName);
-		stage.setScene(scene);
-		stage.show();
-
-		scene.widthProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
-				pixelWidth = newSceneWidth.doubleValue();
-				prepareWindow();
-				drawAllMoves();
-			}
-		});
-		scene.heightProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
-				pixelHeight = newSceneHeight.doubleValue();
-				prepareWindow();
-				drawAllMoves();
-			}
-		});
+		this.setCenter(root);
+		this.playerName = playerName;
 		root.addEventHandler(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
@@ -383,6 +316,8 @@ public class GameWindow extends Application implements Player {
 	 * @author krukon
 	 */
 	private void prepareWindow() {
+		pixelWidth = getScene().getWidth();
+		pixelHeight = getScene().getHeight();
 		gridSize = Math.min(pixelHeight / (fieldHeight + 4), pixelWidth / (fieldWidth + 4));
 		Canvas canvas = new Canvas(pixelWidth, pixelHeight);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
