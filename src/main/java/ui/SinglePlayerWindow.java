@@ -161,6 +161,7 @@ public class SinglePlayerWindow extends BorderPane {
 			        "Hard"
 			    );
 			final ComboBox comboBox = new ComboBox(options);
+			comboBox.setValue("Medium");
 			grid.add(comboBox, 1, 2);
 	}
 	/**
