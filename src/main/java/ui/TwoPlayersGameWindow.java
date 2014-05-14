@@ -49,6 +49,7 @@ public class TwoPlayersGameWindow extends GameWindow{
 
 			@Override
 			public void run() {
+				currentPlayer.setText(playerName);
 				PaperSoccer.getMainWindow().changeTopGameWindow(playerWindow);
 			}
 		});
@@ -62,6 +63,7 @@ public class TwoPlayersGameWindow extends GameWindow{
 
 				@Override
 				public void run() {
+					currentPlayer.setText("");
 					PaperSoccer.getMainWindow().changeTopGameWindow(opponentWindow);
 				}
 			});
@@ -86,10 +88,11 @@ public class TwoPlayersGameWindow extends GameWindow{
 			
 					@Override
 					public void run() {
-						new GameResultDialog(result).show();
+						new GameResultDialog(result, controller).show();
 					}
 				});
 			}
+			else resultDialogShown.set(false);
 		}
 	}
 }

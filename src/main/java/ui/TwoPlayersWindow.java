@@ -73,16 +73,11 @@ public class TwoPlayersWindow extends BorderPane {
 			
 			@Override
 			public void handle(ActionEvent event) {				
-				try {
-					int width = Integer.parseInt(boardWidth.getCharacters().toString());
-					int height = Integer.parseInt(boardHeight.getCharacters().toString());
-					
-					System.out.println("Constructing board " + width + " x " + height);
-					startGame(playerOneName.getText(), playerTwoName.getText(), width, height);
-				} catch (Exception e) {
-					System.out.println("Size is not an integer");
-				}
-			
+				int width = Integer.parseInt(boardWidth.getCharacters().toString());
+				int height = Integer.parseInt(boardHeight.getCharacters().toString());
+				
+				System.out.println("Constructing board " + width + " x " + height);
+				startGame(playerOneName.getText(), playerTwoName.getText(), width, height);
 			}
 		});
 		
@@ -241,13 +236,19 @@ public class TwoPlayersWindow extends BorderPane {
 		
 		PaperSoccer.getMainWindow().showTwoPlayersGameWindow((GameWindow)guest, (GameWindow)host);
 
-		new Thread(new Runnable() {
+		Thread controllerThread = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				PaperSoccerController controller = new PaperSoccerController(host, guest, width, height);
+				
+				((TwoPlayersGameWindow)host).registerController(controller);
+				((TwoPlayersGameWindow)guest).registerController(controller);
+				
 				controller.runGame();
 			}
-		}).start();
+		});
+		controllerThread.setDaemon(true);
+		controllerThread.start();
 	}
 }

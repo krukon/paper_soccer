@@ -7,12 +7,10 @@ package ui;
  */
 
 import controller.PaperSoccer;
+import controller.PaperSoccerController;
 
 import helpers.GameResult;
-import helpers.Move;
-import helpers.Player;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -26,8 +24,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class GameResultDialog extends Stage {
-	
-	public GameResultDialog(GameResult result) {
+	public GameResultDialog(GameResult result, final PaperSoccerController controller) {
 		initModality(Modality.APPLICATION_MODAL);
 		
 		Label message = new Label("Winner: " + result.getWinner().getName());
@@ -40,7 +37,19 @@ public class GameResultDialog extends Stage {
 			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("Rematch");
-				// TODO start new game				
+				
+				Thread controllerThread = new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						controller.prepareRematch();
+						controller.runGame();
+					}
+				});
+				controllerThread.setDaemon(true);
+				controllerThread.start();
+				
+				close();
 			}
 		});
 		
@@ -66,60 +75,5 @@ public class GameResultDialog extends Stage {
         vBox.getChildren().addAll(message, hBox);
 
         setScene(new Scene(vBox, 300, 150));
-	}
-	/**
-	 * @throws InterruptedException 
-	 * @deprecated
-	 * Only for game result dialog tests.
-	 */
-	public static void main(final String[] args) throws InterruptedException {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				MainWindow.startNewGame(args);
-			}	
-		}).start();
-		Thread.sleep(2000);
-		Platform.runLater(new Runnable() {
-			
-			@Override
-			public void run() {
-				Player p = new Player() {
-
-					@Override
-					public void startNewGame(int width, int height) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					@Override
-					public void finishGame(GameResult result) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					@Override
-					public Move getNextMove() {
-						// TODO Auto-generated method stub
-						return null;
-					}
-
-					@Override
-					public void registerMove(Move move) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					@Override
-					public String getName() {
-						// TODO Auto-generated method stub
-						return "XXX";
-					}
-					
-				};
-				new GameResultDialog(new GameResult(p, 1, 1)).show();
-				
-			}
-		});
 	}
 }

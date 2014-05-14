@@ -9,18 +9,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import controller.PaperSoccer;
+import controller.PaperSoccerController;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
@@ -45,16 +49,20 @@ public class GameWindow extends BorderPane implements Player {
 	// Player private fields:
 
 	private List<Move> moves;
-	protected boolean gameOver;
-	protected Point head;
-	protected Point click;
-	private String playerName;
-	protected final Object syncMove = new Object();
 	private int fieldWidth;
-	private int fieldHeight;
-	
+	private int fieldHeight;	
 	private Color playerColor;
 	private Color opponentColor;
+	
+	//Player protected fields:
+	
+	protected boolean gameOver;
+	protected PaperSoccerController controller;
+	protected Point head;
+	protected Point click;
+	protected String playerName;
+	protected final Object syncMove = new Object();
+	protected Label currentPlayer;
 
 	/**
 	 * Construct a view for the game
@@ -62,9 +70,17 @@ public class GameWindow extends BorderPane implements Player {
 	 * @param playerName the name of the player
 	 */
 	public GameWindow(String playerName, Color playerColor, Color opponentColor) {
+		if (playerName == null || playerName.length() == 0) playerName = "PLAYER";
+		
 		this.playerName = playerName;
 		this.playerColor = playerColor;
 		this.opponentColor = opponentColor;
+		
+		currentPlayer = new Label();
+		currentPlayer.setTextFill(playerColor);
+		currentPlayer.setFont(Font.font(30));
+		setAlignment(currentPlayer, Pos.CENTER);
+		setTop(currentPlayer);
 		
 		root = new Group();
 		this.setCenter(root);
@@ -139,7 +155,7 @@ public class GameWindow extends BorderPane implements Player {
 	
 			@Override
 			public void run() {
-				new GameResultDialog(result).show();
+				new GameResultDialog(result, controller).show();
 			}
 		});
 	}
@@ -181,6 +197,14 @@ public class GameWindow extends BorderPane implements Player {
 				drawMove(move);
 			}
 		});
+	}
+	
+	/**
+	 * Registers controller with which player communicates.
+	 * @param controller the controller to register
+	 */
+	public void registerController(final PaperSoccerController controller) {
+		this.controller = controller;
 	}
 
 	/**
