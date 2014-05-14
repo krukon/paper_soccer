@@ -1,5 +1,7 @@
 package model;
 
+import helpers.Point;
+
 /**
  * Class representing the field of the game
  * 
@@ -41,6 +43,15 @@ public class Board {
 		 */
 		public Direction opposite() {
 			return Direction.values()[(4 + this.ordinal()) % 8];
+		}
+		
+		/**
+		 * Return point after movement in this direction
+		 * @param begin position to start movement from
+		 * @return adjacent position in this direction
+		 */
+		public Point moveFrom(Point begin) {
+			return new Point(begin.x + deltaX[this.ordinal()], begin.y + deltaY[this.ordinal()]);
 		}
 	}
 	
