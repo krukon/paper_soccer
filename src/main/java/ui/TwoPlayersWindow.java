@@ -36,8 +36,8 @@ public class TwoPlayersWindow extends BorderPane {
 	private Button startButton;
 	
 	public TwoPlayersWindow() {
-		playerOneName = new TextField();
-		playerTwoName = new TextField();
+		playerOneName = new TextField("Player 1");
+		playerTwoName = new TextField("Player 2");
 		boardWidth = new TextField("8");
 		boardHeight = new TextField("10");
 		
@@ -139,6 +139,26 @@ public class TwoPlayersWindow extends BorderPane {
 	private void addPlayersTextFields(GridPane grid) {
 		grid.add(playerOneName, 1, 0);
 		grid.add(playerTwoName, 1, 1);
+		playerOneName.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observableValue, String s, String newValue) {
+				if(newValue.matches("^(?=\\s*\\S).*$")){
+					startButton.setDisable(false);
+				} else {
+					startButton.setDisable(true);
+				}
+			}
+		});
+		playerTwoName.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observableValue, String s, String newValue) {
+				if(newValue.matches("^(?=\\s*\\S).*$")){
+					startButton.setDisable(false);
+				} else {
+					startButton.setDisable(true);
+				}
+			}
+		});
 	}
 	
 	/**
