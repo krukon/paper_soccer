@@ -1,6 +1,10 @@
 package ui;
 
+import bots.BotLoader;
+import bots.BotLoader.BotLoaderException;
+
 import helpers.Player;
+
 import controller.PaperSoccer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -14,10 +18,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -27,17 +27,19 @@ import javafx.scene.text.Text;
 import model.Board;
 
 public class SinglePlayerWindow extends BorderPane {
+	private String botLoadingError = "Could not load specified bot.";
 	private Text windowTitle = new Text("Enter your names \n and board size");
 	private Insets insets = new Insets(25, 25, 25, 25);
 	
 	private TextField playerOneName;
-	private TextField bot;
 	private TextField boardWidth;
 	private TextField boardHeight;
 	private Button startButton;
+	private ComboBox<String> comboBox;
+	private Label errorMessages;
+
 	public SinglePlayerWindow() {
 		playerOneName = new TextField();
-		bot = new TextField();
 		boardWidth = new TextField("8");
 		boardHeight = new TextField("10");
 		
@@ -79,7 +81,7 @@ public class SinglePlayerWindow extends BorderPane {
 					int height = Integer.parseInt(boardHeight.getCharacters().toString());
 					
 					System.out.println("Constructing board " + width + " x " + height);
-					startGame(playerOneName.getText(), bot.getText(), width, height);
+					startGame(playerOneName.getText(), comboBox.getValue(), width, height);
 				} catch (Exception e) {
 					System.out.println("Size is not an integer");
 				}
@@ -129,16 +131,13 @@ public class SinglePlayerWindow extends BorderPane {
 	 */
 	private void addPlayersLabels(GridPane grid) {
 		Label playerOne = new Label("Player one:");
-		Label bot = new Label("Bot:");
 		Label difficulty = new Label("Difficulty:");
 		
 		playerOne.setTextFill(Color.WHITE);
-		bot.setTextFill(Color.WHITE);
 		difficulty.setTextFill(Color.WHITE);
 		
 		grid.add(playerOne, 0, 0);
-		grid.add(bot, 0, 1);
-		grid.add(difficulty, 0, 2);
+		grid.add(difficulty, 0, 1);
 	}
 	
 	/**
@@ -147,23 +146,29 @@ public class SinglePlayerWindow extends BorderPane {
 	 */
 	private void addPlayersTextFields(GridPane grid) {
 		grid.add(playerOneName, 1, 0);
-		grid.add(bot, 1, 1);
 	}
+
 	/**
 	 * Adds menu to choose bot difficulty
 	 * @param grid grid to place drop-down menu
 	 */
 	private void addBotDifficultyMenu(GridPane grid) {
-		ObservableList<String> options = 
-			    FXCollections.observableArrayList(
-			        "Easy",
-			        "Medium",
-			        "Hard"
-			    );
-			final ComboBox comboBox = new ComboBox(options);
-			comboBox.setValue("Medium");
-			grid.add(comboBox, 1, 2);
+		ObservableList<String> options = FXCollections.observableArrayList(BotLoader.getBotsIds());
+		comboBox = new ComboBox<>(options);
+		comboBox.setValue(options.get(0));
+		comboBox.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				errorMessages.setText("");
+			}
+		});;
+		grid.add(comboBox, 1, 1);
+		errorMessages = new Label();
+		errorMessages.setTextFill(Color.RED);
+		grid.add(errorMessages, 0, 2, 2, 1);
 	}
+
 	/**
 	 * Adds board text fields and labels to grid.
 	 * @param grid grid to place text fields and labels
@@ -253,8 +258,13 @@ public class SinglePlayerWindow extends BorderPane {
 	private void startGame(final String playerOne, final String bot, final int width, final int height) {
 		GameWindow view = new GameWindow(playerOne);
 		final Player host = view;
-		// TODO Check if guest can equal to host. To be corrected:
-		final Player guest = host;
+		final Player guest;
+		try {
+			guest = BotLoader.loadBot(bot);
+		} catch (BotLoaderException e) {
+			errorMessages.setText(botLoadingError);
+			return;
+		}
 		PaperSoccer.getMainWindow().showTwoPlayersGameWindow(view);
 		new Thread(new Runnable() {
 
