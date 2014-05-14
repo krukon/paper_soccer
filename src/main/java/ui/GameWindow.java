@@ -8,6 +8,7 @@ import helpers.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+import controller.PaperSoccer;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -39,28 +40,34 @@ public class GameWindow extends BorderPane implements Player {
 	private double pixelHeight = 600;
 	private double gridSize;
     private Shape currentHighlightPoint = null;
-	private final double errorMargin = 0.1;
+	private final double errorMargin = 0.2;
 
 	// Player private fields:
 
 	private List<Move> moves;
-	private boolean gameOver;
-	private Point head;
-	private Point click;
+	protected boolean gameOver;
+	protected Point head;
+	protected Point click;
 	private String playerName;
-	private final Object syncMove = new Object();
+	protected final Object syncMove = new Object();
 	private int fieldWidth;
 	private int fieldHeight;
+	
+	private Color playerColor;
+	private Color opponentColor;
 
 	/**
 	 * Construct a view for the game
 	 * 
 	 * @param playerName the name of the player
 	 */
-	public GameWindow(String playerName) {
+	public GameWindow(String playerName, Color playerColor, Color opponentColor) {
+		this.playerName = playerName;
+		this.playerColor = playerColor;
+		this.opponentColor = opponentColor;
+		
 		root = new Group();
 		this.setCenter(root);
-		this.playerName = playerName;
 		root.addEventHandler(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
@@ -146,26 +153,12 @@ public class GameWindow extends BorderPane implements Player {
 	 */
 	@Override
 	public Move getNextMove() {
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run() {
-				// TODO Notify player about his move
-			}
-		});
 		try {
 			synchronized (syncMove) { syncMove.wait(); }
 			return new Move(head, click, this);
 		} catch (Exception e) {
 		} finally {
 			click = null;
-			Platform.runLater(new Runnable() {
-
-				@Override
-				public void run() {
-					// TODO Notify player about the end of his turn
-				}
-			});
 		}
 		return null;
 	}
@@ -298,9 +291,9 @@ public class GameWindow extends BorderPane implements Player {
 	 */
 	private void drawMove(Move move) {
 		if(move.player == this)	
-			drawLine(Color.BLUE, move.start, move.end);
+			drawLine(playerColor, move.start, move.end);
 		else
-			drawLine(Color.RED, move.start, move.end);
+			drawLine(opponentColor, move.start, move.end);
 	}
 
 	/**
