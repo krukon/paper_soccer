@@ -4,13 +4,20 @@ import helpers.Player;
 import controller.PaperSoccer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import controller.PaperSoccerController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -123,12 +130,15 @@ public class SinglePlayerWindow extends BorderPane {
 	private void addPlayersLabels(GridPane grid) {
 		Label playerOne = new Label("Player one:");
 		Label bot = new Label("Bot:");
+		Label difficulty = new Label("Difficulty:");
 		
 		playerOne.setTextFill(Color.WHITE);
 		bot.setTextFill(Color.WHITE);
+		difficulty.setTextFill(Color.WHITE);
 		
 		grid.add(playerOne, 0, 0);
 		grid.add(bot, 0, 1);
+		grid.add(difficulty, 0, 2);
 	}
 	
 	/**
@@ -139,7 +149,20 @@ public class SinglePlayerWindow extends BorderPane {
 		grid.add(playerOneName, 1, 0);
 		grid.add(bot, 1, 1);
 	}
-	
+	/**
+	 * Adds menu to choose bot difficulty
+	 * @param grid grid to place drop-down menu
+	 */
+	private void addBotDifficultyMenu(GridPane grid) {
+		ObservableList<String> options = 
+			    FXCollections.observableArrayList(
+			        "Easy",
+			        "Medium",
+			        "Hard"
+			    );
+			final ComboBox comboBox = new ComboBox(options);
+			grid.add(comboBox, 1, 2);
+	}
 	/**
 	 * Adds board text fields and labels to grid.
 	 * @param grid grid to place text fields and labels
@@ -210,6 +233,7 @@ public class SinglePlayerWindow extends BorderPane {
 		
 		addPlayersLabels(grid);
 		addPlayersTextFields(grid);
+		addBotDifficultyMenu(grid);
 		addBoardSize(grid);
 		
 		return grid;
