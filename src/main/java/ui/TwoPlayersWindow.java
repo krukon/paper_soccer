@@ -34,6 +34,7 @@ public class TwoPlayersWindow extends BorderPane {
 	private TextField boardWidth;
 	private TextField boardHeight;
 	private Button startButton;
+	
 	public TwoPlayersWindow() {
 		playerOneName = new TextField();
 		playerTwoName = new TextField();
@@ -70,7 +71,6 @@ public class TwoPlayersWindow extends BorderPane {
 		
 		startButton.setOnAction(new EventHandler<ActionEvent>() {
 			
-			//TODO Showing board and size validation
 			@Override
 			public void handle(ActionEvent event) {				
 				try {
@@ -233,11 +233,14 @@ public class TwoPlayersWindow extends BorderPane {
 	 * @author krukon
 	 */
 	private void startGame(final String playerOne, final String playerTwo, final int width, final int height) {
-		GameWindow view = new GameWindow(playerOne);
-		final Player host = view;
-		// TODO Check if guest can equal to host. To be corrected:
-		final Player guest = host;
-		PaperSoccer.getMainWindow().showTwoPlayersGameWindow(view);
+		final Player host = new TwoPlayersGameWindow(playerOne, Color.BLUE, Color.RED);
+		final Player guest = new TwoPlayersGameWindow(playerTwo, Color.RED, Color.BLUE);
+		
+		((TwoPlayersGameWindow)host).registerWindows((GameWindow)guest, (GameWindow)host);
+		((TwoPlayersGameWindow)guest).registerWindows((GameWindow)host, (GameWindow)guest);
+		
+		PaperSoccer.getMainWindow().showTwoPlayersGameWindow((GameWindow)guest, (GameWindow)host);
+
 		new Thread(new Runnable() {
 
 			@Override
