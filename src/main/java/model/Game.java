@@ -58,12 +58,21 @@ public class Game {
 			throw new IllegalMove();
 		if(!moveTo(move))
 			swapPlayers();
-		if(board.isGameOver()) {
-			loser = currentPlayer;
-			winner = loser == host ? guest : host;
-		}
+		if(board.isGameOver())
+			registerResults();
 	}
 	
+	private void registerResults() {
+		if(board.getCurrentY() == height + 1)
+			winner = host;
+		else if (board.getCurrentY() == -height - 1)
+			winner = guest;
+		else
+			winner = currentPlayer;
+		loser = winner == host ? guest : host;
+			
+	}
+
 	public GameResult getResult(Player player) {
 		/*
 		 * TODO if(!board.gameOver)
