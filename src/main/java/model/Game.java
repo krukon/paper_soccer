@@ -63,12 +63,14 @@ public class Game {
 	}
 	
 	private void registerResults() {
-		if(board.getCurrentY() == height + 1)
+		if(board.getCurrentY() == height / 2 + 1)
 			winner = host;
-		else if (board.getCurrentY() == -height - 1)
+		else if (board.getCurrentY() == -height / 2 - 1)
 			winner = guest;
-		else
+		else {
 			winner = currentPlayer;
+			System.out.println("Zostales zapedzony w kozi rog");
+		}
 		loser = winner == host ? guest : host;
 			
 	}

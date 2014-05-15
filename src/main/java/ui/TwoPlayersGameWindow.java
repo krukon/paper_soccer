@@ -23,9 +23,10 @@ public class TwoPlayersGameWindow extends GameWindow{
 	
 	private static AtomicBoolean resultDialogShown;
 
-	public TwoPlayersGameWindow(String playerName, Color playerColor, Color opponentColor) {
+	public TwoPlayersGameWindow(String playerName, Color playerColor, Color opponentColor, boolean isHost) {
 		super(playerName, playerColor, opponentColor);
 		resultDialogShown = new AtomicBoolean(false);
+		this.isHost = isHost;
 	}
 	
 	/**

@@ -56,6 +56,7 @@ public class GameWindow extends BorderPane implements Player {
 	
 	//Player protected fields:
 	
+	protected boolean isHost = true;
 	protected boolean gameOver;
 	protected PaperSoccerController controller;
 	protected Point head;
@@ -337,7 +338,20 @@ public class GameWindow extends BorderPane implements Player {
 		root.getChildren().removeAll();
 		root.getChildren().clear();
 		root.getChildren().add(canvas);
+		colorGoals();
 		drawBall();
+	}
+
+	private void colorGoals() {
+		int y = fieldHeight / 2;
+		Color upper = isHost ? opponentColor : playerColor,
+			lower = isHost ? playerColor : opponentColor;
+		drawLine(upper, -1, y, -1, y + 1);
+		drawLine(upper, -1, y + 1, 1, y + 1);
+		drawLine(upper, 1, y + 1, 1, y);
+		drawLine(lower, -1, -y, -1, -y - 1);
+		drawLine(lower, -1, -y - 1, 1, -y - 1);
+		drawLine(lower, 1, -y - 1, 1, -y);
 	}
 
 	/**

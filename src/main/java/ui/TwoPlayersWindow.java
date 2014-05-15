@@ -248,8 +248,8 @@ public class TwoPlayersWindow extends BorderPane {
 	 * @author krukon
 	 */
 	private void startGame(final String playerOne, final String playerTwo, final int width, final int height) {
-		final Player host = new TwoPlayersGameWindow(playerOne, Color.BLUE, Color.RED);
-		final Player guest = new TwoPlayersGameWindow(playerTwo, Color.RED, Color.BLUE);
+		final Player host = new TwoPlayersGameWindow(playerOne, Color.BLUE, Color.RED, true);
+		final Player guest = new TwoPlayersGameWindow(playerTwo, Color.RED, Color.BLUE, false);
 		
 		((TwoPlayersGameWindow)host).registerWindows((GameWindow)guest, (GameWindow)host);
 		((TwoPlayersGameWindow)guest).registerWindows((GameWindow)host, (GameWindow)guest);

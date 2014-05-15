@@ -5,7 +5,6 @@ import java.util.Random;
 import model.Board;
 import model.Board.Direction;
 import model.IllegalMove;
-
 import helpers.GameResult;
 import helpers.Move;
 import helpers.Player;
@@ -22,14 +21,9 @@ public class RandomBot implements Player {
 	public RandomBot() {
 		rg = new Random();
 	}
-	
-	private static void log(String m) {
-		System.out.println("BOT: " + m);
-	}
 
 	@Override
 	public void startNewGame(int width, int height) {
-		log("start");
 		board = new Board(width, height);
 		head = new Point(0, 0);
 	}
@@ -42,18 +36,18 @@ public class RandomBot implements Player {
 
 	@Override
 	public Move getNextMove() {
-		log("getNextMove");
 		Point target;
 		do {
 			target = randomDirection();
 		} while (!board.canMoveTo(target.x, target.y));
-		log("moving to: " + target.x + " " + target.y);
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) { }
 		return new Move(head, target, this);
 	}
 
 	@Override
 	public void registerMove(Move move) {
-		log("registerMove to: " + move.end.x + " " + move.end.y);
 		try {
 			if (!move.start.equals(head))
 				throw new IllegalMove();
