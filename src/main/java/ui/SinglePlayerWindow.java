@@ -2,9 +2,7 @@ package ui;
 
 import bots.BotLoader;
 import bots.BotLoader.BotLoaderException;
-
 import helpers.Player;
-
 import controller.PaperSoccer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -256,7 +254,7 @@ public class SinglePlayerWindow extends BorderPane {
 	 *
 	 */
 	private void startGame(final String playerOne, final String bot, final int width, final int height) {
-		GameWindow view = new GameWindow(playerOne);
+		GameWindow view = new GameWindow(playerOne, Color.BLUE, Color.RED);
 		final Player host = view;
 		final Player guest;
 		try {
@@ -265,14 +263,18 @@ public class SinglePlayerWindow extends BorderPane {
 			errorMessages.setText(botLoadingError);
 			return;
 		}
-		PaperSoccer.getMainWindow().showTwoPlayersGameWindow(view);
-		new Thread(new Runnable() {
+		PaperSoccer.getMainWindow().showSinglePlayerGameWindow(view);
+
+		Thread controllerThread = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				PaperSoccerController controller = new PaperSoccerController(host, guest, width, height);
+				((GameWindow) host).registerController(controller);
 				controller.runGame();
 			}
-		}).start();
+		});
+		controllerThread.setDaemon(true);
+		controllerThread.start();
 	}
 }
