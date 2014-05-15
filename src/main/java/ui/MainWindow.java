@@ -59,9 +59,16 @@ public class MainWindow extends Application {
 		mainView.getChildren().add(new TwoPlayersWindow());
 	}
 	
-	public void showTwoPlayersGameWindow(GameWindow gameWindow) {
+	public void showTwoPlayersGameWindow(GameWindow host, GameWindow guest) {
 		mainView.getChildren().clear();
-		mainView.getChildren().add(gameWindow);
+		mainView.getChildren().addAll(host, guest);
+	}
+	
+	public void changeTopGameWindow(GameWindow window) {
+		if (mainView.getChildren().get(1) != window) {
+			mainView.getChildren().remove(0);
+			mainView.getChildren().add(window);
+		}
 	}
 	
 	public void showSinglePlayerWindow() {

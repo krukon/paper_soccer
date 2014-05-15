@@ -34,9 +34,10 @@ public class TwoPlayersWindow extends BorderPane {
 	private TextField boardWidth;
 	private TextField boardHeight;
 	private Button startButton;
+	
 	public TwoPlayersWindow() {
-		playerOneName = new TextField();
-		playerTwoName = new TextField();
+		playerOneName = new TextField("Player 1");
+		playerTwoName = new TextField("Player 2");
 		boardWidth = new TextField("8");
 		boardHeight = new TextField("10");
 		
@@ -70,19 +71,13 @@ public class TwoPlayersWindow extends BorderPane {
 		
 		startButton.setOnAction(new EventHandler<ActionEvent>() {
 			
-			//TODO Showing board and size validation
 			@Override
 			public void handle(ActionEvent event) {				
-				try {
-					int width = Integer.parseInt(boardWidth.getCharacters().toString());
-					int height = Integer.parseInt(boardHeight.getCharacters().toString());
-					
-					System.out.println("Constructing board " + width + " x " + height);
-					startGame(playerOneName.getText(), playerTwoName.getText(), width, height);
-				} catch (Exception e) {
-					System.out.println("Size is not an integer");
-				}
-			
+				int width = Integer.parseInt(boardWidth.getCharacters().toString());
+				int height = Integer.parseInt(boardHeight.getCharacters().toString());
+				
+				System.out.println("Constructing board " + width + " x " + height);
+				startGame(playerOneName.getText(), playerTwoName.getText(), width, height);
 			}
 		});
 		
@@ -144,6 +139,26 @@ public class TwoPlayersWindow extends BorderPane {
 	private void addPlayersTextFields(GridPane grid) {
 		grid.add(playerOneName, 1, 0);
 		grid.add(playerTwoName, 1, 1);
+		playerOneName.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observableValue, String s, String newValue) {
+				if(newValue.matches("^(?=\\s*\\S).*$")){
+					startButton.setDisable(false);
+				} else {
+					startButton.setDisable(true);
+				}
+			}
+		});
+		playerTwoName.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observableValue, String s, String newValue) {
+				if(newValue.matches("^(?=\\s*\\S).*$")){
+					startButton.setDisable(false);
+				} else {
+					startButton.setDisable(true);
+				}
+			}
+		});
 	}
 	
 	/**
@@ -233,18 +248,27 @@ public class TwoPlayersWindow extends BorderPane {
 	 * @author krukon
 	 */
 	private void startGame(final String playerOne, final String playerTwo, final int width, final int height) {
-		GameWindow view = new GameWindow(playerOne);
-		final Player host = view;
-		// TODO Check if guest can equal to host. To be corrected:
-		final Player guest = host;
-		PaperSoccer.getMainWindow().showTwoPlayersGameWindow(view);
-		new Thread(new Runnable() {
+		final Player host = new TwoPlayersGameWindow(playerOne, Color.BLUE, Color.RED);
+		final Player guest = new TwoPlayersGameWindow(playerTwo, Color.RED, Color.BLUE);
+		
+		((TwoPlayersGameWindow)host).registerWindows((GameWindow)guest, (GameWindow)host);
+		((TwoPlayersGameWindow)guest).registerWindows((GameWindow)host, (GameWindow)guest);
+		
+		PaperSoccer.getMainWindow().showTwoPlayersGameWindow((GameWindow)guest, (GameWindow)host);
+
+		Thread controllerThread = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				PaperSoccerController controller = new PaperSoccerController(host, guest, width, height);
+				
+				((TwoPlayersGameWindow)host).registerController(controller);
+				((TwoPlayersGameWindow)guest).registerController(controller);
+				
 				controller.runGame();
 			}
-		}).start();
+		});
+		controllerThread.setDaemon(true);
+		controllerThread.start();
 	}
 }

@@ -8,18 +8,23 @@ import helpers.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+import controller.PaperSoccer;
+import controller.PaperSoccerController;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
@@ -39,28 +44,46 @@ public class GameWindow extends BorderPane implements Player {
 	private double pixelHeight = 600;
 	private double gridSize;
     private Shape currentHighlightPoint = null;
-	private final double errorMargin = 0.1;
+	private final double errorMargin = 0.2;
 
 	// Player private fields:
 
 	private List<Move> moves;
-	private boolean gameOver;
-	private Point head;
-	private Point click;
-	private String playerName;
-	private final Object syncMove = new Object();
 	private int fieldWidth;
-	private int fieldHeight;
+	private int fieldHeight;	
+	private Color playerColor;
+	private Color opponentColor;
+	
+	//Player protected fields:
+	
+	protected boolean gameOver;
+	protected PaperSoccerController controller;
+	protected Point head;
+	protected Point click;
+	protected String playerName;
+	protected final Object syncMove = new Object();
+	protected Label currentPlayer;
 
 	/**
 	 * Construct a view for the game
 	 * 
 	 * @param playerName the name of the player
 	 */
-	public GameWindow(String playerName) {
+	public GameWindow(String playerName, Color playerColor, Color opponentColor) {
+		if (playerName == null || playerName.length() == 0) playerName = "PLAYER";
+		
+		this.playerName = playerName;
+		this.playerColor = playerColor;
+		this.opponentColor = opponentColor;
+		
+		currentPlayer = new Label();
+		currentPlayer.setTextFill(playerColor);
+		currentPlayer.setFont(Font.font(30));
+		setAlignment(currentPlayer, Pos.CENTER);
+		setTop(currentPlayer);
+		
 		root = new Group();
 		this.setCenter(root);
-		this.playerName = playerName;
 		root.addEventHandler(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
@@ -132,7 +155,7 @@ public class GameWindow extends BorderPane implements Player {
 	
 			@Override
 			public void run() {
-				new GameResultDialog(result).show();
+				new GameResultDialog(result, controller).show();
 			}
 		});
 	}
@@ -146,26 +169,12 @@ public class GameWindow extends BorderPane implements Player {
 	 */
 	@Override
 	public Move getNextMove() {
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run() {
-				// TODO Notify player about his move
-			}
-		});
 		try {
 			synchronized (syncMove) { syncMove.wait(); }
 			return new Move(head, click, this);
 		} catch (Exception e) {
 		} finally {
 			click = null;
-			Platform.runLater(new Runnable() {
-
-				@Override
-				public void run() {
-					// TODO Notify player about the end of his turn
-				}
-			});
 		}
 		return null;
 	}
@@ -188,6 +197,14 @@ public class GameWindow extends BorderPane implements Player {
 				drawMove(move);
 			}
 		});
+	}
+	
+	/**
+	 * Registers controller with which player communicates.
+	 * @param controller the controller to register
+	 */
+	public void registerController(final PaperSoccerController controller) {
+		this.controller = controller;
 	}
 
 	/**
@@ -298,9 +315,9 @@ public class GameWindow extends BorderPane implements Player {
 	 */
 	private void drawMove(Move move) {
 		if(move.player == this)	
-			drawLine(Color.BLUE, move.start, move.end);
+			drawLine(playerColor, move.start, move.end);
 		else
-			drawLine(Color.RED, move.start, move.end);
+			drawLine(opponentColor, move.start, move.end);
 	}
 
 	/**

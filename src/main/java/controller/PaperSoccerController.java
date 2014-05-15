@@ -56,4 +56,11 @@ public class PaperSoccerController {
 		guest.finishGame(game.getResult(guest));
 		
 	}
+	
+	/**
+	 * Prepares game for next match.
+	 */
+	public void prepareRematch() {
+		game.prepareRematch();
+	}
 }

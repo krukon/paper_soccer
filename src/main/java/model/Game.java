@@ -71,6 +71,13 @@ public class Game {
 		 */
 		return new GameResult(winner, winner == player ? 1 : 0, winner != player ? 1 : 0);
 	}
+	
+	/**
+	 * Prepares new board for next match.
+	 */
+	public void prepareRematch() {
+		board = new Board(width, height);
+	}
 
 	/**
 	 * Function responsible to notify board about move
