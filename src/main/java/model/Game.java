@@ -72,7 +72,7 @@ public class Game {
 			System.out.println("Zostales zapedzony w kozi rog");
 		}
 		loser = winner == host ? guest : host;
-			
+		currentPlayer = loser;
 	}
 
 	public GameResult getResult(Player player) {
