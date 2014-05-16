@@ -81,4 +81,10 @@ public class MainWindow extends Application {
 		mainView.getChildren().add(host);
 	}
 	
+	public void showNetworkGameWindow() {
+		mainView.getChildren().clear();
+		mainView.getChildren().add(new NetworkGameWindow());
+	}
+
+	
 }
