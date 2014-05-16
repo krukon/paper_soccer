@@ -6,6 +6,8 @@ package ui;
  * @author jakub
  */
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import helpers.Player;
 import controller.PaperSoccer;
 import javafx.beans.value.ChangeListener;
@@ -34,6 +36,12 @@ public class TwoPlayersWindow extends BorderPane {
 	private TextField boardWidth;
 	private TextField boardHeight;
 	private Button startButton;
+	private final AtomicBoolean correctNameOne = new AtomicBoolean(true);
+	private final AtomicBoolean correctNameTwo = new AtomicBoolean(true);
+	private final Label correctWidth = new Label("");
+	private final Label correctHeight = new Label("");
+	
+
 	
 	public TwoPlayersWindow() {
 		playerOneName = new TextField("Player 1");
@@ -139,12 +147,17 @@ public class TwoPlayersWindow extends BorderPane {
 	private void addPlayersTextFields(GridPane grid) {
 		grid.add(playerOneName, 1, 0);
 		grid.add(playerTwoName, 1, 1);
+		
 		playerOneName.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observableValue, String s, String newValue) {
 				if(newValue.matches("^(?=\\s*\\S).*$")){
-					startButton.setDisable(false);
+					correctNameOne.set(true);
+					
+					if(correctNameTwo.get() && correctWidth.getText()=="" && correctHeight.getText()=="")
+						startButton.setDisable(false);
 				} else {
+					correctNameOne.set(false);
 					startButton.setDisable(true);
 				}
 			}
@@ -153,8 +166,12 @@ public class TwoPlayersWindow extends BorderPane {
 			@Override
 			public void changed(ObservableValue<? extends String> observableValue, String s, String newValue) {
 				if(newValue.matches("^(?=\\s*\\S).*$")){
-					startButton.setDisable(false);
+					correctNameTwo.set(true);
+					
+					if(correctNameOne.get() && correctWidth.getText()=="" && correctHeight.getText()=="")	
+						startButton.setDisable(false);
 				} else {
+					correctNameTwo.set(false);
 					startButton.setDisable(true);
 				}
 			}
@@ -168,8 +185,7 @@ public class TwoPlayersWindow extends BorderPane {
 	private void addBoardSize(GridPane grid) {
 		Label width = new Label("Width:");
 		Label height = new Label("Height");
-		final Label correctWidth = new Label("");
-		final Label correctHeight = new Label("");
+		
 		width.setTextFill(Color.WHITE);
 		height.setTextFill(Color.WHITE);
 		grid.add(width, 0, 5);
@@ -180,13 +196,14 @@ public class TwoPlayersWindow extends BorderPane {
 			@Override
 			public void changed(ObservableValue<? extends String> observableValue, String s, String newValue) {
 				try{
-					if(!newValue.isEmpty()){
-						correctWidth.setText("Incorrect value");
-						startButton.setDisable(true);
-					}
 					if(!newValue.isEmpty() && Board.isValidWidth(Integer.parseInt(newValue))){
 						correctWidth.setText("");
-						startButton.setDisable(false);
+						if(correctHeight.getText()=="" && correctNameOne.get() && correctNameTwo.get())
+							startButton.setDisable(false);
+					}
+					else{
+						correctWidth.setText("Incorrect value");
+						startButton.setDisable(true);
 					}
 				} catch (Exception e){
 					correctWidth.setText("Incorrect value");
@@ -198,13 +215,14 @@ public class TwoPlayersWindow extends BorderPane {
 			@Override
 			public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
 				try{
-					if(!newValue.isEmpty() && !Board.isValidHeight(Integer.parseInt(newValue))){
-						correctHeight.setText("Incorrect value");
-						startButton.setDisable(true);
-					}
 					if(!newValue.isEmpty() && Board.isValidHeight(Integer.parseInt(newValue))){
 						correctHeight.setText("");
-						startButton.setDisable(false);
+						if(correctWidth.getText()=="" && correctNameOne.get() && correctNameTwo.get())
+							startButton.setDisable(false);
+					}
+					else{
+						correctHeight.setText("Incorrect value");
+						startButton.setDisable(true);
 					}
 				} catch (Exception e){
 					correctHeight.setText("Incorrect value");
