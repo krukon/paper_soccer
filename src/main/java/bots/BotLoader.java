@@ -11,6 +11,11 @@ public class BotLoader {
 
 	public static class BotLoaderException extends Exception {
 		private static final long serialVersionUID = 4526796041843500347L;
+		public final String botName;
+		
+		public BotLoaderException(String botName) {
+			this.botName = botName;
+		}
 	}
 
 	private static Map<String, Class<? extends Player>> registeredBots = new TreeMap<>();
@@ -32,7 +37,7 @@ public class BotLoader {
 		try {
 			return botClass.newInstance();
 		} catch (Exception e) {
-			throw new BotLoaderException();
+			throw new BotLoaderException(id);
 		}
 	}
 

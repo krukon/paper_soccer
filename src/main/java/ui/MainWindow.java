@@ -81,4 +81,14 @@ public class MainWindow extends Application {
 		mainView.getChildren().add(host);
 	}
 	
+	public void showBotsTournametWindow() {
+		mainView.getChildren().clear();
+		mainView.getChildren().add(new BotsTournamentWindow());
+	}
+	
+	public void showBotsTournametGameWindow(GameWindow spectator) {
+		mainView.getChildren().clear();
+		mainView.getChildren().add(spectator);
+	}
+	
 }

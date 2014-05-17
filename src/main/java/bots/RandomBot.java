@@ -39,9 +39,9 @@ public class RandomBot implements Player {
 		Point target;
 		do {
 			target = randomDirection();
-		} while (!board.canMoveTo(target.x, target.y));
+		} while (isAcceptableMove(target));
 		try {
-			Thread.sleep(500);
+			Thread.sleep(100);
 		} catch (InterruptedException e) { }
 		return new Move(head, target, this);
 	}
@@ -66,6 +66,10 @@ public class RandomBot implements Player {
 	 */
 	private Point randomDirection() {
 		return Direction.values()[rg.nextInt(8)].moveFrom(head);
+	}
+	
+	private boolean isAcceptableMove(Point target) {
+		return !board.canMoveTo(target.x, target.y);
 	}
 
 }
