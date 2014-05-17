@@ -23,6 +23,7 @@ public class BotLoader {
 
 	static {
 		registerBot("Random bot", RandomBot.class);
+		registerBot("Easy Bot", EasyBot.class);
 	}
 
 	/**
