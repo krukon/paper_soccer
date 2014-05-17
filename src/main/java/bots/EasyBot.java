@@ -13,13 +13,15 @@ public class EasyBot implements Player {
 	
 	private Board board;
 	private Point head;
+	private boolean topGoal;
 
 	public EasyBot() {}
 
 	@Override
-	public void startNewGame(int width, int height) {
+	public void startNewGame(int width, int height, boolean topGoal) {
 		board = new Board(width, height);
 		head = new Point(0, 0);
+		this.topGoal = topGoal;
 	}
 
 	@Override
@@ -58,8 +60,12 @@ public class EasyBot implements Player {
 		return name;
 	}
 	
+	private int getMyGoalY() {
+		return (topGoal ? -1 : 1) * (board.getHeight() / 2 +1);
+	}
+
 	
 	private int getDistance(Point target) {
-		return (target.x)^2 + (target.y - board.getHeight()/2)^2;
+		return (target.x)^2 + (target.y - getMyGoalY())^2;
 	}
 }
