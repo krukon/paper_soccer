@@ -38,11 +38,9 @@ public class RandomBot implements Player {
 
 	@Override
 	public Move getNextMove() {
-		System.out.println("my goal: "+ getMyGoalY());
 		Point target;
 		do {
 			target = randomDirection();
-			System.out.println("target: "+ target.x + "," + target.y + " - " + isAcceptableMove(target));
 		} while (!isAcceptableMove(target));
 		try {
 			Thread.sleep(100);
@@ -79,7 +77,7 @@ public class RandomBot implements Player {
 	}
 	
 	private int getMyGoalY() {
-		return (topGoal ? -1 : 1) * (board.getHeight() / 2 +1);
+		return (topGoal ? 1 : -1) * (board.getHeight() / 2 +1);
 	}
 
 }
