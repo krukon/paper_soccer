@@ -69,6 +69,6 @@ public class EasyBot implements Player {
 	}
 	
 	private int getDistance(Point target) {
-		return (target.x)^2 + (target.y - getOpponentGoalY())^2;
+		return (target.x)*(target.x) + (target.y - getOpponentGoalY())*(target.y - getOpponentGoalY());
 	}
 }
