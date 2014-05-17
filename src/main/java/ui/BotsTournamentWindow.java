@@ -270,7 +270,7 @@ public class BotsTournamentWindow extends BorderPane {
 	private void startGame(final String botOneName, final String botTwoName, final int width, final int height) {
 		final GameWindow view = new GameWindow("", Color.BLUE, Color.RED);
 		try {
-			final Player host = BotLoader.loadBot(botTwoName);
+			final Player host = BotLoader.loadBot(botOneName);
 			final Player guest = BotLoader.loadBot(botTwoName);
 			
 			PaperSoccer.getMainWindow().showSinglePlayerGameWindow(view);
