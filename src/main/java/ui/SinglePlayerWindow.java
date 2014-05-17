@@ -1,5 +1,7 @@
 package ui;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import bots.BotLoader;
 import bots.BotLoader.BotLoaderException;
 import helpers.Player;
@@ -35,9 +37,13 @@ public class SinglePlayerWindow extends BorderPane {
 	private Button startButton;
 	private ComboBox<String> comboBox;
 	private Label errorMessages;
+	private final AtomicBoolean correctName = new AtomicBoolean(true);
+	private final Label correctWidth = new Label("");
+	private final Label correctHeight = new Label("");
+
 
 	public SinglePlayerWindow() {
-		playerOneName = new TextField();
+		playerOneName = new TextField("Player");
 		boardWidth = new TextField("8");
 		boardHeight = new TextField("10");
 		
@@ -144,6 +150,22 @@ public class SinglePlayerWindow extends BorderPane {
 	 */
 	private void addPlayersTextFields(GridPane grid) {
 		grid.add(playerOneName, 1, 0);
+		
+		playerOneName.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observableValue, String s, String newValue) {
+				if(newValue.matches("^(?=\\s*\\S).*$")){
+					correctName.set(true);
+					
+					if(correctWidth.getText()=="" && correctHeight.getText()=="")
+						startButton.setDisable(false);
+				} else {
+					correctName.set(false);
+					startButton.setDisable(true);
+				}
+			}
+		});
+
 	}
 
 	/**
@@ -174,8 +196,6 @@ public class SinglePlayerWindow extends BorderPane {
 	private void addBoardSize(GridPane grid) {
 		Label width = new Label("Width:");
 		Label height = new Label("Height");
-		final Label correctWidth = new Label("");
-		final Label correctHeight = new Label("");
 		width.setTextFill(Color.WHITE);
 		height.setTextFill(Color.WHITE);
 		grid.add(width, 0, 5);
@@ -186,13 +206,15 @@ public class SinglePlayerWindow extends BorderPane {
 			@Override
 			public void changed(ObservableValue<? extends String> observableValue, String s, String newValue) {
 				try{
-					if(!newValue.isEmpty()){
-						correctWidth.setText("Incorrect value");
-						startButton.setDisable(true);
-					}
 					if(!newValue.isEmpty() && Board.isValidWidth(Integer.parseInt(newValue))){
 						correctWidth.setText("");
-						startButton.setDisable(false);
+
+						if(correctName.get() && correctHeight.getText()=="")
+							startButton.setDisable(false);
+					}
+					else{
+						correctWidth.setText("Incorrect value");
+						startButton.setDisable(true);
 					}
 				} catch (Exception e){
 					correctWidth.setText("Incorrect value");
@@ -204,13 +226,15 @@ public class SinglePlayerWindow extends BorderPane {
 			@Override
 			public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
 				try{
-					if(!newValue.isEmpty() && !Board.isValidHeight(Integer.parseInt(newValue))){
-						correctHeight.setText("Incorrect value");
-						startButton.setDisable(true);
-					}
 					if(!newValue.isEmpty() && Board.isValidHeight(Integer.parseInt(newValue))){
 						correctHeight.setText("");
-						startButton.setDisable(false);
+						
+						if(correctName.get() && correctWidth.getText()=="")
+							startButton.setDisable(false);
+					}
+					else{
+						correctHeight.setText("Incorrect value");
+						startButton.setDisable(true);
 					}
 				} catch (Exception e){
 					correctHeight.setText("Incorrect value");
