@@ -17,15 +17,17 @@ public class RandomBot implements Player {
 	private Board board;
 	private Point head;
 	private Random rg;
+	private boolean topGoal;
 
 	public RandomBot() {
 		rg = new Random();
 	}
 
 	@Override
-	public void startNewGame(int width, int height) {
+	public void startNewGame(int width, int height, boolean topGoal) {
 		board = new Board(width, height);
 		head = new Point(0, 0);
+		this.topGoal = topGoal;
 	}
 
 	@Override
@@ -36,10 +38,12 @@ public class RandomBot implements Player {
 
 	@Override
 	public Move getNextMove() {
+		System.out.println("my goal: "+ getMyGoalY());
 		Point target;
 		do {
 			target = randomDirection();
-		} while (isAcceptableMove(target));
+			System.out.println("target: "+ target.x + "," + target.y + " - " + isAcceptableMove(target));
+		} while (!isAcceptableMove(target));
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) { }
@@ -69,7 +73,13 @@ public class RandomBot implements Player {
 	}
 	
 	private boolean isAcceptableMove(Point target) {
-		return !board.canMoveTo(target.x, target.y);
+		if (target.y == getMyGoalY())
+			return false;
+		return board.canMoveTo(target.x, target.y);
+	}
+	
+	private int getMyGoalY() {
+		return (topGoal ? -1 : 1) * (board.getHeight() / 2 +1);
 	}
 
 }
