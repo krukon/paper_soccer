@@ -36,7 +36,7 @@ public class EasyBot implements Player {
 		Point head = new Point(board.getCurrentX(), board.getCurrentY());
 		for(int i = 0; i < 8; i++) {
 			tmp = Board.Direction.values()[i].moveFrom(head);
-			if(board.canMoveTo(tmp.x, tmp.y) && (bestMove == null  ||  (getDistance(tmp) > getDistance(bestMove))))
+			if(board.canMoveTo(tmp.x, tmp.y) && (bestMove == null  ||  (getDistance(tmp) < getDistance(bestMove))))
 				bestMove = tmp;
 		}
 		try {
@@ -63,9 +63,12 @@ public class EasyBot implements Player {
 	private int getMyGoalY() {
 		return (topGoal ? 1 : -1) * (board.getHeight() / 2 +1);
 	}
-
+	
+	private int getOpponentGoalY() {
+		return -getMyGoalY();
+	}
 	
 	private int getDistance(Point target) {
-		return (target.x)^2 + (target.y - getMyGoalY())^2;
+		return (target.x)^2 + (target.y - getOpponentGoalY())^2;
 	}
 }
