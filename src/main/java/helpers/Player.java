@@ -13,8 +13,9 @@ public interface Player {
 	 * Starts new game on the field with given width and height.
 	 * @param width width of the field
 	 * @param height height of the field
+	 * @param topGoal true if player's goal is the top one
 	 */
-	void startNewGame(int width, int height);
+	void startNewGame(int width, int height, boolean topGoal);
 	
 	/**
 	 * Notifies player about game result.

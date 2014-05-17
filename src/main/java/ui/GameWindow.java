@@ -129,7 +129,7 @@ public class GameWindow extends BorderPane implements Player {
 	 * @author krukon
 	 */
 	@Override
-	public void startNewGame(int width, int height) {
+	public void startNewGame(int width, int height, boolean topGoal) {
 		gameOver = false;
 		moves = new ArrayList<>();
 		head = new Point(0, 0);
