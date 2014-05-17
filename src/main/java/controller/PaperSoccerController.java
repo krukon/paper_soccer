@@ -46,8 +46,8 @@ public class PaperSoccerController {
 	 * Function responsible for running a single game
 	 */
 	public void runGame() {
-		host.startNewGame(width, height, true);
-		guest.startNewGame(width, height, false);
+		host.startNewGame(width, height, false);
+		guest.startNewGame(width, height, true);
 		notifyStartGame(width, height);
 		while(!game.isGameOver()) {
 			currentPlayer = game.getCurrentPlayer();
