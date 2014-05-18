@@ -46,8 +46,8 @@ public class TwoPlayersWindow extends BorderPane {
 	public TwoPlayersWindow() {
 		playerOneName = new TextField("Player 1");
 		playerTwoName = new TextField("Player 2");
-		boardWidth = new TextField("8");
-		boardHeight = new TextField("10");
+		boardWidth = new TextField("4");
+		boardHeight = new TextField("4");
 		
 		windowTitle.setFill(Color.WHITE);
 		
@@ -119,6 +119,7 @@ public class TwoPlayersWindow extends BorderPane {
 	 */
 	private HBox addStartBackButton() {
 		HBox buttonBox = new HBox();
+		buttonBox.setSpacing(10);
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.getChildren().addAll(getStartButton(), getBackButton());
 		

@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 
 public class MainWindow extends Application {
 	private final int prefWidth = 400;
-	private final int prefHeight = 550;
+	private final int prefHeight = 600;
 	
 	private Group mainView;
 	
