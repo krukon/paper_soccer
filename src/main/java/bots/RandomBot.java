@@ -77,7 +77,7 @@ public class RandomBot implements Player {
 	}
 	
 	private int getMyGoalY() {
-		return (topGoal ? 1 : -1) * (board.getHeight() / 2 +1);
+		return (topGoal ? 1 : -1) * (board.getHeight() / 2 + 1);
 	}
 
 }
