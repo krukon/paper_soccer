@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -125,6 +126,8 @@ public class NetworkGuestPlayer implements Player {
 		message.put("type", "register_move");
 		message.put("data", jMove);
 		
+		System.out.println(message);
+		
 		out.println(message);
 	}
 
@@ -137,11 +140,18 @@ public class NetworkGuestPlayer implements Player {
 	}
 	
 	@Deprecated
-	public static void main(String[] args) {
-		NetworkGuestPlayer p = new NetworkGuestPlayer("x", null);
+	private void createGame() throws IOException {
+		out.println("{\"type\":\"create_game\",\"data\":{\"host_name\":\"Kuba\",\"width\":8,\"height\":10}}");
+		System.out.println(in.readLine());
+		out.println("{\"type\":\"chat\",\"data\":{\"id\":0,\"message\":\"Wiadomosc od Kuby\",\"username\":\"Kuba\"}}");
+		System.out.println(in.readLine());
+	}
+	
+	@Deprecated
+	public static void main(String[] args) throws UnknownHostException, IOException {
+		NetworkGuestPlayer p = new NetworkGuestPlayer("x", new Socket("77.253.12.69", 1444));
 		Move m = new Move(new Point(1, 2), new Point(3, 4), p);
-		p.registerMove(m);
-		p.registerMove(p.getNextMove());
+		p.createGame();
 	}
 
 }
