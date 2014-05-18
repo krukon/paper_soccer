@@ -46,8 +46,8 @@ public class TwoPlayersWindow extends BorderPane {
 	public TwoPlayersWindow() {
 		playerOneName = new TextField("Player 1");
 		playerTwoName = new TextField("Player 2");
-		boardWidth = new TextField("4");
-		boardHeight = new TextField("4");
+		boardWidth = new TextField("8");
+		boardHeight = new TextField("10");
 		
 		windowTitle.setFill(Color.WHITE);
 		
