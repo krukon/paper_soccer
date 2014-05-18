@@ -42,12 +42,13 @@ public class BotBoard extends Board {
 			resetConnection(newHead.x, newHead.y, dir.opposite());
 			headX = newHead.x;
 			headY = newHead.y;
+			gameOver = false;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new IllegalMove();
 		}
 	}
-
+	
 	/**
 	 * Unmark a connection from point (x, y)
 	 * 

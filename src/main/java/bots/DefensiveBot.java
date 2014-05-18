@@ -3,9 +3,9 @@ package bots;
 import java.util.Stack;
 import java.util.concurrent.Callable;
 
-import model.BotBoard;
 import model.Board.Direction;
 import model.IllegalMove;
+
 import helpers.Point;
 
 public final class DefensiveBot extends StrategyBot {
@@ -13,6 +13,7 @@ public final class DefensiveBot extends StrategyBot {
 
 	private Stack<Point> currentMoves = new Stack<>();
 	private Stack<Point> bestMoves = new Stack<>();
+	private boolean isWinningMove;
 	
 	@Override
 	public String getName() {
@@ -21,15 +22,7 @@ public final class DefensiveBot extends StrategyBot {
 
 	public DefensiveBot() {
 		super();
-		addStrategy(1, new Callable<Void>() {
-
-			@Override
-			public Void call() throws Exception {
-				computeDefensiveStrategy();
-				return null;
-			}
-		});
-		addStrategy(0.00, new Callable<Void>() {
+		addStrategy(0.75, new Callable<Void>() {
 
 			@Override
 			public Void call() throws Exception {
@@ -37,7 +30,7 @@ public final class DefensiveBot extends StrategyBot {
 				return null;
 			}
 		});
-		addStrategy(0.00, new Callable<Void>() {
+		addStrategy(0.20, new Callable<Void>() {
 			
 			@Override
 			public Void call() throws Exception {
@@ -45,55 +38,84 @@ public final class DefensiveBot extends StrategyBot {
 				return null;
 			}
 		});
+		addStrategy(0.05, new Callable<Void>() {
+
+			@Override
+			public Void call() throws Exception {
+				computeDefensiveStrategy();
+				return null;
+			}
+		});
 	}
 	
 	private void computeDefensiveStrategy() {
-		System.out.println("entered");
+		//System.out.println("Defensive");
 		currentMoves.clear();
 		bestMoves.clear();
 		currentMoves.push(board.getCurrent());
+		isWinningMove = false;
 		backTrackDefensive();
-		System.out.println("ended");
+		//if (isWinningMove)
+		//	System.out.println("Winning (" + bestMoves.size() + ") :" + bestMoves);
 		for(int i = 0; i < bestMoves.size(); i++)
 			nextMoves.add(bestMoves.get(i));
 	}
 	
 	private void backTrackDefensive() {
-		//System.out.println("btD" + currentMoves.lastElement().x + ", " + currentMoves.lastElement().y);
-		if(board.availableMovesCount(currentMoves.get(currentMoves.size() - 1)) == 0) {
-			if((currentMoves.size() > bestMoves.size()) && (bestMoves.size() == 0 || isAcceptableMove(currentMoves.get(currentMoves.size() - 1)))) {
-				bestMoves.clear();
-				copyStacks();
-			}
-		} else {
-			for(Direction dir : Direction.values()) {
-				Point target = dir.moveFrom(currentMoves.get(currentMoves.size() - 1));
-				if(board.canMoveTo(target.x, target.y)) {
-					try {
-						board.moveTo(target.x, target.y);
-					} catch (IllegalMove e) {}
+		Point current = board.getCurrent();
+		for(Direction dir : Direction.permuteValues()) {
+			Point target = dir.moveFrom(current);
+			if(board.canMoveTo(target.x, target.y) && isAcceptableMove(target)) {
+				try {
+					boolean bounce = board.moveTo(target.x, target.y);
 					currentMoves.push(target);
-					backTrackDefensive();
+					if (bounce)
+						backTrackDefensive();
+					else
+						copyStacksDefensive();
 					try {
 						board.moveBack();
 					} catch (IllegalMove e) {}
-				}
+					currentMoves.pop();
+				} catch (IllegalMove e) { System.err.println("Moving to gone wrong!" + e.getMessage());  }
 			}
 		}
-		
-		currentMoves.pop();
 	}
 	
-	private void copyStacks() {
-		for(int i = currentMoves.size() - 1; i >= 0; i--)
-			bestMoves.push(currentMoves.get(i));
+	private void copyStacksDefensive() {
+		if (isWinningMove)
+			return;
+		if(currentMoves.size() > bestMoves.size() || (currentMoves.size() == bestMoves.size() && rg.nextDouble() < 0.3)) {
+			bestMoves.clear();
+			for(int i = 1; i < currentMoves.size(); i++)
+				bestMoves.push(currentMoves.get(i));
+		}
+		if (currentMoves.lastElement().y == getOpponentGoalY())
+			isWinningMove = true;
+	}
+	
+	private void copyStacksOffensive() {
+		if (isWinningMove)
+			return;
+		int d1 = getDistance(currentMoves.lastElement()), d2;
+		if(bestMoves.size() == 0 || d1 < (d2 = getDistance(bestMoves.lastElement())) || (d1 == d2 && rg.nextDouble() < 0.3)) {
+			bestMoves.clear();
+			for(int i = 1; i < currentMoves.size(); i++)
+				bestMoves.push(currentMoves.get(i));
+		}
+		if (currentMoves.lastElement().y == getOpponentGoalY())
+			isWinningMove = true;
 	}
 	
 	private void computeOffensiveStrategy() {
+		//System.out.println("Offensive");
 		currentMoves.clear();
 		bestMoves.clear();
 		currentMoves.push(board.getCurrent());
+		isWinningMove = false;
 		backTrackOffensive();
+		//if (isWinningMove)
+		//	System.out.println("Winning (" + bestMoves.size() + ") :" + bestMoves);
 		for(int i = 0; i < bestMoves.size(); i++)
 			nextMoves.add(bestMoves.get(i));
 	}
@@ -102,48 +124,43 @@ public final class DefensiveBot extends StrategyBot {
 		return (target.x)*(target.x) + (target.y - getOpponentGoalY())*(target.y - getOpponentGoalY());
 	}
 
-
 	private void backTrackOffensive() {
-		if(board.availableMovesCount(currentMoves.get(currentMoves.size() - 1)) == 0) {
-			Point best = bestMoves.get(bestMoves.size() - 1);
-			Point curr = currentMoves.get(currentMoves.size() - 1);
-			if((getDistance(curr) < getDistance(best)) && (bestMoves.size() == 0 || isAcceptableMove(currentMoves.get(currentMoves.size() - 1)))) {
-				bestMoves.clear();
-				copyStacks();
-			}
-		} else {
-			for(Direction dir : Direction.values()) {
-				Point target = dir.moveFrom(currentMoves.get(currentMoves.size() - 1));
-				if(board.canMoveTo(target.x, target.y)) {
-					try {
-						board.moveTo(target.x, target.y);
-					} catch (IllegalMove e) {}
+		Point current = board.getCurrent();
+		for(Direction dir : Direction.permuteValues()) {
+			Point target = dir.moveFrom(current);
+			if(board.canMoveTo(target.x, target.y) && isAcceptableMove(target)) {
+				try {
+					boolean bounce = board.moveTo(target.x, target.y);
 					currentMoves.push(target);
-					backTrackOffensive();
+					if (bounce)
+						backTrackOffensive();
+					else
+						copyStacksOffensive();
 					try {
 						board.moveBack();
 					} catch (IllegalMove e) {}
-				}
+					currentMoves.pop();
+				} catch (IllegalMove e) { System.err.println("Moving to gone wrong!" + e.getMessage());  }
 			}
 		}
-		currentMoves.pop();
 	}
 	
 	
 	private boolean isAcceptableMove(Point target) {
 		boolean canMove = board.canMoveTo(target.x, target.y),
 				ownGoal = target.y == getMyGoalY(),
-				isLocking = board.availableMovesCount(board.getCurrent()) == 1 ? false : board.isLockingMove(board.getCurrent(), target);
+				isLocking = board.isLockingMove(board.getCurrent(), target);
 		if (!canMove || ownGoal || isLocking)
 			return false;
 		return true;
 	}
 	
 	private void computeRandomStrategy() {
+		//System.out.println("Random");
 		Point target;
 		do {
 			target = Direction.values()[rg.nextInt(8)].moveFrom(board.getCurrent());
-		} while (!isAcceptableMove(target));
+		} while (!isAcceptableMove(target) && board.availableMovesCount(board.getCurrent()) > 1);
 		nextMoves.add(target);
 	}
 }
