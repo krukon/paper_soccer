@@ -1,5 +1,7 @@
 package bots;
 
+import java.util.Random;
+
 import helpers.GameResult;
 import helpers.Move;
 import helpers.Player;
@@ -14,6 +16,7 @@ public class EasyBot implements Player {
 	private Board board;
 	private Point head;
 	private boolean topGoal;
+	private Random rg;
 
 	public EasyBot() {}
 
@@ -22,6 +25,7 @@ public class EasyBot implements Player {
 		board = new Board(width, height);
 		head = new Point(0, 0);
 		this.topGoal = topGoal;
+		rg = new Random();
 	}
 
 	@Override
@@ -36,7 +40,8 @@ public class EasyBot implements Player {
 		Point head = new Point(board.getCurrentX(), board.getCurrentY());
 		for(int i = 0; i < 8; i++) {
 			tmp = Board.Direction.values()[i].moveFrom(head);
-			if(board.canMoveTo(tmp.x, tmp.y) && (bestMove == null  ||  (getDistance(tmp) < getDistance(bestMove))))
+			int d1, d2;
+			if(board.canMoveTo(tmp.x, tmp.y) && (bestMove == null  ||  (d1 = getDistance(tmp)) < (d2 = getDistance(bestMove)) || (d1 == d2 && rg.nextBoolean())))
 				bestMove = tmp;
 		}
 		try {
