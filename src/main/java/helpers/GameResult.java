@@ -39,4 +39,8 @@ public class GameResult {
 		return opponentResult;
 	}
 
+	@Override
+	public String toString() {
+		return myResult + " : " + opponentResult;
+	}
 }

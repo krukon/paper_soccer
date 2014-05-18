@@ -53,8 +53,7 @@ public class PaperSoccerController {
 			}
 		}
 		host.finishGame(game.getResult(host));
-		guest.finishGame(game.getResult(guest));
-		
+		guest.finishGame(game.getResult(guest));		
 	}
 	
 	/**
