@@ -1,5 +1,9 @@
 package model;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import helpers.Point;
 
 /**
@@ -34,6 +38,12 @@ public class Board {
 				if (x2 - x1 == deltaX[i] && y2 - y1 == deltaY[i])
 					return Direction.values()[i];
 			return null;
+		}
+		
+		public static Direction[] permuteValues() {
+			List<Direction> values = Arrays.asList(Direction.values());
+			Collections.shuffle(values);
+			return (Direction[]) values.toArray();
 		}
 
 		/**

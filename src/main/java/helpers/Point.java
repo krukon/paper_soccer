@@ -23,4 +23,9 @@ public class Point {
 		Point o = (Point) obj;
 		return x == o.x && y == o.y;
 	}
+	
+	@Override
+	public String toString() {
+		return "(" + x + ", " + y + ")";
+	}
 }

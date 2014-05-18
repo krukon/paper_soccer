@@ -5,12 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
-import java.util.Stack;
 import java.util.concurrent.Callable;
 
 import model.BotBoard;
 import model.IllegalMove;
-import model.Board.Direction;
 import helpers.GameResult;
 import helpers.Move;
 import helpers.Player;
@@ -51,7 +49,7 @@ public abstract class StrategyBot implements Player {
 			if (after - before < 100)
 				Thread.sleep(100 - after + before);
 		} catch (InterruptedException e) {}
-		System.out.println("moving to: " + nextMoves.poll().x + nextMoves.poll().y);
+		System.out.println("moving to: " + nextMoves.peek());
 		return new Move(board.getCurrent(), nextMoves.poll(), this);
 	}
 
