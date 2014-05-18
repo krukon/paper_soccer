@@ -8,14 +8,14 @@ controller = (function GameController() {
 
     var games, gameIds, gameId, createGame, listActiveGames, joinGame,
         registerMove, getNextMove, startGame, finishGame, closeGame, notify,
-        isHost, isGuest, removePlayer, requestNextMove, sendChatMessage;
+        isHost, isGuest, removeClient, requestNextMove, sendChatMessage, printAll;
 
     games = {}
     gameIds = []
     gameId = 0
 
     createGame = function(host, hostName, width, height) {
-        var game = {
+        var response, game = {
             'id': gameId,
             'host': host,
             'guest': undefined,
@@ -28,8 +28,21 @@ controller = (function GameController() {
             'host_name': hostName,
             'guest_name': undefined
         };
+
+        response = {
+            'type': 'create_game',
+            'data': {
+                'id': gameId
+            }
+        }
+
         gameIds.push(gameId);
-        games[gameId++] = game;
+        games[gameId] = game;
+        gameId++
+
+        try {
+            game['host'].write(JSON.stringify(response) + "\n")
+        } catch (e) {}
     }
 
     joinGame = function(id, guest, guestName) {
@@ -50,15 +63,21 @@ controller = (function GameController() {
             'data': null
         }
 
-        game['host'].end(response)
+        try {
+            game['host'].write(JSON.stringify(response) + "\n")
+        } catch (e) {}
     }
 
     notify = function(id, response) {
         var game, i;
         game = games[id];
-        game['guest'].end(response);
+        try {
+            game['guest'].write(JSON.stringify(response) + "\n")
+        } catch (e) {}
         for (i = 0; i < game['spectators'].length; i++)
-            game['spectators'][i].end(response);
+            try {
+                game['spectators'][i].write(JSON.stringify(response) + "\n")
+            } catch (e) {}
     }
 
     listActiveGames = function() {
@@ -98,7 +117,9 @@ controller = (function GameController() {
             'type': 'get_next_move',
             'data': move
         };
-        games[id]['host'].end(response)
+        try {
+            games[id]['host'].write(JSON.stringify(response) + "\n")
+        } catch (e) {}
     }
 
     requestNextMove = function(id) {
@@ -106,7 +127,9 @@ controller = (function GameController() {
             'type': 'request_next_move',
             'data': null
         };
-        games[id]['guest'].end(response)
+        try {
+            games[id]['guest'].write(JSON.stringify(response) + "\n")
+        } catch (e) {}
     }
 
     startGame = function(id) {
@@ -143,15 +166,17 @@ controller = (function GameController() {
     closeGame = function(id) {
         var response = {
             'type': 'close_game',
-            'data': null
+            'data': {
+                'id': id
+            }
         };
 
-        games[id]['host'].end(response)
+        try {
+            games[id]['host'].write(JSON.stringify(response) + "\n")
+        } catch (e) {}
         notify(id, response)
 
-        gameIds = gameIds.filter(function(e) {
-            return e != id
-        })
+        gameIds = gameIds.filter(function(e) { return e != id })
         delete games[id]
     }
 
@@ -163,19 +188,21 @@ controller = (function GameController() {
         return games[id]['guest'] == sock
     }
 
-    removePlayer = function(sock) {
-        var game, i;
+    removeClient = function(sock) {
+        var game, i, id;
 
-        for (game in games) {
-            if (game['host'] == sock || game['guest'] == sock)
-                closeGame(game['id'])
-            i = game['spectators'].indexOf(sock);
-            if (i != -1) {
-                game['spectators'] = game['spectators'].filter(function(e, k) {
-                    return k != i;
-                })
-            }
-        }
+        for (id in games)
+            try {
+                game = games[id]
+                if (game['host'] == sock || game['guest'] == sock)
+                    closeGame(game['id'])
+                i = game['spectators'].indexOf(sock);
+                if (i != -1) {
+                    game['spectators'] = game['spectators'].filter(function(e, k) {
+                        return k != i;
+                    })
+                }
+            } catch (e) {}
     }
 
     sendChatMessage = function(id, data) {
@@ -185,8 +212,20 @@ controller = (function GameController() {
             'type': 'chat',
             'data': data
         }
-        game['host'].end(response)
+        try {
+            game['host'].write(JSON.stringify(response) + "\n")
+        } catch (e) {}
         notify(id, response)
+    }
+
+    printAll = function() {
+        var game;
+        console.log("GAME: " + gameId);
+        console.log("GAME[0]: " + games[0]);
+        for (id in games) {
+            game = games[id]
+            console.log(" " + game['id']);
+        }
     }
 
     return {
@@ -201,8 +240,9 @@ controller = (function GameController() {
         'closeGame': closeGame,
         'isHost': isHost,
         'isGuest': isGuest,
-        'removePlayer': removePlayer,
-        'sendChatMessage': sendChatMessage
+        'removeClient': removeClient,
+        'sendChatMessage': sendChatMessage,
+        'printAll': printAll
     };
 })();
 
@@ -252,17 +292,21 @@ net.createServer(function(sock) {
                         controller.closeGame(data['id'])
                     break;
                 case 'chat':
-                    controller.sendChatMessage(data['id'], data['message'])
+                    controller.sendChatMessage(data['id'], data)
                     break;
             }
         } catch (e) {
-            console.log("Incorrect request: " + data)
+            console.log("Incorrect request: " + e + " message=" + JSON.stringify(message))
         }
     });
 
     sock.on('close', function(data) {
         console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
-        controller.removePlayer(sock)
+        try {
+            controller.removeClient(sock)
+        } catch (e) {
+            console.log("Error closing game: " + e + " data=" + data)
+        }
     });
 
 }).listen(PORT);
