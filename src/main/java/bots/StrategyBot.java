@@ -1,7 +1,9 @@
 package bots;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Stack;
 import java.util.concurrent.Callable;
@@ -9,7 +11,6 @@ import java.util.concurrent.Callable;
 import model.BotBoard;
 import model.IllegalMove;
 import model.Board.Direction;
-
 import helpers.GameResult;
 import helpers.Move;
 import helpers.Player;
@@ -23,7 +24,7 @@ public abstract class StrategyBot implements Player {
 	protected int height;
 	protected boolean topGoal;
 	protected Random rg = new Random();
-	protected Stack<Point> nextMoves = new Stack<>();
+	protected Queue<Point> nextMoves = new LinkedList<>();
 	protected BotBoard board;
 
 	@Override
@@ -42,14 +43,16 @@ public abstract class StrategyBot implements Player {
 	public final Move getNextMove() {
 		long before, after;
 		before = System.currentTimeMillis();
-		while (nextMoves.empty())
+		while (nextMoves.isEmpty()) {
 			chooseStrategy();
+		}
 		after = System.currentTimeMillis();
 		try {
 			if (after - before < 100)
 				Thread.sleep(100 - after + before);
 		} catch (InterruptedException e) {}
-		return new Move(board.getCurrent(), nextMoves.pop(), this);
+		System.out.println("moving to: " + nextMoves.poll().x + nextMoves.poll().y);
+		return new Move(board.getCurrent(), nextMoves.poll(), this);
 	}
 
 	@Override
@@ -80,6 +83,7 @@ public abstract class StrategyBot implements Player {
 			if (p < (sum += strategyProbabilities.get(i)))
 				try {
 					strategies.get(i).call();
+					return;
 				} catch (Exception e) {}
 		}
 	}
