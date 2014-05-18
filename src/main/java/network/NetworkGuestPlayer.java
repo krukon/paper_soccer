@@ -6,7 +6,11 @@ package network;
  * @author jakub
  */
 
-import javax.management.RuntimeErrorException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -18,10 +22,21 @@ import helpers.Point;
 
 public class NetworkGuestPlayer implements Player {
 	private String playerName;
+	private Socket socket;
+	private PrintWriter out;
+	private BufferedReader in;
 	
-	public NetworkGuestPlayer(String playerName) {
+	
+	public NetworkGuestPlayer(String playerName, Socket socket) {
 		this.playerName = playerName;
-		
+		this.socket = socket;
+		try {
+			out = new PrintWriter(this.socket.getOutputStream(), true);
+			in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -35,6 +50,8 @@ public class NetworkGuestPlayer implements Player {
 		JSONObject message = new JSONObject();
 		message.put("type", "start_new_game");
 		message.put("data", null);		
+		
+		out.println(message);
 	}
 
 	/**
@@ -46,7 +63,9 @@ public class NetworkGuestPlayer implements Player {
 	public void finishGame(GameResult result) {
 		JSONObject message = new JSONObject();
 		message.put("type", "finish_game");
-		message.put("type", null);
+		message.put("data", null);
+		
+		out.println(message);
 	}
 
 	/**
@@ -54,10 +73,22 @@ public class NetworkGuestPlayer implements Player {
 	 *  @return decoded move
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public Move getNextMove() {
-		String move = "{\"type\":\"get_next_move\",\"data\":{\"start\":{\"x\":11,\"y\":22},\"end\":{\"x\":33,\"y\":44}}}";
+		JSONObject request = new JSONObject();
+		request.put("type", "request_next_move");
+		request.put("data", null);
+		out.println(request);
 		
-		JSONObject task = (JSONObject) ((JSONObject) JSONValue.parse(move));
+		String move = null;
+		try {
+			move = in.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		JSONObject task = (JSONObject) JSONValue.parse(move);
 		if (!task.get("type").toString().equals("get_next_move")) throw new RuntimeException("Invalid JSON expression");
 		
 		JSONObject moveObj = (JSONObject) task.get("data"); 
@@ -93,7 +124,8 @@ public class NetworkGuestPlayer implements Player {
 		JSONObject message = new JSONObject();
 		message.put("type", "register_move");
 		message.put("data", jMove);
-		System.out.println(message);
+		
+		out.println(message);
 	}
 
 	/**
@@ -106,7 +138,7 @@ public class NetworkGuestPlayer implements Player {
 	
 	@Deprecated
 	public static void main(String[] args) {
-		NetworkGuestPlayer p = new NetworkGuestPlayer("x");
+		NetworkGuestPlayer p = new NetworkGuestPlayer("x", null);
 		Move m = new Move(new Point(1, 2), new Point(3, 4), p);
 		p.registerMove(m);
 		p.registerMove(p.getNextMove());
