@@ -55,12 +55,12 @@ public class Board {
 		}
 	}
 	
-	private int width;
-	private int height;
-	private int field[][];
-	private int headX;
-	private int headY;
-	private boolean gameOver;
+	protected int width;
+	protected int height;
+	protected int field[][];
+	protected int headX;
+	protected int headY;
+	protected boolean gameOver;
 	
 	public Board(int width, int height) {
 		this.width = validWidth(width) / 2;
@@ -98,6 +98,13 @@ public class Board {
 	 */
 	public int getCurrentY() {
 		return headY;
+	}
+	
+	/**
+	 * @return position of the ball
+	 */
+	public Point getCurrent() {
+		return new Point(headX, headY);
 	}
 
 	/**
@@ -151,7 +158,7 @@ public class Board {
 	 * Sets bounds of the field, so that moves going out of
 	 * the bounds will be considered illegal.
 	 */
-	private void boundField() {
+	protected void boundField() {
 		for (int y = -height; y <= height; y++) {
 			setConnection(-width, y, Direction.N);
 			setConnection(-width, y, Direction.NW);
@@ -190,7 +197,7 @@ public class Board {
 	 * @param x x coordinate
 	 * @return correct field index for x
 	 */
-	private int getX(int x) {
+	protected int getX(int x) {
 		return width + x;
 	}
 
@@ -200,7 +207,7 @@ public class Board {
 	 * @param y y coordinate
 	 * @return correct field index for y
 	 */
-	private int getY(int y) {
+	protected int getY(int y) {
 		return height + y + 1;
 	}
 	
@@ -210,7 +217,7 @@ public class Board {
 	 * @param y y coordinate
 	 * @return true if the point is in the field bounds
 	 */
-	private boolean isInBounds(int x, int y) {
+	protected boolean isInBounds(int x, int y) {
 		return (Math.abs(x) <= width && Math.abs(y) <= height) || (Math.abs(x) <= 1 && Math.abs(y) == height + 1);
 	}
 
@@ -221,7 +228,7 @@ public class Board {
 	 * @param y y coordinate
 	 * @return true if the point was visited
 	 */
-	private boolean wasVisited(int x, int y) {
+	protected boolean wasVisited(int x, int y) {
 		if (!isInBounds(x, y))
 			return false;
 		return field[getX(x)][getY(y)] > 0;
@@ -235,7 +242,7 @@ public class Board {
 	 * @param dir direction from the point
 	 * @return true if the operation was successful
 	 */
-	private boolean setConnection(int x, int y, Direction dir) {
+	protected boolean setConnection(int x, int y, Direction dir) {
 		if (!isInBounds(x, y))
 			return false;
 		field[getX(x)][getY(y)] |= 1 << dir.ordinal();
@@ -250,7 +257,7 @@ public class Board {
 	 * @param size dimension to be validated
 	 * @return validated dimension of the field
 	 */
-	private int validHeight(int size) {
+	protected int validHeight(int size) {
 		return Math.min(Math.max(minHeight, (size / 2) * 2), maxHeight);
 	}
 	/**
@@ -261,7 +268,7 @@ public class Board {
 	 * @param size dimension to be validated
 	 * @return validated dimension of the field
 	 */
-	private int validWidth(int size) {
+	protected int validWidth(int size) {
 		return Math.min(Math.max(minWidth, (size / 2) * 2), maxWidth);
 	}
 	/**
