@@ -46,12 +46,17 @@ public class PaperSoccerController {
 	 * Function responsible for running a single game
 	 */
 	public void runGame() {
-		host.startNewGame(width, height, false);
-		guest.startNewGame(width, height, true);
-		notifyStartGame(width, height);
+		try {
+			host.startNewGame(width, height, false);
+			guest.startNewGame(width, height, true);
+			notifyStartGame(width, height);
+		} catch(Exception e) {return;}
 		while(!game.isGameOver()) {
 			currentPlayer = game.getCurrentPlayer();
-			Move move = currentPlayer.getNextMove();
+			Move move;
+			try {
+				move = currentPlayer.getNextMove();
+			} catch(Exception e) { return ;}
 			if(game.isValidMove(move))  {
 				try {
 					game.registerMove(move);
@@ -59,11 +64,14 @@ public class PaperSoccerController {
 					guest.registerMove(move);
 					notifyMove(move);
 				} catch (IllegalMove e) { }
+				catch (Exception e) { return; }
 			}
 		}
-		host.finishGame(game.getResult(host));
-		guest.finishGame(game.getResult(guest));
-		notifyFinishGame(game.getResult(host));
+		try {
+			host.finishGame(game.getResult(host));
+			guest.finishGame(game.getResult(guest));
+			notifyFinishGame(game.getResult(host));
+		} catch( Exception e) { return; }
 		
 	}
 	
