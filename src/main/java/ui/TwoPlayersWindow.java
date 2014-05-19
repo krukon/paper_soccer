@@ -119,6 +119,7 @@ public class TwoPlayersWindow extends BorderPane {
 	 */
 	private HBox addStartBackButton() {
 		HBox buttonBox = new HBox();
+		buttonBox.setSpacing(10);
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.getChildren().addAll(getStartButton(), getBackButton());
 		

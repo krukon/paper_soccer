@@ -14,6 +14,9 @@ public class Game {
 	private int width;
 	private int height;
 	
+	private int hostScore;
+	private int guestScore;
+	
 	public Game(Player host, Player guest, int width, int height) {
 		this.host = host;
 		this.guest = guest;
@@ -73,14 +76,13 @@ public class Game {
 		}
 		loser = winner == host ? guest : host;
 		currentPlayer = loser;
+		
+		if (winner == host) ++hostScore;
+		else ++guestScore;
 	}
 
-	public GameResult getResult(Player player) {
-		/*
-		 * TODO if(!board.gameOver)
-		 * 	throw exception
-		 */
-		return new GameResult(winner, winner == player ? 1 : 0, winner != player ? 1 : 0);
+	public GameResult getResult(Player player) {		
+		return new GameResult(winner, player == host ? hostScore : guestScore, player == host ? guestScore : hostScore);
 	}
 	
 	/**

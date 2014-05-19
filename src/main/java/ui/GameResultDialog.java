@@ -27,9 +27,13 @@ public class GameResultDialog extends Stage {
 	public GameResultDialog(GameResult result, final PaperSoccerController controller) {
 		initModality(Modality.APPLICATION_MODAL);
 		
-		Label message = new Label("Winner: " + result.getWinner().getName());
-		message.setFont(Font.font(30));
+		Label message = new Label("Scored: " + result.getWinner().getName());
+		message.setFont(Font.font(20));
 		message.setAlignment(Pos.BASELINE_CENTER);
+		
+		Label score = new Label(result.toString());
+		score.setFont(Font.font(15));
+		score.setAlignment(Pos.BASELINE_CENTER);
 		
 		Button rematch = new Button("Rematch");
 		rematch.setOnAction(new EventHandler<ActionEvent>() {
@@ -71,8 +75,8 @@ public class GameResultDialog extends Stage {
 
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.BASELINE_CENTER);
-        vBox.setSpacing(40.0);
-        vBox.getChildren().addAll(message, hBox);
+        vBox.setSpacing(20.0);
+        vBox.getChildren().addAll(message, score, hBox);
 
         setScene(new Scene(vBox, 300, 150));
 	}

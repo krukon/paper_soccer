@@ -20,11 +20,14 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -35,7 +38,6 @@ import javafx.stage.Stage;
  * @author krukon, cianciara
  */
 public class GameWindow extends BorderPane implements Player {
-
 	// UI private fields:
 
 	private Group root;
