@@ -2,6 +2,8 @@ package network;
 
 /**
  * Class representing a network opponent of host.
+ * Need ServerInquiryController to be constructed
+ * before first use.
  * 
  * @author jakub
  */
@@ -9,6 +11,8 @@ package network;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PipedReader;
+import java.io.PipedWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -25,7 +29,7 @@ public class NetworkGuestPlayer implements Player {
 	private String playerName;
 	private Socket socket;
 	private PrintWriter out;
-	private BufferedReader in;
+	private BufferedReader in; //needs ServerInquiryController instance created first
 	
 	
 	public NetworkGuestPlayer(String playerName, Socket socket) {
@@ -33,11 +37,20 @@ public class NetworkGuestPlayer implements Player {
 		this.socket = socket;
 		try {
 			out = new PrintWriter(this.socket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Connects decorated by BufferedReader PipedReader with ServerInquiryController
+	 * thread's PipedWriter
+	 * @param src source PipedWriter to be connected
+	 * @throws IOException
+	 */
+	public void connectPipes(PipedWriter src) throws IOException {
+		in = new BufferedReader(new PipedReader(src));
 	}
 
 	/**
@@ -148,9 +161,8 @@ public class NetworkGuestPlayer implements Player {
 	}
 	
 	@Deprecated
-	public static void main(String[] args) throws UnknownHostException, IOException {
+	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
 		NetworkGuestPlayer p = new NetworkGuestPlayer("x", new Socket("77.253.12.69", 1444));
-		Move m = new Move(new Point(1, 2), new Point(3, 4), p);
 		p.createGame();
 	}
 
