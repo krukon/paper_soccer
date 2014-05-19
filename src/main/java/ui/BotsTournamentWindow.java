@@ -94,6 +94,8 @@ public class BotsTournamentWindow extends BorderPane {
 			}
 		});
 		
+		
+		
 		return startButton;
 	}
 	
