@@ -29,8 +29,9 @@ public class MainMenu extends BorderPane {
 		mainMenu.setStyle("-fx-background-color: GREEN;");
 		
 		mainMenu.add(generateTitleLabel(), 0, 0);
-		mainMenu.add(generateTwoPlayersButton(), 0, 1);
-		mainMenu.add(generateSinglePlayer(), 0, 6);
+		mainMenu.add(generateSinglePlayer(), 0, 1);
+		mainMenu.add(generateTwoPlayersButton(), 0, 2);
+		mainMenu.add(generateBotsTournament(), 0, 3);
 		mainMenu.add(generateExitButton(), 0, 11);
 		
 		return mainMenu;
@@ -81,7 +82,7 @@ public class MainMenu extends BorderPane {
 	}
 	
 	private HBox generateSinglePlayer() {
-		Button singlePlayer = new Button("SINGLEPLAYER");
+		Button singlePlayer = new Button("SINGLE PLAYER");
 		singlePlayer.setMinSize(150,60);
 		
 		singlePlayer.setOnAction(new EventHandler<ActionEvent>() {
@@ -97,6 +98,28 @@ public class MainMenu extends BorderPane {
 		HBox buttonBox = new HBox();
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.getChildren().add(singlePlayer);
+		buttonBox.setPadding(new Insets(10, 10, 10, 10));
+		
+		return buttonBox;
+	}
+	
+	private HBox generateBotsTournament() {
+		Button botsTournament = new Button("BOTS TOURNAMENT");
+		botsTournament.setMinSize(150,60);
+		
+		botsTournament.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				System.out.println("Bots Tournament");
+				PaperSoccer.getMainWindow().showBotsTournametWindow();
+				
+			}
+		});
+		
+		HBox buttonBox = new HBox();
+		buttonBox.setAlignment(Pos.CENTER);
+		buttonBox.getChildren().add(botsTournament);
 		buttonBox.setPadding(new Insets(10, 10, 10, 10));
 		
 		return buttonBox;

@@ -58,6 +58,8 @@ public class GameWindow extends BorderPane implements Player {
 	
 	//Player protected fields:
 	
+	protected Player firstPlayer = this;
+	protected Player secondPlayer;
 	protected boolean isHost = true;
 	protected boolean gameOver;
 	protected PaperSoccerController controller;
@@ -129,7 +131,7 @@ public class GameWindow extends BorderPane implements Player {
 	 * @author krukon
 	 */
 	@Override
-	public void startNewGame(int width, int height) {
+	public void startNewGame(int width, int height, boolean topGoal) {
 		gameOver = false;
 		moves = new ArrayList<>();
 		head = new Point(0, 0);
@@ -208,6 +210,16 @@ public class GameWindow extends BorderPane implements Player {
 	 */
 	public void registerController(final PaperSoccerController controller) {
 		this.controller = controller;
+	}
+	
+	/**
+	 * Become a spectator of the game between two players.
+	 * 
+	 * @author krukon
+	 */
+	public void watchGameBetween(Player first, Player second) {
+		firstPlayer = first;
+		secondPlayer = second;
 	}
 
 	/**
@@ -317,10 +329,7 @@ public class GameWindow extends BorderPane implements Player {
 	 * @author krukon
 	 */
 	private void drawMove(Move move) {
-		if(move.player == this)	
-			drawLine(playerColor, move.start, move.end);
-		else
-			drawLine(opponentColor, move.start, move.end);
+		drawLine(move.player == firstPlayer ? playerColor : opponentColor, move.start, move.end);
 	}
 
 	/**

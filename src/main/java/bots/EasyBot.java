@@ -2,32 +2,30 @@ package bots;
 
 import java.util.Random;
 
-import model.Board;
-import model.Board.Direction;
-import model.IllegalMove;
 import helpers.GameResult;
 import helpers.Move;
 import helpers.Player;
 import helpers.Point;
 
-public class RandomBot implements Player {
-	
-	private static final String name = "Random bot";
+import model.Board;
+import model.IllegalMove;
+
+public class EasyBot implements Player {
+	public static final String name = "Easy Bot";
 	
 	private Board board;
 	private Point head;
-	private Random rg;
 	private boolean topGoal;
+	private Random rg;
 
-	public RandomBot() {
-		rg = new Random();
-	}
+	public EasyBot() {}
 
 	@Override
 	public void startNewGame(int width, int height, boolean topGoal) {
 		board = new Board(width, height);
 		head = new Point(0, 0);
 		this.topGoal = topGoal;
+		rg = new Random();
 	}
 
 	@Override
@@ -38,14 +36,18 @@ public class RandomBot implements Player {
 
 	@Override
 	public Move getNextMove() {
-		Point target;
-		do {
-			target = randomDirection();
-		} while (!isAcceptableMove(target));
+		Point bestMove = null, tmp;
+		Point head = new Point(board.getCurrentX(), board.getCurrentY());
+		for(int i = 0; i < 8; i++) {
+			tmp = Board.Direction.values()[i].moveFrom(head);
+			int d1, d2;
+			if(board.canMoveTo(tmp.x, tmp.y) && (bestMove == null  ||  (d1 = getDistance(tmp)) < (d2 = getDistance(bestMove)) || (d1 == d2 && rg.nextBoolean())))
+				bestMove = tmp;
+		}
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) { }
-		return new Move(head, target, this);
+		return new Move(head, bestMove, this);
 	}
 
 	@Override
@@ -63,21 +65,15 @@ public class RandomBot implements Player {
 		return name;
 	}
 	
-	/**
-	 * Return a movement in a random direction
-	 */
-	private Point randomDirection() {
-		return Direction.values()[rg.nextInt(8)].moveFrom(head);
-	}
-	
-	private boolean isAcceptableMove(Point target) {
-		if (target.y == getMyGoalY())
-			return false;
-		return board.canMoveTo(target.x, target.y);
-	}
-	
 	private int getMyGoalY() {
-		return (topGoal ? 1 : -1) * (board.getHeight() / 2 + 1);
+		return (topGoal ? 1 : -1) * (board.getHeight() / 2 +1);
 	}
-
+	
+	private int getOpponentGoalY() {
+		return -getMyGoalY();
+	}
+	
+	private int getDistance(Point target) {
+		return (target.x)*(target.x) + (target.y - getOpponentGoalY())*(target.y - getOpponentGoalY());
+	}
 }
