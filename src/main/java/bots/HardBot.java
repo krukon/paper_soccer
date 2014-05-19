@@ -2,9 +2,8 @@ package bots;
 
 import java.util.concurrent.Callable;
 
-
-public final class DefensiveBot extends StrategyBot {
-	public static final String name ="Defensive bot";
+public final class HardBot extends StrategyBot {
+	public static final String name ="Hard bot";
 
 
 	
@@ -13,9 +12,9 @@ public final class DefensiveBot extends StrategyBot {
 		return name;
 	}
 
-	public DefensiveBot() {
+	public HardBot() {
 		super();
-		addStrategy(0.75, new Callable<Void>() {
+		addStrategy(0.78, new Callable<Void>() {
 
 			@Override
 			public Void call() throws Exception {
@@ -23,7 +22,7 @@ public final class DefensiveBot extends StrategyBot {
 				return null;
 			}
 		});
-		addStrategy(0.20, new Callable<Void>() {
+		addStrategy(0.02, new Callable<Void>() {
 			
 			@Override
 			public Void call() throws Exception {
@@ -31,7 +30,7 @@ public final class DefensiveBot extends StrategyBot {
 				return null;
 			}
 		});
-		addStrategy(0.05, new Callable<Void>() {
+		addStrategy(0.20, new Callable<Void>() {
 
 			@Override
 			public Void call() throws Exception {

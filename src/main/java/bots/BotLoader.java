@@ -24,7 +24,8 @@ public class BotLoader {
 	static {
 		registerBot("Random bot", RandomBot.class);
 		registerBot("Easy Bot", EasyBot.class);
-		registerBot("Defensive Bot", DefensiveBot.class);
+		registerBot("Medium Bot", MediumBot.class);
+		registerBot("Hard Bot", HardBot.class);
 	}
 
 	/**

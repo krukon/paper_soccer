@@ -51,10 +51,10 @@ public abstract class StrategyBot implements Player {
 		}
 		after = System.currentTimeMillis();
 		try {
-			if (after - before < 100)
-				Thread.sleep(100 - after + before);
+			if (after - before < 200)
+				Thread.sleep(200 - after + before);
 		} catch (InterruptedException e) {}
-		System.out.println("moving to: " + nextMoves.peek());
+		//System.out.println("moving to: " + nextMoves.peek());
 		return new Move(board.getCurrent(), nextMoves.poll(), this);
 	}
 
@@ -67,34 +67,27 @@ public abstract class StrategyBot implements Player {
 		} catch (IllegalMove e) { }
 	}
 	
-	void computeOffensiveStrategy() {
-		//System.out.println("Offensive");
+	protected void computeOffensiveStrategy() {
 		currentMoves.clear();
 		bestMoves.clear();
 		currentMoves.push(board.getCurrent());
 		isWinningMove = false;
 		backTrackOffensive();
-		//if (isWinningMove)
-		//	System.out.println("Winning (" + bestMoves.size() + ") :" + bestMoves);
 		for(int i = 0; i < bestMoves.size(); i++)
 			nextMoves.add(bestMoves.get(i));
 	}
 	
-	void computeDefensiveStrategy() {
-		//System.out.println("Defensive");
+	protected void computeDefensiveStrategy() {
 		currentMoves.clear();
 		bestMoves.clear();
 		currentMoves.push(board.getCurrent());
 		isWinningMove = false;
 		backTrackDefensive();
-		//if (isWinningMove)
-		//	System.out.println("Winning (" + bestMoves.size() + ") :" + bestMoves);
 		for(int i = 0; i < bestMoves.size(); i++)
 			nextMoves.add(bestMoves.get(i));
 	}
 	
-	void computeRandomStrategy() {
-		//System.out.println("Random");
+	protected void computeRandomStrategy() {
 		Point target;
 		do {
 			target = Direction.values()[rg.nextInt(8)].moveFrom(board.getCurrent());
@@ -152,7 +145,7 @@ public abstract class StrategyBot implements Player {
 		if (isWinningMove)
 			return;
 		if((bestMoves.size() == 0) || ((currentMoves.size() > bestMoves.size()) || (currentMoves.size() == bestMoves.size() && rg.nextDouble() < 0.3)) &&
-				(getDistance(bestMoves.lastElement()) <= getDistance(bestMoves.firstElement()))) {
+				(getDistance(currentMoves.lastElement()) <= getDistance(currentMoves.firstElement()))) {
 			bestMoves.clear();
 			for(int i = 1; i < currentMoves.size(); i++)
 				bestMoves.push(currentMoves.get(i));
