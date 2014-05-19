@@ -24,7 +24,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class WaitForOpponentDialog extends Stage {
-	public WaitForOpponentDialog(final PaperSoccerController controller) {
+	public WaitForOpponentDialog() {
 		initModality(Modality.APPLICATION_MODAL);
 		
 		Label message = new Label("You need to wait");

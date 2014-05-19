@@ -38,15 +38,8 @@ public class PaperSoccerController {
 	 * Function responsible for running a single game
 	 */
 	public void runGame() {
-		host.startNewGame(width, height);
-		
-		try {
+		host.startNewGame(width, height);		
 		guest.startNewGame(width, height);
-		}
-		catch(NullPointerException e)
-		{
-			host.waitForOpponent();
-		}
 		
 		while(!game.isGameOver()) {
 			currentPlayer = game.getCurrentPlayer();

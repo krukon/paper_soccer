@@ -37,10 +37,6 @@ public class RandomBot implements Player {
 	}
 
 	@Override
-	public void waitForOpponent() {
-	}
-
-	@Override
 	public Move getNextMove() {
 		Point target;
 		do {
