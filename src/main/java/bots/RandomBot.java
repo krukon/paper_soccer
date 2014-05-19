@@ -2,6 +2,8 @@ package bots;
 
 import java.util.Random;
 
+import javafx.application.Platform;
+import ui.GameResultDialog;
 import model.Board;
 import model.Board.Direction;
 import model.IllegalMove;
@@ -35,6 +37,10 @@ public class RandomBot implements Player {
 	}
 
 	@Override
+	public void waitForOpponent() {
+	}
+
+	@Override
 	public Move getNextMove() {
 		Point target;
 		do {
@@ -60,7 +66,7 @@ public class RandomBot implements Player {
 	public String getName() {
 		return name;
 	}
-	
+		
 	/**
 	 * Return a movement in a random direction
 	 */

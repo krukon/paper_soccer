@@ -39,8 +39,15 @@ public class PaperSoccerController {
 	 */
 	public void runGame() {
 		host.startNewGame(width, height);
+		
+		try {
 		guest.startNewGame(width, height);
-	
+		}
+		catch(NullPointerException e)
+		{
+			host.waitForOpponent();
+		}
+		
 		while(!game.isGameOver()) {
 			currentPlayer = game.getCurrentPlayer();
 			Move move = currentPlayer.getNextMove();

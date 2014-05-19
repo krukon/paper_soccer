@@ -162,6 +162,24 @@ public class GameWindow extends BorderPane implements Player {
 			}
 		});
 	}
+	
+	/**
+	 * Notify player that he must wait for opponent in network game.
+	 * 
+	 * @param result the result of the game
+	 * 
+	 * @author krukon
+	 */
+	@Override
+	public void waitForOpponent() {
+		Platform.runLater(new Runnable() {
+	
+			@Override
+			public void run() {
+				new WaitForOpponentDialog(controller).show();
+			}
+		});
+	}
 
 	/**
 	 * Request player to get his next move.
