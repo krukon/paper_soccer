@@ -151,7 +151,8 @@ public abstract class StrategyBot implements Player {
 	private void copyStacksDefensive() {
 		if (isWinningMove)
 			return;
-		if(currentMoves.size() > bestMoves.size() || (currentMoves.size() == bestMoves.size() && rg.nextDouble() < 0.3)) {
+		if((bestMoves.size() == 0) || ((currentMoves.size() > bestMoves.size()) || (currentMoves.size() == bestMoves.size() && rg.nextDouble() < 0.3)) &&
+				(getDistance(bestMoves.lastElement()) <= getDistance(bestMoves.firstElement()))) {
 			bestMoves.clear();
 			for(int i = 1; i < currentMoves.size(); i++)
 				bestMoves.push(currentMoves.get(i));
@@ -209,6 +210,5 @@ public abstract class StrategyBot implements Player {
 			return false;
 		return true;
 	}
-	
 	
 }
