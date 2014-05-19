@@ -24,6 +24,11 @@ public interface Player {
 	void finishGame(GameResult result);
 
 	/**
+	 * Notifies player that he must wait for opponent in network game.
+	 */
+	void waitForOpponent();
+
+	/**
 	 * @return player's next move
 	 */
 	Move getNextMove();

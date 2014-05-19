@@ -6,6 +6,10 @@ package ui;
  * @author ljk
  */
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import bots.BotLoader;
+import bots.BotLoader.BotLoaderException;
 import helpers.Player;
 import controller.PaperSoccer;
 import javafx.beans.value.ChangeListener;
@@ -25,7 +29,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import model.Board;
 
-public class NetworkGameWindow extends BorderPane {
+public class NetworkWindow extends BorderPane {
 	private Text windowTitle = new Text("Network game is waiting for you!");
 	private Insets insets = new Insets(25, 25, 25, 25);
 	
@@ -34,8 +38,13 @@ public class NetworkGameWindow extends BorderPane {
 	private TextField boardHeight;
 	private Button createButton;
 	private Button searchButton;
+	private final AtomicBoolean correctName = new AtomicBoolean(true);
+	private final Label correctWidth = new Label("");
+	private final Label correctHeight = new Label("");
+
 	
-	public NetworkGameWindow() {
+	
+	public NetworkWindow() {
 		playerName = new TextField("Player");
 		boardWidth = new TextField("8");
 		boardHeight = new TextField("10");
@@ -45,7 +54,7 @@ public class NetworkGameWindow extends BorderPane {
 		setPadding(insets);
 		setTop(addWindowTitle());
 		setCenter(addGridPane());
-		setBottom(addBackButton());
+		setBottom(addSettingsBackButton());
 	}
 	
 	/**
@@ -89,22 +98,19 @@ public class NetworkGameWindow extends BorderPane {
 	 * @return constructed button
 	 */
 	private Button getSearchButton() {
-		createButton = new Button("SEARCH");
-		createButton.setMinSize(100, 50);
+		searchButton = new Button("SEARCH");
+		searchButton.setMinSize(100, 50);
 		
-		createButton.setOnAction(new EventHandler<ActionEvent>() {
+		searchButton.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
-			public void handle(ActionEvent event) {				
-				int width = Integer.parseInt(boardWidth.getCharacters().toString());
-				int height = Integer.parseInt(boardHeight.getCharacters().toString());
-				
+			public void handle(ActionEvent event) {
 				System.out.println("Looking for network games");
-				createNetworkGame(playerName.getText(), width, height);
+				PaperSoccer.getMainWindow().searchNetworkGame(playerName.getText());
 			}
 		});
 		
-		return createButton;
+		return searchButton;
 	}
 
 	
@@ -130,13 +136,34 @@ public class NetworkGameWindow extends BorderPane {
 	}
 	
 	/**
+	 * Constructs an exit button.
+	 * @return constructed button
+	 */
+	private Button getSettingsButton() {
+		Button settingsButton = new Button("SETTINGS");
+		settingsButton.setMinSize(100, 50);
+		
+		settingsButton.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {				
+				System.out.println("Settings");
+				PaperSoccer.getMainWindow().showSettingsWindow();
+			
+			}
+		});
+		
+		return settingsButton;
+	}
+	
+	/**
 	 * Adds start and exit buttons to the window.
 	 * @return HBox with a buttons
 	 */
-	private HBox addBackButton() {
+	private HBox addSettingsBackButton() {
 		HBox buttonBox = new HBox();
 		buttonBox.setAlignment(Pos.CENTER);
-		buttonBox.getChildren().addAll(getBackButton());
+		buttonBox.getChildren().addAll(getSettingsButton(), getBackButton());
 		
 		return buttonBox;
 	}
@@ -159,18 +186,24 @@ public class NetworkGameWindow extends BorderPane {
 	 */
 	private void addPlayerTextField(GridPane grid) {
 		grid.add(playerName, 1, 0);
+
 		playerName.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observableValue, String s, String newValue) {
 				if(newValue.matches("^(?=\\s*\\S).*$")){
-					createButton.setDisable(false);
+					correctName.set(true);
 					searchButton.setDisable(false);
+					
+					if(correctWidth.getText()=="" && correctHeight.getText()=="")
+						createButton.setDisable(false);
 				} else {
-					createButton.setDisable(true);
+					correctName.set(false);
 					searchButton.setDisable(true);
+					createButton.setDisable(true);
 				}
 			}
 		});
+
 	}
 	
 	/**
@@ -180,8 +213,6 @@ public class NetworkGameWindow extends BorderPane {
 	private void addBoardSize(GridPane grid) {
 		Label width = new Label("Width:");
 		Label height = new Label("Height");
-		final Label correctWidth = new Label("");
-		final Label correctHeight = new Label("");
 		width.setTextFill(Color.WHITE);
 		height.setTextFill(Color.WHITE);
 		grid.add(width, 0, 5);
@@ -192,13 +223,15 @@ public class NetworkGameWindow extends BorderPane {
 			@Override
 			public void changed(ObservableValue<? extends String> observableValue, String s, String newValue) {
 				try{
-					if(!newValue.isEmpty()){
-						correctWidth.setText("Incorrect value");
-						createButton.setDisable(true);
-					}
 					if(!newValue.isEmpty() && Board.isValidWidth(Integer.parseInt(newValue))){
 						correctWidth.setText("");
-						createButton.setDisable(false);
+
+						if(correctName.get() && correctHeight.getText()=="")
+							createButton.setDisable(false);
+					}
+					else{
+						correctWidth.setText("Incorrect value");
+						createButton.setDisable(true);
 					}
 				} catch (Exception e){
 					correctWidth.setText("Incorrect value");
@@ -210,13 +243,15 @@ public class NetworkGameWindow extends BorderPane {
 			@Override
 			public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
 				try{
-					if(!newValue.isEmpty() && !Board.isValidHeight(Integer.parseInt(newValue))){
-						correctHeight.setText("Incorrect value");
-						createButton.setDisable(true);
-					}
 					if(!newValue.isEmpty() && Board.isValidHeight(Integer.parseInt(newValue))){
 						correctHeight.setText("");
-						createButton.setDisable(false);
+						
+						if(correctName.get() && correctWidth.getText()=="")
+							createButton.setDisable(false);
+					}
+					else{
+						correctHeight.setText("Incorrect value");
+						createButton.setDisable(true);
 					}
 				} catch (Exception e){
 					correctHeight.setText("Incorrect value");
@@ -261,23 +296,17 @@ public class NetworkGameWindow extends BorderPane {
 	 * @author ljk
 	 */
 	private void createNetworkGame(final String player, final int width, final int height) {
-		final Player host = new TwoPlayersGameWindow(player, Color.BLUE, Color.RED, true);
-		final Player guest = new TwoPlayersGameWindow("GUEST", Color.RED, Color.BLUE, false);
+		GameWindow view = new GameWindow(player, Color.BLUE, Color.RED);
+		final Player host = view;
 		
-		((TwoPlayersGameWindow)host).registerWindows((GameWindow)guest, (GameWindow)host);
-		((TwoPlayersGameWindow)guest).registerWindows((GameWindow)host, (GameWindow)guest);
-		
-		PaperSoccer.getMainWindow().showTwoPlayersGameWindow((GameWindow)guest, (GameWindow)host);
+		PaperSoccer.getMainWindow().showSinglePlayerGameWindow(view);
 
 		Thread controllerThread = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				PaperSoccerController controller = new PaperSoccerController(host, guest, width, height);
-				
-				((TwoPlayersGameWindow)host).registerController(controller);
-				((TwoPlayersGameWindow)guest).registerController(controller);
-				
+				PaperSoccerController controller = new PaperSoccerController(host, null, width, height);
+				((GameWindow) host).registerController(controller);
 				controller.runGame();
 			}
 		});

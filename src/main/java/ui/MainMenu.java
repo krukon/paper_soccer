@@ -134,7 +134,7 @@ public class MainMenu extends BorderPane {
 			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("Network game");
-				PaperSoccer.getMainWindow().showNetworkGameWindow();
+				PaperSoccer.getMainWindow().showNetworkWindow();
 			}
 		});
 		

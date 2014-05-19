@@ -96,4 +96,5 @@ public class TwoPlayersGameWindow extends GameWindow{
 			else resultDialogShown.set(false);
 		}
 	}
-}
+	
+	}

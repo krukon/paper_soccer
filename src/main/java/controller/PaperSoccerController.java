@@ -46,11 +46,24 @@ public class PaperSoccerController {
 	 * Function responsible for running a single game
 	 */
 	public void runGame() {
+<<<<<<< HEAD
 		try {
 			host.startNewGame(width, height, false);
 			guest.startNewGame(width, height, true);
 			notifyStartGame(width, height);
 		} catch(Exception e) {return;}
+=======
+		host.startNewGame(width, height);
+		
+		try {
+		guest.startNewGame(width, height);
+		}
+		catch(NullPointerException e)
+		{
+			host.waitForOpponent();
+		}
+		
+>>>>>>> Prototype of network view. No idea how to realize communication beetwen
 		while(!game.isGameOver()) {
 			currentPlayer = game.getCurrentPlayer();
 			Move move;
