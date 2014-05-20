@@ -90,5 +90,21 @@ public class MainWindow extends Application {
 		mainView.getChildren().clear();
 		mainView.getChildren().add(spectator);
 	}
+
+	public void showNetworkWindow() {
+		mainView.getChildren().clear();
+		mainView.getChildren().add(new NetworkWindow());
+	}
 	
+
+	public void showSettingsWindow() {
+		mainView.getChildren().clear();
+		mainView.getChildren().add(new SettingsWindow());
+	}
+
+	public void joinNetworkGame(String player) {
+		mainView.getChildren().clear();
+		mainView.getChildren().add(new GamesListWindow(player));
+		
+	}
 }
