@@ -102,7 +102,7 @@ public class MainWindow extends Application {
 		mainView.getChildren().add(new SettingsWindow());
 	}
 
-	public void searchNetworkGame(String player) {
+	public void joinNetworkGame(String player) {
 		mainView.getChildren().clear();
 		mainView.getChildren().add(new GamesListWindow(player));
 		

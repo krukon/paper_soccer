@@ -37,7 +37,7 @@ public class NetworkWindow extends BorderPane {
 	private TextField boardWidth;
 	private TextField boardHeight;
 	private Button createButton;
-	private Button searchButton;
+	private Button joinButton;
 	private final AtomicBoolean correctName = new AtomicBoolean(true);
 	private final Label correctWidth = new Label("");
 	private final Label correctHeight = new Label("");
@@ -94,23 +94,23 @@ public class NetworkWindow extends BorderPane {
 	}
 	
 	/**
-	 * Constructs a search button.
+	 * Constructs a join button.
 	 * @return constructed button
 	 */
-	private Button getSearchButton() {
-		searchButton = new Button("SEARCH");
-		searchButton.setMinSize(100, 50);
+	private Button getJoinButton() {
+		joinButton = new Button("JOIN GAME");
+		joinButton.setMinSize(100, 50);
 		
-		searchButton.setOnAction(new EventHandler<ActionEvent>() {
+		joinButton.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("Looking for network games");
-				PaperSoccer.getMainWindow().searchNetworkGame(playerName.getText());
+				PaperSoccer.getMainWindow().joinNetworkGame(playerName.getText());
 			}
 		});
 		
-		return searchButton;
+		return joinButton;
 	}
 
 	
@@ -192,13 +192,13 @@ public class NetworkWindow extends BorderPane {
 			public void changed(ObservableValue<? extends String> observableValue, String s, String newValue) {
 				if(newValue.matches("^(?=\\s*\\S).*$")){
 					correctName.set(true);
-					searchButton.setDisable(false);
+					joinButton.setDisable(false);
 					
 					if(correctWidth.getText()=="" && correctHeight.getText()=="")
 						createButton.setDisable(false);
 				} else {
 					correctName.set(false);
-					searchButton.setDisable(true);
+					joinButton.setDisable(true);
 					createButton.setDisable(true);
 				}
 			}
@@ -280,7 +280,7 @@ public class NetworkWindow extends BorderPane {
 		addPlayerTextField(grid);
 		addBoardSize(grid);
 		grid.add(getCreateButton(), 0, 9);
-		grid.add(getSearchButton(), 1, 9);
+		grid.add(getJoinButton(), 1, 9);
 		
 		return grid;
 	}

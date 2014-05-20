@@ -27,7 +27,7 @@ public class WaitForOpponentDialog extends Stage {
 	public WaitForOpponentDialog() {
 		initModality(Modality.APPLICATION_MODAL);
 		
-		Label message = new Label("You need to wait");
+		Label message = new Label("Waiting for opponent...");
 		message.setFont(Font.font(30));
 		message.setAlignment(Pos.BASELINE_CENTER);
 		
