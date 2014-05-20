@@ -11,9 +11,9 @@ import helpers.Player;
 import helpers.Point;
 
 public class RandomBot implements Player {
-
+	
 	private static final String name = "Random bot";
-
+	
 	private Board board;
 	private Point head;
 	private Random rg;
@@ -62,20 +62,20 @@ public class RandomBot implements Player {
 	public String getName() {
 		return name;
 	}
-
+	
 	/**
 	 * Return a movement in a random direction
 	 */
 	private Point randomDirection() {
 		return Direction.values()[rg.nextInt(8)].moveFrom(head);
 	}
-
+	
 	private boolean isAcceptableMove(Point target) {
 		if (target.y == getMyGoalY())
 			return false;
 		return board.canMoveTo(target.x, target.y);
 	}
-
+	
 	private int getMyGoalY() {
 		return (topGoal ? 1 : -1) * (board.getHeight() / 2 + 1);
 	}

@@ -164,7 +164,7 @@ public class GameWindow extends BorderPane implements Player {
 			}
 		});
 	}
-	
+
 	/**
 	 * Request player to get his next move.
 	 * 

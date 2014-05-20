@@ -23,10 +23,10 @@ public class PaperSoccerController {
 	private Game game;
 	private int width;
 	private int height;
-
+	
 	private List<Player> spectators;
-
-
+	
+	
 	/**
 	 * @param Player host, who will host game in on-line game
 	 * @param Player guest, who will join existing games
@@ -41,7 +41,7 @@ public class PaperSoccerController {
 		spectators = new ArrayList<>();
 		game = new Game(host, guest, width, height);
 	}
-
+	
 	/**
 	 * Function responsible for running a single game
 	 */
@@ -74,14 +74,14 @@ public class PaperSoccerController {
 			notifyFinishGame(game.getResult(host));
 		} catch( Exception e) { return; }
 	}
-
+	
 	/**
 	 * Prepares game for next match.
 	 */
 	public void prepareRematch() {
 		game.prepareRematch();
 	}
-
+	
 	/**
 	 * Subscribe to the controller to become a spectator
 	 * of the game. This will allow all spectators to receive
@@ -94,7 +94,7 @@ public class PaperSoccerController {
 	public void subscribe(Player spectator) {
 		spectators.add(spectator);
 	}
-
+	
 	/**
 	 * Unsubscribe from the controller for receiving notifications
 	 * about the game.

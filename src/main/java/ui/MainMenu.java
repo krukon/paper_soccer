@@ -114,9 +114,10 @@ public class MainMenu extends BorderPane {
 			public void handle(ActionEvent event) {
 				System.out.println("Bots Tournament");
 				PaperSoccer.getMainWindow().showBotsTournametWindow();
+				
 			}
 		});
-
+		
 		HBox buttonBox = new HBox();
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.getChildren().add(botsTournament);
@@ -128,7 +129,6 @@ public class MainMenu extends BorderPane {
 	private HBox generateNetworkGame() {
 		Button networkGame = new Button("NETWORK GAME");
 		networkGame.setMinSize(150,60);
-		
 		networkGame.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
@@ -145,7 +145,7 @@ public class MainMenu extends BorderPane {
 		
 		return buttonBox;
 	}
-
+	
 	private HBox generateTitleLabel() {
 		Label label = new Label("Paper Soccer");
 		label.setFont(Font.font("Arial", 40));
