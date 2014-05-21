@@ -75,6 +75,7 @@ public class BotsTournamentWindow extends BorderPane {
 	private Button getStartButton() {
 		startButton = new Button("START");
 		startButton.setMinSize(100, 50);
+		startButton.setDefaultButton(true);
 		
 		startButton.setOnAction(new EventHandler<ActionEvent>() {
 			
@@ -106,6 +107,7 @@ public class BotsTournamentWindow extends BorderPane {
 	private Button getBackButton() {
 		Button exitButton = new Button("BACK");
 		exitButton.setMinSize(100, 50);
+		exitButton.setCancelButton(true);
 		
 		exitButton.setOnAction(new EventHandler<ActionEvent>() {
 			

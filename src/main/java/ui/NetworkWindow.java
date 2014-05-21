@@ -8,8 +8,6 @@ package ui;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import bots.BotLoader;
-import bots.BotLoader.BotLoaderException;
 import helpers.Player;
 import controller.PaperSoccer;
 import javafx.beans.value.ChangeListener;
@@ -22,6 +20,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -82,11 +82,19 @@ public class NetworkWindow extends BorderPane {
 			
 			@Override
 			public void handle(ActionEvent event) {				
-				int width = Integer.parseInt(boardWidth.getCharacters().toString());
-				int height = Integer.parseInt(boardHeight.getCharacters().toString());
-				
-				System.out.println("Creating board " + width + " x " + height);
-				createNetworkGame(playerName.getText(), width, height);
+				System.out.println("Creating board");
+				createNetworkGame(playerName.getText());
+			}
+		});
+		
+		createButton.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent key) {
+				if (key.getCode() == KeyCode.ENTER) {
+					System.out.println("Creating board");
+					createNetworkGame(playerName.getText());
+				}
 			}
 		});
 		
@@ -110,6 +118,17 @@ public class NetworkWindow extends BorderPane {
 			}
 		});
 		
+		joinButton.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent key) {
+				if (key.getCode() == KeyCode.ENTER) {
+					System.out.println("Looking for network games");
+					PaperSoccer.getMainWindow().joinNetworkGame(playerName.getText());
+				}
+			}
+		});
+		
 		return joinButton;
 	}
 
@@ -121,6 +140,7 @@ public class NetworkWindow extends BorderPane {
 	private Button getBackButton() {
 		Button exitButton = new Button("BACK");
 		exitButton.setMinSize(100, 50);
+		exitButton.setCancelButton(true);
 		
 		exitButton.setOnAction(new EventHandler<ActionEvent>() {
 			
@@ -150,6 +170,17 @@ public class NetworkWindow extends BorderPane {
 				System.out.println("Settings");
 				PaperSoccer.getMainWindow().showSettingsWindow();
 			
+			}
+		});
+		
+		settingsButton.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent key) {
+				if (key.getCode() == KeyCode.ENTER) {
+					System.out.println("Settings");
+					PaperSoccer.getMainWindow().showSettingsWindow();
+				}
 			}
 		});
 		
@@ -295,7 +326,10 @@ public class NetworkWindow extends BorderPane {
 	 *
 	 * @author ljk
 	 */
-	private void createNetworkGame(final String player, final int width, final int height) {
+	private void createNetworkGame(final String player) {
+		final int width = Integer.parseInt(boardWidth.getCharacters().toString());
+		final int height = Integer.parseInt(boardHeight.getCharacters().toString());
+		
 		final Player host = new TwoPlayersGameWindow(playerName.getText(), Color.BLUE, Color.RED, true);
 		final Player guest = new TwoPlayersGameWindow(playerName.getText(), Color.BLUE, Color.RED, true);
 		

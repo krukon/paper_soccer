@@ -6,44 +6,28 @@ package ui;
  * @author ljk
  */
 
-import javafx.application.Application;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import helpers.Player;
 import controller.PaperSoccer;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import controller.PaperSoccerController;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import model.Board;
 
 public class GamesListWindow extends BorderPane{
 
@@ -258,6 +242,7 @@ public class GamesListWindow extends BorderPane{
 	private Button getBackButton() {
 		Button exitButton = new Button("BACK");
 		exitButton.setMinSize(100, 50);
+		exitButton.setCancelButton(true);
 		
 		exitButton.setOnAction(new EventHandler<ActionEvent>() {
 			

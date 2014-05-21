@@ -36,6 +36,7 @@ public class GameResultDialog extends Stage {
 		score.setAlignment(Pos.BASELINE_CENTER);
 		
 		Button rematch = new Button("Rematch");
+		rematch.setDefaultButton(true);
 		rematch.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -58,6 +59,7 @@ public class GameResultDialog extends Stage {
 		});
 		
 		Button exit = new Button("Main menu");
+		exit.setCancelButton(true);
 		exit.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
