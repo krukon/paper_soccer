@@ -11,13 +11,20 @@ import java.util.List;
 import controller.PaperSoccer;
 import controller.PaperSoccerController;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -68,13 +75,23 @@ public class GameWindow extends BorderPane implements Player {
 	protected String playerName;
 	protected final Object syncMove = new Object();
 	protected Label currentPlayer;
-
+	
+	//Chat things
+	private ListView listView;
+	private TextField textField;
+	private BorderPane borderPane;
+	private ObservableList<String> chatItems = FXCollections.observableArrayList();
+	private double chatHeight = 100;
+	private double textFieldWidth = 300;
+	private double buttonWidth = pixelWidth-textFieldWidth-50;
+	private Insets insets = new Insets(25, 25, 25, 25);
+	
 	/**
 	 * Construct a view for the game
 	 * 
 	 * @param playerName the name of the player
 	 */
-	public GameWindow(String playerName, Color playerColor, Color opponentColor) {
+	public GameWindow(String playerName, Color playerColor, Color opponentColor, boolean openChat) {
 		if (playerName == null || playerName.length() == 0) playerName = "PLAYER";
 		
 		this.playerName = playerName;
@@ -88,9 +105,12 @@ public class GameWindow extends BorderPane implements Player {
 		setTop(currentPlayer);
 		
 		root = new Group();
+
 		this.setCenter(root);
 		root.addEventHandler(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
-            @Override
+
+		
+		@Override
             public void handle(MouseEvent e) {
 				double mouseX = e.getX();
 				double mouseY = e.getY();
@@ -120,7 +140,41 @@ public class GameWindow extends BorderPane implements Player {
 				}
 			}
 		});
+		
+		if(openChat)
+			this.setBottom(addChatWindow());
 	}
+		
+	public BorderPane addChatWindow()
+	{
+	    listView = new ListView();
+	    listView.setMaxHeight(chatHeight);
+	    listView.setMinWidth(pixelWidth-50);
+	    listView.setItems(chatItems);
+	    
+	    textField = new TextField();
+	    textField.setMinWidth(textFieldWidth);
+	    Button btn = new Button();
+	    btn.setMinWidth(buttonWidth);
+	    btn.setText("SEND");
+	    
+	    
+	    btn.setOnAction(new EventHandler<ActionEvent>() {
+
+	      @Override
+	      public void handle(ActionEvent event) {
+	    	//TODO Sending to the server
+	        textField.clear();
+	      }
+	    });
+	    	    
+	    borderPane = new BorderPane();
+	    HBox bottom = new HBox(textField, btn);
+	    borderPane.setPadding(insets);
+	    borderPane.setCenter(listView);
+	    borderPane.setBottom(bottom);
+	    return borderPane;
+	  }
 
 	/**
 	 * Prepare window to start a new game on a specified field.
@@ -341,8 +395,8 @@ public class GameWindow extends BorderPane implements Player {
 	private void prepareWindow() {
 		pixelWidth = getScene().getWidth();
 		pixelHeight = getScene().getHeight();
-		gridSize = Math.min(pixelHeight / (fieldHeight + 4), pixelWidth / (fieldWidth + 4));
-		Canvas canvas = new Canvas(pixelWidth, pixelHeight);
+		gridSize = Math.min((pixelHeight) / (fieldHeight + 4), (pixelWidth) / (fieldWidth + 4));
+		Canvas canvas = new Canvas(pixelWidth, pixelHeight-100);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		drawGrid(gc);
 		drawBounds(gc);

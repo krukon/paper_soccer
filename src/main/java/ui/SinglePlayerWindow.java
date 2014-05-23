@@ -278,7 +278,7 @@ public class SinglePlayerWindow extends BorderPane {
 	 *
 	 */
 	private void startGame(final String playerOne, final String bot, final int width, final int height) {
-		GameWindow view = new GameWindow(playerOne, Color.BLUE, Color.RED);
+		GameWindow view = new GameWindow(playerOne, Color.BLUE, Color.RED, false);
 		final Player host = view;
 		final Player guest;
 		try {

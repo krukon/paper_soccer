@@ -27,7 +27,7 @@ public class MainWindow extends Application {
 		Scene scene = new Scene(mainView, prefWidth, prefHeight, Color.GREEN);
 		
 		primaryStage.setTitle("Paper soccer");
-		primaryStage.setResizable(false);
+		primaryStage.setResizable(true);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		
