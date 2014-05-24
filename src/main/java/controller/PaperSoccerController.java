@@ -126,7 +126,7 @@ public class PaperSoccerController {
 	 */
 	private void notifyStartGame(int width, int height) {
 		for (Player e : spectators)
-			e.startNewGame(width, height, true);
+			e.startNewGame(width, height, false);
 	}
 
 	/**

@@ -45,7 +45,7 @@ public class RemoteGameController {
 				int width = Integer.parseInt(data.get("width").toString());
 				int height = Integer.parseInt(data.get("height").toString());
 				
-				guest.startNewGame(width, height, false);
+				guest.startNewGame(width, height, true);
 				System.out.println("Starting new game");
 			}
 			else if (type.equals("finish_game")) {

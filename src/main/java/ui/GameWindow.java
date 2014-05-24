@@ -131,6 +131,7 @@ public class GameWindow extends BorderPane implements Player {
 		head = new Point(0, 0);
 		fieldWidth = width;
 		fieldHeight = height;
+		isHost = !topGoal;
 		Platform.runLater(new Runnable() {
 
 			@Override
