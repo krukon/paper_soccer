@@ -8,11 +8,9 @@ package ui;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import helpers.Player;
 import controller.PaperSoccer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import controller.PaperSoccerController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -84,9 +82,11 @@ public class NetworkWindow extends BorderPane {
 		createButton.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
-			public void handle(ActionEvent event) {				
-				System.out.println("Creating board");
-				createNetworkGame(playerName.getText());
+			public void handle(ActionEvent event) {
+				int width = Integer.parseInt(boardWidth.getCharacters().toString());
+				int height = Integer.parseInt(boardHeight.getCharacters().toString());
+
+				createNetworkGame(playerName.getText(), width, height);
 			}
 		});
 		
@@ -95,8 +95,10 @@ public class NetworkWindow extends BorderPane {
 			@Override
 			public void handle(KeyEvent key) {
 				if (key.getCode() == KeyCode.ENTER) {
-					System.out.println("Creating board");
-					createNetworkGame(playerName.getText());
+					int width = Integer.parseInt(boardWidth.getCharacters().toString());
+					int height = Integer.parseInt(boardHeight.getCharacters().toString());
+
+					createNetworkGame(playerName.getText(), width, height);
 				}
 			}
 		});
@@ -323,43 +325,15 @@ public class NetworkWindow extends BorderPane {
 	 * Begin new game for two players. Run controller, and
 	 * display appropriate views.
 	 *
-	 * @param player name of the host player
+	 * @param hostName name of the host player
 	 * @param width width of the field
 	 * @param height width of the board
 	 *
-	 * @author ljk
+	 * @author krukon, jakub
 	 */
-	private void createNetworkGame(final String player) {
-		final int width = Integer.parseInt(boardWidth.getCharacters().toString());
-		final int height = Integer.parseInt(boardHeight.getCharacters().toString());
-		
-		final Player host = new TwoPlayersGameWindow(playerName.getText(), Color.BLUE, Color.RED, true);
-		final Player guest = new TwoPlayersGameWindow(playerName.getText(), Color.BLUE, Color.RED, true);
-		
-
-		new WaitForOpponentDialog().show();
-		
-		
-		//TODO add connection with server and waiting for opponent
-		
-		((TwoPlayersGameWindow)host).registerWindows((GameWindow)guest, (GameWindow)host);
-		((TwoPlayersGameWindow)guest).registerWindows((GameWindow)host, (GameWindow)guest);
-		
-		PaperSoccer.getMainWindow().showTwoPlayersGameWindow((GameWindow)guest, (GameWindow)host);
-
-		Thread controllerThread = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				PaperSoccerController controller = new PaperSoccerController(host, guest, width, height);
-				
-				((TwoPlayersGameWindow)host).registerController(controller);
-				((TwoPlayersGameWindow)guest).registerController(controller);
-				
-				controller.runGame();
-			}
-		});
-		controllerThread.setDaemon(true);
-		controllerThread.start();
+	private void createNetworkGame(String hostName, int width, int height) {
+		final GameWindow host = new GameWindow(hostName, Color.BLUE, Color.RED);
+		PaperSoccer.getMainWindow().showSinglePlayerGameWindow(host);
+		new WaitForOpponentDialog(host, hostName, width, height).show();
 	}
 }

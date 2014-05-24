@@ -7,6 +7,7 @@ import java.net.UnknownHostException;
 
 import org.json.simple.JSONObject;
 
+import controller.PaperSoccer;
 import helpers.Player;
 
 public class RemoteGameController {
@@ -44,9 +45,9 @@ public class RemoteGameController {
 	private Player guest;
 	private ServerInquiry server;
 	
-	public RemoteGameController(ServerInquiry server, Player guest) {
+	public RemoteGameController(Player guest) {
 		this.guest = guest;
-		this.server = server;
+		this.server = PaperSoccer.server;
 	}
 	
 	public void joinGame(String id) {
@@ -58,7 +59,7 @@ public class RemoteGameController {
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		ServerInquiry server = new ServerInquiry("localhost", 1444);
 		server.start();
-		RemoteGameController controller = new RemoteGameController(server, null);
+		RemoteGameController controller = new RemoteGameController(null);
 		controller.joinGame("0");
 		//server.send("Hello server!");
 		BufferedReader game = server.subscribeToGame();

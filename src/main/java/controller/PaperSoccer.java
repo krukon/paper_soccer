@@ -1,5 +1,9 @@
 package controller;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
+
+import network.ServerInquiry;
 import javafx.application.Platform;
 import ui.MainWindow;
 
@@ -13,6 +17,7 @@ import ui.MainWindow;
 
 public class PaperSoccer {
 	private static MainWindow mainWindow;
+	public static ServerInquiry server;
 	public static final String sync = "SYNCHRONIZING STRING"; //object on which thread can synchronize, probably should be replaced
 	public static final int WIDTH = 433;
 	public static final int  HEIGHT = 650;
@@ -23,6 +28,10 @@ public class PaperSoccer {
 			sync.wait(); //waits until main window construction is finished
 		}
 		addMainMenu();
+		try {
+			server = new ServerInquiry("178.37.109.133", 1444);
+			server.start();
+		} catch (Exception e) {}
 	}
 	
 	public static MainWindow getMainWindow() {

@@ -6,6 +6,16 @@ package ui;
  * @author ljk
  */
 
+import java.io.BufferedReader;
+import java.io.IOException;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
+import network.RemoteGameController;
+import network.ServerInquiry;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -33,20 +43,65 @@ public class GamesListWindow extends BorderPane{
 
 	private Text windowTitle = new Text("Network game is waiting for you!");
 	private Insets insets = new Insets(25, 25, 25, 25);
+	private String guestName;
 
-	public GamesListWindow(String player)
+	public GamesListWindow(String guestName)
 	{	
 		setPrefSize(PaperSoccer.WIDTH, PaperSoccer.HEIGHT);
 		setStyle("-fx-background-image: url('paper_soccer_background.jpg');");
 		
+		this.guestName = guestName;
 		windowTitle.setFill(Color.WHITE);
 		
 		setPadding(insets);
 		setTop(addWindowTitle());
 		setCenter(addGridPane());
 		setBottom(addBackButton());
+		loadGamesList();
 	}
 	
+	private void loadGamesList() {
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				ServerInquiry server = PaperSoccer.server;
+				server.send("{\"type\":\"list_games\"}");
+				try {
+					BufferedReader reader = server.subscribeToGame();
+					String raw = reader.readLine();
+					System.out.println("raw " + raw);
+					JSONObject request = (JSONObject) JSONValue.parse(raw);
+					final JSONArray data = (JSONArray) request.get("data");
+					Platform.runLater(new Runnable() {
+						
+						@Override
+						public void run() {
+							renderGamesList(data);
+						}
+
+					});
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}).start();
+	}
+	
+	private void renderGamesList(JSONArray data) {
+		System.out.println("Rendering list " + data.toString());
+		recordList.clear();
+		for (Object obj : data) {
+			JSONObject game = (JSONObject) obj;
+			recordList.add(new Record(
+					Integer.parseInt(game.get("id").toString()),
+					game.get("host_name").toString(),
+					Integer.parseInt(game.get("width").toString()),
+					Integer.parseInt(game.get("height").toString())));
+		}
+	}
+
 	/**
 	 * Constructs window title.
 	 * @return HBox with a title
@@ -67,7 +122,7 @@ public class GamesListWindow extends BorderPane{
         private final SimpleIntegerProperty boardWidth;
         private final SimpleIntegerProperty boardHeight;
  
-        private Record(int id, String name, int boardWidth, int boardHeight) {
+        public Record(int id, String name, int boardWidth, int boardHeight) {
             this.id = new SimpleIntegerProperty(id);
             this.name = new SimpleStringProperty(name);
             this.boardWidth = new SimpleIntegerProperty(boardWidth);
@@ -109,17 +164,8 @@ public class GamesListWindow extends BorderPane{
     
 	private TableView<Record> tableView = new TableView<>();
     private final ObservableList<Record> recordList = FXCollections.observableArrayList();
- 
-    private void prepareRecordList() {
-        recordList.add(new Record(12, "LJK", 10, 10));
-        recordList.add(new Record(15, "Krukon", 12, 8));
-        recordList.add(new Record(1, "Kuba", 14, 6));
-    }
- 
     
-    public void addList(GridPane grid) { 
-        prepareRecordList();
- 
+    public void addList(GridPane grid) {
         tableView.setEditable(false);
  
         Callback<TableColumn, TableCell> integerCellFactory =
@@ -206,12 +252,62 @@ public class GamesListWindow extends BorderPane{
  
         @Override
         public void handle(MouseEvent t) {
+        	try {
             TableCell c = (TableCell) t.getSource();
             int index = c.getIndex();
             System.out.println("id = " + recordList.get(index).getId());
             System.out.println("name = " + recordList.get(index).getName());
             System.out.println("board width = " + recordList.get(index).getBoardWidth());
             System.out.println("board height = " + recordList.get(index).getBoardHeight());
+            final int id = recordList.get(index).getId();
+            Thread controllerThread = new Thread(new Runnable() {
+				
+				@SuppressWarnings("unchecked")
+				@Override
+				public void run() {
+					ServerInquiry server = PaperSoccer.server;
+					
+					JSONObject message = new JSONObject();
+					message.put("type", "join_game");
+					JSONObject data = new JSONObject();
+					data.put("id", id);
+					data.put("guest_name", guestName);
+					message.put("data", data);
+					
+					server.send(message);
+					
+					try {
+						BufferedReader reader = server.subscribeToJoinGame();
+						String raw = reader.readLine();
+						
+						JSONObject response = (JSONObject) JSONValue.parse(raw);
+						JSONObject startGameData = (JSONObject) response.get("data");
+						
+						String gameId = startGameData.get("id").toString();
+						
+						final GameWindow guest = new GameWindow(guestName, Color.RED, Color.BLUE);
+						Platform.runLater(new Runnable() {
+							
+							@Override
+							public void run() {
+								PaperSoccer.getMainWindow().showSinglePlayerGameWindow(guest);
+							}
+						});
+						
+						RemoteGameController controller = new RemoteGameController(guest);
+						
+						//controller.
+						
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+            controllerThread.setDaemon(true);
+            controllerThread.start();
+            
+        	} catch (Exception e) {}
         }
     }
     

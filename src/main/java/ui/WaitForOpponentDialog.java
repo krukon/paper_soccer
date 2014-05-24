@@ -6,8 +6,18 @@ package ui;
  * @author jakub, ljk
  */
 
-import controller.PaperSoccer;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
+import network.RemoteGuestPlayer;
+import network.ServerInquiry;
+import controller.PaperSoccer;
+import controller.PaperSoccerController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -21,7 +31,102 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class WaitForOpponentDialog extends Stage {
-	public WaitForOpponentDialog() {
+	private ServerInquiry server = PaperSoccer.server;
+	
+	public WaitForOpponentDialog(GameWindow host, String hostName, int width, int height) {
+		constructView();
+        waitForGuest(host, hostName, width, height);
+	}
+	
+	private void waitForGuest(final GameWindow host, final String hostName, final int width, final int height) {
+		new Thread(new Runnable() {
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			public void run() {
+				System.out.println("Wait for guest - begin");
+				String guestName, gameID = null;
+				BufferedReader reader = null;
+				try {
+					reader = server.subscribeToGame();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				JSONObject data = new JSONObject();
+				data.put("host_name", hostName);
+				data.put("width", width);
+				data.put("height", height);
+				JSONObject message = new JSONObject();
+				message.put("type", "create_game");
+				message.put("data", data);
+				
+				server.send(message);
+				System.out.println("Wait for guest - waiting for response");
+				try {
+					String raw = reader.readLine();
+					JSONObject createGameResponse = (JSONObject) JSONValue.parse(raw);
+					JSONObject createGameData = (JSONObject) createGameResponse.get("data");
+					System.out.println("Wait for guest - response " + createGameData.toString());
+					gameID = createGameData.get("id").toString();
+					System.out.println("Wait for guest - after response " + raw);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				while(true) {
+					try {
+						System.out.println("Waiting...");
+						String raw = reader.readLine();
+						System.out.println("From server: " + raw);
+						JSONObject joinGameData = (JSONObject) JSONValue.parse(raw);
+						if (joinGameData.get("type").toString().equals("join_game")) {
+							guestName = ((JSONObject) joinGameData.get("data")).get("guest_name").toString();
+							break;
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				final String finalGuestName = guestName;
+				final String finalGameId = gameID;
+				
+				Platform.runLater(new Runnable() {
+					
+					@Override
+					public void run() {
+						WaitForOpponentDialog.this.close();
+					}
+				});
+				
+				try {
+					reader.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				Thread controllerThread = new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						try {
+							RemoteGuestPlayer guest = new RemoteGuestPlayer(finalGuestName, server, finalGameId);
+							PaperSoccerController controller = new PaperSoccerController(host, guest, width, height);
+							host.registerController(controller);
+							controller.runGame();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						
+					}
+				});
+				controllerThread.setDaemon(true);
+				controllerThread.start();
+			}
+		}).start();
+	}
+
+	private void constructView() {
 		initModality(Modality.APPLICATION_MODAL);
 		
 		Label message = new Label("Waiting for opponent...");

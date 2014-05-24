@@ -8,6 +8,8 @@ import java.io.PipedWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Collection;
+
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -18,6 +20,9 @@ public class ServerInquiry {
 	private final PrintWriter out;
 	private PipedWriter chatWriter;
 	private PipedWriter gameWriter;
+	private PipedWriter joinGameWriter;
+	private Collection<PipedWriter> subsribersGame;
+	private Collection<PipedWriter> subsribersChat;
 	
 	public ServerInquiry(String address, int port) throws UnknownHostException, IOException {
 		socket = new Socket(address, port);
@@ -28,7 +33,7 @@ public class ServerInquiry {
 	}
 	
 	public void start() {
-		(new Thread(new Runnable() {
+		Thread serverThread = (new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -40,11 +45,17 @@ public class ServerInquiry {
 						message = (JSONObject) JSONValue.parse(raw);
 						String type = (String) message.get("type");
 						String data = JSONValue.toJSONString(message.get("data"));
+						
+						System.out.println("Message from server " + raw);
+						
 						if (type.equals("chat")) {
-							chatWriter.write(data + '\n');
+							chatWriter.write(raw + '\n');
 							chatWriter.flush();
+						} else if (type.equals("join_game")) {
+							joinGameWriter.write(raw + '\n');
+							joinGameWriter.flush();
 						} else {
-							gameWriter.write(data + '\n');
+							gameWriter.write(raw + '\n');
 							gameWriter.flush();
 						}
 					} catch (Exception e) {
@@ -53,7 +64,9 @@ public class ServerInquiry {
 					Thread.yield();
 				}
 			}
-		})).start();
+		}));
+		serverThread.setDaemon(true);
+		serverThread.start();
 	}
 	
 	public void send(String message) {
@@ -61,32 +74,46 @@ public class ServerInquiry {
 		out.flush();
 	}
 	
+	public void send(JSONObject message) {
+		send(message.toString());
+	}
+	
 	public BufferedReader subscribeToChat() throws IOException {
 		return new BufferedReader(new PipedReader(chatWriter));
 	}
 	
 	public BufferedReader subscribeToGame() throws IOException {
-		return new BufferedReader(new PipedReader(gameWriter));
+		PipedReader pipe = new PipedReader();
+		gameWriter = new PipedWriter();
+		gameWriter.connect(pipe);
+		return new BufferedReader(pipe);
+	}
+	
+	public BufferedReader subscribeToJoinGame() throws IOException {
+		PipedReader pipe = new PipedReader();
+		joinGameWriter = new PipedWriter();
+		joinGameWriter.connect(pipe);
+		return new BufferedReader(pipe);
 	}
 	
 	
 	
-	public static void main(String[] args) throws IOException {
-		ServerInquiry inquiry = new ServerInquiry("178.37.109.133", 1444);
-		
-		inquiry.start();
-		inquiry.send("{\"type\":\"create_game\", \"data\": {\"host_name\":\"Kuba\", \"width\":8, \"height\": 10}}");
-		inquiry.send("{\"type\":\"chat\", \"data\": {\"id\":5, \"message\":\"Moja wiadomosc\"}}");
-		BufferedReader chat = inquiry.subscribeToChat(), game = inquiry.subscribeToGame(),
-				game2 = inquiry.subscribeToGame();
-		System.out.println("From game pipe: " + game.readLine());
-		System.out.println("From game pipe2: " + game2.readLine());
-		while (true) {
-			String x = chat.readLine();
-			System.out.println("From chat pipe: " + x);
-			//chat.close();
-			Thread.yield();
-		}
-		
-	}
+//	public static void main(String[] args) throws IOException {
+//		ServerInquiry inquiry = new ServerInquiry("178.37.109.133", 1444);
+//		
+//		inquiry.start();
+//		inquiry.send("{\"type\":\"create_game\", \"data\": {\"host_name\":\"Kuba\", \"width\":8, \"height\": 10}}");
+//		inquiry.send("{\"type\":\"chat\", \"data\": {\"id\":5, \"message\":\"Moja wiadomosc\"}}");
+//		BufferedReader chat = inquiry.subscribeToChat(), game = inquiry.subscribeToGame(),
+//				game2 = inquiry.subscribeToGame();
+//		System.out.println("From game pipe: " + game.readLine());
+//		System.out.println("From game pipe2: " + game2.readLine());
+//		while (true) {
+//			String x = chat.readLine();
+//			System.out.println("From chat pipe: " + x);
+//			//chat.close();
+//			Thread.yield();
+//		}
+//		
+//	}
 }
