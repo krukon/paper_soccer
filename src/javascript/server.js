@@ -42,7 +42,7 @@ net.createServer(function(sock) {
                     controller.requestNextMove(sock, data['id']); break;
                 
                 case 'get_next_move':
-                    controller.getNextMove(sock, data['id']); break;
+                    controller.getNextMove(sock, data['id'], data['move']); break;
                 
                 case 'close_game':
                     controller.closeGame(sock, data['id']); break;

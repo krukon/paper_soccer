@@ -4,8 +4,8 @@ Array.prototype.contains = function(e) {
 
 module.exports = (function () {
 
-    var games, gameId, createGame, listActiveGames, joinGame, watchGame,
-        registerMove, getNextMove, startGame, finishGame, closeGame, notify,
+    var games, gameId, createGame, listGames, joinGame, watchGame,
+        registerMove, getNextMove, startGame, finishGame, closeGame, notifyAll, notify,
         removeClient, requestNextMove, sendChatMessage, printAll,
         validate;
 
@@ -37,9 +37,7 @@ module.exports = (function () {
         games[gameId] = game;
         gameId++
 
-        try {
-            game['host'].write(JSON.stringify(response) + "\n")
-        } catch (e) {}
+        notify(game['host'], response)
     }
 
     joinGame = function(sock, id, guestName) {
@@ -54,12 +52,14 @@ module.exports = (function () {
 
         response = {
             'type': 'join_game',
-            'data': null
+            'data': {
+                'id': id,
+                'guest_name': guestName
+            }
         }
 
-        try {
-            game['host'].write(JSON.stringify(response) + "\n")
-        } catch (e) {}
+        notify(game['host'], response)
+        notifyAll(id, response)
     }
 
     watchGame = function(sock, id, spectatorName) {
@@ -81,23 +81,24 @@ module.exports = (function () {
             }
         }
 
+        notify(sock, response)
+    }
+
+    notify = function(sock, response) {
         try {
-            sock.write(JSON.stringify(response) + "\n")
+            sock.write(JSON.stringify(response) + '\n')
+            console.log('Sending: ' + JSON.stringify(response) + '\n')
         } catch (e) {}
     }
 
-    notify = function(id, response) {
+    notifyAll = function(id, response) {
         var game = games[id], i;
-        try {
-            game['guest'].write(JSON.stringify(response) + "\n")
-        } catch (e) {}
+        notify(game['guest'], response)
         for (i in game['spectators'])
-            try {
-                game['spectators'][i].write(JSON.stringify(response) + "\n")
-            } catch (e) {}
+            notify(game['spectators'][i], response)
     }
 
-    listActiveGames = function(sock) {
+    listGames = function(sock) {
         var response, id, data, game;
 
         response = {
@@ -118,9 +119,7 @@ module.exports = (function () {
             response['data'].push(data)
         }
 
-        try {
-            sock.write(JSON.stringify(response) + "\n")
-        } catch (e) {}
+        notify(sock, response)
     }
 
     registerMove = function(sock, id, move) {
@@ -131,7 +130,7 @@ module.exports = (function () {
 
         validate(sock, id, ['host'])
 
-        notify(id, response);
+        notifyAll(id, response);
     }
 
     getNextMove = function(sock, id, move) {
@@ -142,9 +141,7 @@ module.exports = (function () {
 
         validate(sock, id, ['guest'])
 
-        try {
-            games[id]['host'].write(JSON.stringify(response) + "\n")
-        } catch (e) {}
+        notify(games[id]['host'], response)
     }
 
     requestNextMove = function(sock, id) {
@@ -157,9 +154,7 @@ module.exports = (function () {
 
         validate(sock, id, ['host'])
 
-        try {
-            games[id]['guest'].write(JSON.stringify(response) + "\n")
-        } catch (e) {}
+        notify(games[id]['guest'], response)
     }
 
     startGame = function(sock, id) {
@@ -179,7 +174,7 @@ module.exports = (function () {
             }
         }
 
-        notify(id, response)
+        notifyAll(id, response)
     }
 
     finishGame = function(sock, id, result) {
@@ -194,7 +189,7 @@ module.exports = (function () {
             'data': result
         }
 
-        notify(id, response)
+        notifyAll(id, response)
     }
 
     closeGame = function(sock, id) {
@@ -207,10 +202,8 @@ module.exports = (function () {
 
         validate(sock, id, ['player'])
 
-        try {
-            games[id]['host'].write(JSON.stringify(response) + "\n")
-        } catch (e) {}
-        notify(id, response)
+        notify(games[id]['host'], response)
+        notifyAll(id, response)
 
         delete games[id]
     }
@@ -239,10 +232,9 @@ module.exports = (function () {
             'type': 'chat',
             'data': data
         }
-        try {
-            game['host'].write(JSON.stringify(response) + "\n")
-        } catch (e) {}
-        notify(id, response)
+
+        notify(game['host'], response)
+        notifyAll(id, response)
     }
 
     validate = function(sock, id, arr) {
@@ -288,7 +280,7 @@ module.exports = (function () {
     return new (function GameController() {
         this.createGame = createGame,
         this.joinGame = joinGame,
-        this.listGames = listActiveGames,
+        this.listGames = listGames,
         this.registerMove = registerMove,
         this.getNextMove = getNextMove,
         this.requestNextMove = requestNextMove,
