@@ -86,8 +86,10 @@ module.exports = (function () {
 
     notify = function(sock, response) {
         try {
-            sock.write(JSON.stringify(response) + '\n')
-            console.log('Sending: ' + JSON.stringify(response) + '\n')
+            if (sock.writable) {
+                sock.write(JSON.stringify(response) + '\n')
+                console.log('Sending: ' + JSON.stringify(response) + '\n')
+            }
         } catch (e) {}
     }
 
@@ -122,10 +124,14 @@ module.exports = (function () {
         notify(sock, response)
     }
 
-    registerMove = function(sock, id, move) {
+    registerMove = function(sock, id, data) {
         var response = {
             'type': 'register_move',
-            'data': move
+            'data': {
+                'id': data['id'],
+                'move': data['move'],
+                'player': data['player']
+            }
         };
 
         validate(sock, id, ['host'])
@@ -133,10 +139,14 @@ module.exports = (function () {
         notifyAll(id, response);
     }
 
-    getNextMove = function(sock, id, move) {
+    getNextMove = function(sock, id, data) {
         var response = {
             'type': 'get_next_move',
-            'data': move
+            'data': {
+                'id': data['id'],
+                'move': data['move'],
+                'player': 'guest'
+            }
         };
 
         validate(sock, id, ['guest'])

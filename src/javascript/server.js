@@ -29,20 +29,20 @@ net.createServer(function(sock) {
                 case 'watch_game':
                     controller.watchGame(sock, data['id'], data['spectator_name']); break;
                 
-                case 'start_new_game':
+                case 'start_game':
                     controller.startGame(sock, data['id']); break;
                 
                 case 'finish_game':
                     controller.finishGame(sock, data['id'], data['result']); break;
                 
                 case 'register_move':
-                    controller.registerMove(sock, data['id'], data['move']); break;
+                    controller.registerMove(sock, data['id'], data); break;
                 
                 case 'request_next_move':
                     controller.requestNextMove(sock, data['id']); break;
                 
                 case 'get_next_move':
-                    controller.getNextMove(sock, data['id'], data['move']); break;
+                    controller.getNextMove(sock, data['id'], data); break;
                 
                 case 'close_game':
                     controller.closeGame(sock, data['id']); break;
@@ -56,7 +56,7 @@ net.createServer(function(sock) {
     });
 
     sock.on('close', function(data) {
-        console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
+        console.log('CLOSED: ' + data + " SOCK:" + sock.remoteAddress +' '+ sock.remotePort);
         try {
             controller.removeClient(sock)
         } catch (e) {}
