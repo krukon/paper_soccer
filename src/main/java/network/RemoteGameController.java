@@ -5,73 +5,100 @@ import java.io.IOException;
 import java.io.PipedReader;
 import java.net.UnknownHostException;
 
-import org.json.simple.JSONObject;
+import javafx.application.Platform;
 
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
+import ui.GameWindow;
 import controller.PaperSoccer;
+import helpers.Move;
 import helpers.Player;
+import helpers.Point;
 
 public class RemoteGameController {
-	
-	public static class JsonObj {
-		
-		private StringBuilder builder;
-		
-		public JsonObj() {
-			builder = new StringBuilder();
-		}
-		
-		public JsonObj(String value) {
-			super();
-			builder.append(value);
-		}
-		
-		public JsonObj add(String key, Object value) {
-			if (builder.length() > 0)
-				builder.append(", ");
-			builder.append("\"" + key + "\": ");
-			if (value.getClass() == String.class)
-				builder.append("\"" + value + "\"");
-			else
-				builder.append(value.toString());
-			return this;
-		}
-		
-		@Override
-		public String toString() {
-			return "{" + builder.toString().trim() + "}";
-		}
-	}
-
-	private Player guest;
+	private GameWindow guest;
 	private ServerInquiry server;
+	private String gameID;
 	
-	public RemoteGameController(Player guest) {
+	public RemoteGameController(GameWindow guest, String gameID) {
 		this.guest = guest;
 		this.server = PaperSoccer.server;
+		this.gameID = gameID;
 	}
 	
-	public void joinGame(String id) {
-		//TODO server.joinGame(id);
-		server.send((new JsonObj()).add("type", "join_game").add("data", new JsonObj().add("id", id)).toString());
-		
-	}
-	
-	public static void main(String[] args) throws UnknownHostException, IOException {
-		ServerInquiry server = new ServerInquiry("localhost", 1444);
-		server.start();
-		RemoteGameController controller = new RemoteGameController(null);
-		controller.joinGame("0");
-		//server.send("Hello server!");
-		BufferedReader game = server.subscribeToGame();
+	@SuppressWarnings("unchecked")
+	public void runGame() throws IOException {
+		BufferedReader reader = server.subscribeToGame();
 		
 		while (true) {
-			char buffer[] = new char[1024];
-			if (game.ready()) {
-				game.read(buffer);
-				System.out.println("From game pipe: " + new String(buffer));
-				game.close();
+			System.out.println("Reading from server...");
+			String raw = reader.readLine();
+			
+			JSONObject message = (JSONObject) JSONValue.parse(raw);
+			String type = message.get("type").toString();
+			JSONObject data = (JSONObject) message.get("data");
+			
+			System.out.println("Read from server: " + raw);
+			
+			if (type.equals("start_game")) {
+				int width = Integer.parseInt(data.get("width").toString());
+				int height = Integer.parseInt(data.get("height").toString());
+				
+				guest.startNewGame(width, height, true);
+				System.out.println("Starting new game");
 			}
-			Thread.yield();
+			else if (type.equals("finish_game")) {
+				System.out.println(data);
+				//TODO notify game result
+			}
+			else if (type.equals("close_game")) break;
+			else if (type.equals("request_next_move")) {
+				System.out.println("Waiting for player to make move");
+				Move move = guest.getNextMove();
+
+				System.out.println("Got: " + move.start + " - " + move.end);
+				JSONObject startPoint = new JSONObject();
+				startPoint.put("x", move.start.x);
+				startPoint.put("y", move.start.y);
+				
+				JSONObject endPoint = new JSONObject();
+				endPoint.put("x", move.end.x);
+				endPoint.put("y", move.end.y);
+				
+				JSONObject jMove = new JSONObject();
+				jMove.put("start", startPoint);
+				jMove.put("end", endPoint);
+				
+				JSONObject moveData = new JSONObject();
+				moveData.put("id", gameID);
+				moveData.put("move", jMove);
+				moveData.put("player", "guest");
+
+				JSONObject moveMessage = new JSONObject();
+				moveMessage.put("type", "get_next_move");
+				moveMessage.put("data", moveData);
+				
+				System.out.println("Sending move: " + moveMessage);
+				
+				server.send(moveMessage);
+			}
+			else if (type.equals("register_move")) {
+				JSONObject dataMove = (JSONObject) data.get("move"); 
+				JSONObject start = (JSONObject) dataMove.get("start");
+				JSONObject end = (JSONObject) dataMove.get("end");
+				
+				Point startPoint = new Point(Integer.parseInt(start.get("x").toString()), Integer.parseInt(start.get("y").toString()));
+				Point endPoint = new Point(Integer.parseInt(end.get("x").toString()), Integer.parseInt(end.get("y").toString()));
+				String player = data.get("player").toString();
+				
+				Move move = new Move(startPoint, endPoint, player.equals("guest") ? guest : null);
+				
+				guest.registerMove(move);
+			}
+			else {
+				System.err.println("ERROR: " + raw);
+			}
 		}
 	}
 }

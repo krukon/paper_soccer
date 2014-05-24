@@ -277,15 +277,17 @@ public class GamesListWindow extends BorderPane{
 					server.send(message);
 					
 					try {
+						System.out.println("Joining");
 						BufferedReader reader = server.subscribeToJoinGame();
 						String raw = reader.readLine();
+						System.out.println("Joined " + raw);
 						
 						JSONObject response = (JSONObject) JSONValue.parse(raw);
 						JSONObject startGameData = (JSONObject) response.get("data");
 						
 						String gameId = startGameData.get("id").toString();
 						
-						final GameWindow guest = new GameWindow(guestName, Color.RED, Color.BLUE);
+						final GameWindow guest = new GameWindow(guestName, Color.BLUE, Color.RED);
 						Platform.runLater(new Runnable() {
 							
 							@Override
@@ -294,9 +296,9 @@ public class GamesListWindow extends BorderPane{
 							}
 						});
 						
-						RemoteGameController controller = new RemoteGameController(guest);
+						RemoteGameController controller = new RemoteGameController(guest, gameId);
 						
-						//controller.
+						controller.runGame();
 						
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -307,7 +309,9 @@ public class GamesListWindow extends BorderPane{
             controllerThread.setDaemon(true);
             controllerThread.start();
             
-        	} catch (Exception e) {}
+        	} catch (Exception e) {
+        		e.printStackTrace();
+        	}
         }
     }
     

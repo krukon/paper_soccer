@@ -47,8 +47,10 @@ public class WaitForOpponentDialog extends Stage {
 				System.out.println("Wait for guest - begin");
 				String guestName, gameID = null;
 				BufferedReader reader = null;
+				BufferedReader joinReader = null;
 				try {
 					reader = server.subscribeToGame();
+					joinReader = server.subscribeToJoinGame();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -76,7 +78,7 @@ public class WaitForOpponentDialog extends Stage {
 				while(true) {
 					try {
 						System.out.println("Waiting...");
-						String raw = reader.readLine();
+						String raw = joinReader.readLine();
 						System.out.println("From server: " + raw);
 						JSONObject joinGameData = (JSONObject) JSONValue.parse(raw);
 						if (joinGameData.get("type").toString().equals("join_game")) {
@@ -90,7 +92,8 @@ public class WaitForOpponentDialog extends Stage {
 				}
 				final String finalGuestName = guestName;
 				final String finalGameId = gameID;
-				
+
+				System.out.println("Run game");
 				Platform.runLater(new Runnable() {
 					
 					@Override

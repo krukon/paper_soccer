@@ -14,6 +14,7 @@ import java.io.IOException;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
+import controller.PaperSoccer;
 import helpers.GameResult;
 import helpers.Move;
 import helpers.Player;
@@ -28,7 +29,7 @@ public class RemoteGuestPlayer implements Player {
 	
 	public RemoteGuestPlayer(String playerName, ServerInquiry server, String gameID) throws IOException {
 		this.playerName = playerName;
-		this.server = server;
+		this.server = PaperSoccer.server;
 		this.gameID = gameID;
 		gamePipe = server.subscribeToGame();
 	}
@@ -42,8 +43,10 @@ public class RemoteGuestPlayer implements Player {
 	@SuppressWarnings("unchecked")
 	public void startNewGame(int width, int height, boolean topGoal) {
 		JSONObject message = new JSONObject();
-		message.put("type", "start_new_game");
-		message.put("data", "{\"id\":" + gameID + "}");		
+		message.put("type", "start_game");
+		JSONObject data = new JSONObject();
+		data.put("id", gameID);
+		message.put("data", data);		
 		
 		server.send(message);
 	}
@@ -122,6 +125,7 @@ public class RemoteGuestPlayer implements Player {
 		JSONObject data = new JSONObject();
 		data.put("id", gameID);
 		data.put("move", jMove);
+		data.put("player", move.player == this ? "guest" : "host");
 
 		JSONObject message = new JSONObject();
 		message.put("type", "register_move");

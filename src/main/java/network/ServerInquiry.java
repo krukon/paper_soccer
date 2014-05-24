@@ -30,6 +30,7 @@ public class ServerInquiry {
 		out = new PrintWriter(socket.getOutputStream());
 		chatWriter = new PipedWriter();
 		gameWriter = new PipedWriter();
+		joinGameWriter = new PipedWriter();
 	}
 	
 	public void start() {
