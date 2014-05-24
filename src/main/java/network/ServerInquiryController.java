@@ -32,7 +32,7 @@ public class ServerInquiryController implements Runnable {
 	private Socket socket;
 	private BufferedReader in;
 	
-	private NetworkGuestPlayer guestPlayer;
+	private RemoteGuestPlayer guestPlayer;
 	private BufferedWriter guestPlayerWriter;
 	private PipedWriter guestPlayerPipe;
 	
@@ -40,7 +40,7 @@ public class ServerInquiryController implements Runnable {
 	
 	private HashSet<String> guestPlayerInquiries;
 	
-	public ServerInquiryController(NetworkGuestPlayer guestPlayer, Socket socket) {
+	public ServerInquiryController(RemoteGuestPlayer guestPlayer, Socket socket) {
 		this.guestPlayer = guestPlayer;
 		this.socket = socket;
 		try {

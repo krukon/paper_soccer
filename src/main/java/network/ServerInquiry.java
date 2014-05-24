@@ -41,10 +41,10 @@ public class ServerInquiry {
 						String type = (String) message.get("type");
 						String data = JSONValue.toJSONString(message.get("data"));
 						if (type.equals("chat")) {
-							chatWriter.write(data);
+							chatWriter.write(data + '\n');
 							chatWriter.flush();
 						} else {
-							gameWriter.write(data);
+							gameWriter.write(data + '\n');
 							gameWriter.flush();
 						}
 					} catch (Exception e) {
@@ -61,30 +61,30 @@ public class ServerInquiry {
 		out.flush();
 	}
 	
-	public PipedReader subscribeToChat() throws IOException {
-		return new PipedReader(chatWriter);
+	public BufferedReader subscribeToChat() throws IOException {
+		return new BufferedReader(new PipedReader(chatWriter));
 	}
 	
-	public PipedReader subscribeToGame() throws IOException {
-		return new PipedReader(gameWriter);
+	public BufferedReader subscribeToGame() throws IOException {
+		return new BufferedReader(new PipedReader(gameWriter));
 	}
 	
 	
 	
 	public static void main(String[] args) throws IOException {
-		ServerInquiry inquiry = new ServerInquiry("localhost", 1444);
+		ServerInquiry inquiry = new ServerInquiry("178.37.109.133", 1444);
 		
 		inquiry.start();
-		inquiry.send("Hello server!");
-		PipedReader chat = inquiry.subscribeToChat();
-		
+		inquiry.send("{\"type\":\"create_game\", \"data\": {\"host_name\":\"Kuba\", \"width\":8, \"height\": 10}}");
+		inquiry.send("{\"type\":\"chat\", \"data\": {\"id\":5, \"message\":\"Moja wiadomosc\"}}");
+		BufferedReader chat = inquiry.subscribeToChat(), game = inquiry.subscribeToGame(),
+				game2 = inquiry.subscribeToGame();
+		System.out.println("From game pipe: " + game.readLine());
+		System.out.println("From game pipe2: " + game2.readLine());
 		while (true) {
-			char buffer[] = new char[1024];
-			if (chat.ready()) {
-				chat.read(buffer);
-				System.out.println("From chat pipe: " + new String(buffer));
-				chat.close();
-			}
+			String x = chat.readLine();
+			System.out.println("From chat pipe: " + x);
+			//chat.close();
 			Thread.yield();
 		}
 		

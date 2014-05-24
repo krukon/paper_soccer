@@ -1,5 +1,6 @@
 package network;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PipedReader;
 import java.net.UnknownHostException;
@@ -60,7 +61,7 @@ public class RemoteGameController {
 		RemoteGameController controller = new RemoteGameController(server, null);
 		controller.joinGame("0");
 		//server.send("Hello server!");
-		PipedReader game = server.subscribeToGame();
+		BufferedReader game = server.subscribeToGame();
 		
 		while (true) {
 			char buffer[] = new char[1024];

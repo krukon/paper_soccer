@@ -25,14 +25,14 @@ import helpers.Move;
 import helpers.Player;
 import helpers.Point;
 
-public class NetworkGuestPlayer implements Player {
+public class RemoteGuestPlayer implements Player {
 	private String playerName;
 	private Socket socket;
 	private PrintWriter out;
-	private BufferedReader in; //needs ServerInquiryController instance created first
+	private BufferedReader in;
 	
 	
-	public NetworkGuestPlayer(String playerName, Socket socket) {
+	public RemoteGuestPlayer(String playerName, Socket socket) {
 		this.playerName = playerName;
 		this.socket = socket;
 		try {
@@ -162,7 +162,7 @@ public class NetworkGuestPlayer implements Player {
 	
 	@Deprecated
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
-		NetworkGuestPlayer p = new NetworkGuestPlayer("x", new Socket("77.253.12.69", 1444));
+		RemoteGuestPlayer p = new RemoteGuestPlayer("x", new Socket("77.253.12.69", 1444));
 		p.createGame();
 	}
 
