@@ -60,7 +60,7 @@ public class NetworkGuestPlayer implements Player {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public void startNewGame(int width, int height) {
+	public void startNewGame(int width, int height, boolean topGoal) {
 		JSONObject message = new JSONObject();
 		message.put("type", "start_new_game");
 		message.put("data", null);		
