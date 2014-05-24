@@ -21,8 +21,6 @@ public class ServerInquiry {
 	private PipedWriter chatWriter;
 	private PipedWriter gameWriter;
 	private PipedWriter joinGameWriter;
-	private Collection<PipedWriter> subsribersGame;
-	private Collection<PipedWriter> subsribersChat;
 	
 	public ServerInquiry(String address, int port) throws UnknownHostException, IOException {
 		socket = new Socket(address, port);
@@ -45,7 +43,6 @@ public class ServerInquiry {
 						raw = in.readLine();
 						message = (JSONObject) JSONValue.parse(raw);
 						String type = (String) message.get("type");
-						String data = JSONValue.toJSONString(message.get("data"));
 						
 						System.out.println("Message from server " + raw);
 						
@@ -70,7 +67,7 @@ public class ServerInquiry {
 		serverThread.start();
 	}
 	
-	public void send(String message) {
+	public synchronized void send(String message) {
 		out.write(message);
 		out.flush();
 	}

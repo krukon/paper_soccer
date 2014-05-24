@@ -259,55 +259,8 @@ public class GamesListWindow extends BorderPane{
             System.out.println("name = " + recordList.get(index).getName());
             System.out.println("board width = " + recordList.get(index).getBoardWidth());
             System.out.println("board height = " + recordList.get(index).getBoardHeight());
-            final int id = recordList.get(index).getId();
-            Thread controllerThread = new Thread(new Runnable() {
-				
-				@SuppressWarnings("unchecked")
-				@Override
-				public void run() {
-					ServerInquiry server = PaperSoccer.server;
-					
-					JSONObject message = new JSONObject();
-					message.put("type", "join_game");
-					JSONObject data = new JSONObject();
-					data.put("id", id);
-					data.put("guest_name", guestName);
-					message.put("data", data);
-					
-					server.send(message);
-					
-					try {
-						System.out.println("Joining");
-						BufferedReader reader = server.subscribeToJoinGame();
-						String raw = reader.readLine();
-						System.out.println("Joined " + raw);
-						
-						JSONObject response = (JSONObject) JSONValue.parse(raw);
-						JSONObject startGameData = (JSONObject) response.get("data");
-						
-						String gameId = startGameData.get("id").toString();
-						
-						final GameWindow guest = new GameWindow(guestName, Color.BLUE, Color.RED);
-						Platform.runLater(new Runnable() {
-							
-							@Override
-							public void run() {
-								PaperSoccer.getMainWindow().showSinglePlayerGameWindow(guest);
-							}
-						});
-						
-						RemoteGameController controller = new RemoteGameController(guest, gameId);
-						
-						controller.runGame();
-						
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			});
-            controllerThread.setDaemon(true);
-            controllerThread.start();
+            int id = recordList.get(index).getId();
+            runControllerThread(id);
             
         	} catch (Exception e) {
         		e.printStackTrace();
@@ -371,6 +324,58 @@ public class GamesListWindow extends BorderPane{
 		buttonBox.getChildren().addAll(getBackButton());
 		
 		return buttonBox;
+	}
+	
+	private void runControllerThread(final int id) {
+		Thread controllerThread = new Thread(new Runnable() {
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			public void run() {
+				ServerInquiry server = PaperSoccer.server;
+				
+				try {
+					System.out.println("Joining");
+					BufferedReader joinReader = server.subscribeToJoinGame();
+					
+					JSONObject message = new JSONObject();
+					message.put("type", "join_game");
+					JSONObject data = new JSONObject();
+					data.put("id", id);
+					data.put("guest_name", guestName);
+					message.put("data", data);
+					
+					server.send(message);
+					
+					String raw = joinReader.readLine();
+					System.out.println("Joined " + raw);
+					
+					JSONObject response = (JSONObject) JSONValue.parse(raw);
+					JSONObject startGameData = (JSONObject) response.get("data");
+					
+					String gameId = startGameData.get("id").toString();
+					
+					final GameWindow guest = new GameWindow(guestName, Color.RED, Color.BLUE);
+					Platform.runLater(new Runnable() {
+						
+						@Override
+						public void run() {
+							PaperSoccer.getMainWindow().showSinglePlayerGameWindow(guest);
+						}
+					});
+					
+					RemoteGameController controller = new RemoteGameController(guest, gameId);
+					
+					controller.runGame();
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+        controllerThread.setDaemon(true);
+        controllerThread.start();
 	}
 
 }
