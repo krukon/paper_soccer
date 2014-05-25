@@ -158,7 +158,7 @@ public abstract class StrategyBot implements Player {
 		if (isWinningMove)
 			return;
 		int d1 = getDistance(currentMoves.lastElement()), d2;
-		if(bestMoves.size() == 0 || d1 < (d2 = getDistance(bestMoves.lastElement())) || (d1 == d2 && rg.nextDouble() < 0.3)) {
+		if(bestMoves.isEmpty() || d1 < (d2 = getDistance(bestMoves.lastElement())) || (d1 == d2 && rg.nextDouble() < 0.3)) {
 			bestMoves.clear();
 			for(int i = 1; i < currentMoves.size(); i++)
 				bestMoves.push(currentMoves.get(i));
@@ -177,7 +177,7 @@ public abstract class StrategyBot implements Player {
 		Point current = board.getCurrent();
 		for(Direction dir : Direction.permuteValues()) {
 			Point target = dir.moveFrom(current);
-			if(board.canMoveTo(target.x, target.y) && isAcceptableMove(target)) {
+			if((board.canMoveTo(target.x, target.y) && (isAcceptableMove(target) || bestMoves.isEmpty()))) {
 				try {
 					boolean bounce = board.moveTo(target.x, target.y);
 					currentMoves.push(target);

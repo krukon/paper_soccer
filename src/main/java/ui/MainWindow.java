@@ -2,6 +2,7 @@ package ui;
 
 import controller.PaperSoccer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
@@ -105,6 +106,17 @@ public class MainWindow extends Application {
 	public void joinNetworkGame(String player) {
 		mainView.getChildren().clear();
 		mainView.getChildren().add(new GamesListWindow(player));
+		
+	}
+	
+	public void showHelpWindow() {
+		Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				new HelpWindow().show();
+			}
+		});
 		
 	}
 }

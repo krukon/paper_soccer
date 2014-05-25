@@ -1,6 +1,7 @@
 package ui;
 
 import controller.PaperSoccer;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -12,6 +13,7 @@ import javafx.scene.text.Font;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 
 public class MainMenu extends BorderPane {	
@@ -27,20 +29,27 @@ public class MainMenu extends BorderPane {
 		mainMenu.setPrefSize(prefWidth, prefHeight);
 		mainMenu.setAlignment(Pos.CENTER);
 		mainMenu.setStyle("-fx-background-color: GREEN;");
+
+		HBox h = new HBox();
+		h.setAlignment(Pos.CENTER);
+		h.getChildren().addAll(generateExitButton(), generateHelpButton());
 		
 		mainMenu.add(generateTitleLabel(), 0, 0);
+		mainMenu.add(h, 0, 11);
 		mainMenu.add(generateSinglePlayer(), 0, 1);
 		mainMenu.add(generateTwoPlayersButton(), 0, 2);
 		mainMenu.add(generateBotsTournament(), 0, 3);
 		mainMenu.add(generateNetworkGame(), 0, 4);
-		mainMenu.add(generateExitButton(), 0, 11);
+		//mainMenu.add(h, 0, 11);
+		//mainMenu.add(generateHelpButton(), 2, 11);
+		//mainMenu.add(generateExitButton(), 0, 11);
 		
 		return mainMenu;
 	}
 	
 	private HBox generateExitButton() {
 		Button exit = new Button("EXIT");
-		exit.setMinSize(150,60);
+		exit.setMinSize(90,60);
 
 		exit.setOnAction(new EventHandler<ActionEvent>() {
 			
@@ -54,7 +63,34 @@ public class MainMenu extends BorderPane {
 		HBox buttonBox = new HBox();
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.getChildren().add(exit);
-		buttonBox.setPadding(new Insets(10, 10, 10, 10));
+		buttonBox.setPadding(new Insets(10, 5, 10, 10));
+		
+		return buttonBox;
+
+	}
+	
+	private HBox generateHelpButton() {
+		Button help = new Button("?");
+		help.setMinSize(50,60);
+
+		help.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				Platform.runLater(new Runnable() {
+					
+					@Override
+					public void run() {
+						new HelpWindow().show();
+					}
+				});
+			}
+		});
+		
+		HBox buttonBox = new HBox();
+		buttonBox.setAlignment(Pos.CENTER);
+		buttonBox.getChildren().add(help);
+		buttonBox.setPadding(new Insets(10, 10, 10, 5));
 		
 		return buttonBox;
 
