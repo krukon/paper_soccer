@@ -29,27 +29,21 @@ public class MainMenu extends BorderPane {
 		mainMenu.setPrefSize(prefWidth, prefHeight);
 		mainMenu.setAlignment(Pos.CENTER);
 		mainMenu.setStyle("-fx-background-color: GREEN;");
-
-		HBox h = new HBox();
-		h.setAlignment(Pos.CENTER);
-		h.getChildren().addAll(generateExitButton(), generateHelpButton());
 		
 		mainMenu.add(generateTitleLabel(), 0, 0);
-		mainMenu.add(h, 0, 11);
 		mainMenu.add(generateSinglePlayer(), 0, 1);
 		mainMenu.add(generateTwoPlayersButton(), 0, 2);
 		mainMenu.add(generateBotsTournament(), 0, 3);
 		mainMenu.add(generateNetworkGame(), 0, 4);
-		//mainMenu.add(h, 0, 11);
-		//mainMenu.add(generateHelpButton(), 2, 11);
-		//mainMenu.add(generateExitButton(), 0, 11);
+		mainMenu.add(generateHelpButton(), 0, 5);
+		mainMenu.add(generateExitButton(), 0, 6);
 		
 		return mainMenu;
 	}
 	
 	private HBox generateExitButton() {
 		Button exit = new Button("EXIT");
-		exit.setMinSize(90,60);
+		exit.setMinSize(150,60);
 
 		exit.setOnAction(new EventHandler<ActionEvent>() {
 			
@@ -63,15 +57,15 @@ public class MainMenu extends BorderPane {
 		HBox buttonBox = new HBox();
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.getChildren().add(exit);
-		buttonBox.setPadding(new Insets(10, 5, 10, 10));
+		buttonBox.setPadding(new Insets(10, 10, 10, 10));
 		
 		return buttonBox;
 
 	}
 	
 	private HBox generateHelpButton() {
-		Button help = new Button("?");
-		help.setMinSize(50,60);
+		Button help = new Button("HELP");
+		help.setMinSize(150,60);
 
 		help.setOnAction(new EventHandler<ActionEvent>() {
 			
@@ -90,7 +84,7 @@ public class MainMenu extends BorderPane {
 		HBox buttonBox = new HBox();
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.getChildren().add(help);
-		buttonBox.setPadding(new Insets(10, 10, 10, 5));
+		buttonBox.setPadding(new Insets(10, 10, 10, 10));
 		
 		return buttonBox;
 
@@ -190,7 +184,7 @@ public class MainMenu extends BorderPane {
 		HBox labelBox = new HBox();
 		labelBox.setAlignment(Pos.CENTER);
 		labelBox.getChildren().add(label);
-		labelBox.setPadding(new Insets(10, 10, 100, 10));
+		labelBox.setPadding(new Insets(20, 10, 40, 10));
 		
 		return labelBox;
 	}

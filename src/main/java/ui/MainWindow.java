@@ -4,6 +4,7 @@ import controller.PaperSoccer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
