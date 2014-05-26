@@ -33,12 +33,12 @@ import javafx.stage.Stage;
 public class WaitForOpponentDialog extends Stage {
 	private ServerInquiry server = PaperSoccer.server;
 	
-	public WaitForOpponentDialog(GameWindow host, String hostName, int width, int height) {
+	public WaitForOpponentDialog(GameWindowOnline host, String hostName, int width, int height) {
 		constructView();
         waitForGuest(host, hostName, width, height);
 	}
 	
-	private void waitForGuest(final GameWindow host, final String hostName, final int width, final int height) {
+	private void waitForGuest(final GameWindowOnline host, final String hostName, final int width, final int height) {
 		new Thread(new Runnable() {
 			
 			@SuppressWarnings("unchecked")
@@ -71,6 +71,7 @@ public class WaitForOpponentDialog extends Stage {
 					JSONObject createGameData = (JSONObject) createGameResponse.get("data");
 					System.out.println("Wait for guest - response " + createGameData.toString());
 					gameID = createGameData.get("id").toString();
+					host.registerGameID(gameID);
 					System.out.println("Wait for guest - after response " + raw);
 				} catch (IOException e) {
 					e.printStackTrace();

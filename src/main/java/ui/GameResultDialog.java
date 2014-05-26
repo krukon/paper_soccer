@@ -24,8 +24,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class GameResultDialog extends Stage {
+	protected Button rematch, exit;
+	protected PaperSoccerController controller;
+	
 	public GameResultDialog(GameResult result, final PaperSoccerController controller) {
 		initModality(Modality.APPLICATION_MODAL);
+		this.controller = controller;
 		
 		Label message = new Label("Scored: " + result.getWinner().getName());
 		message.setFont(Font.font(20));
@@ -35,8 +39,41 @@ public class GameResultDialog extends Stage {
 		score.setFont(Font.font(15));
 		score.setAlignment(Pos.BASELINE_CENTER);
 		
-		Button rematch = new Button("Rematch");
+		rematch = new Button("Rematch");
 		rematch.setDefaultButton(true);
+		addRematchButtonListiner();
+		
+		exit = new Button("Main menu");
+		exit.setCancelButton(true);
+		addExitButtonListiner();
+		
+		HBox hBox = new HBox();
+        hBox.setAlignment(Pos.BASELINE_CENTER);
+        hBox.setSpacing(40.0);
+        hBox.getChildren().addAll(rematch, exit);
+
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.BASELINE_CENTER);
+        vBox.setSpacing(20.0);
+        vBox.getChildren().addAll(message, score, hBox);
+        
+        setScene(new Scene(vBox, 300, 150));
+	}
+
+	protected void addExitButtonListiner() {
+		exit.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				System.out.println("Back to main menu");
+				PaperSoccer.getMainWindow().showMenu();
+				close();
+			}
+		});
+		
+	}
+
+	protected void addRematchButtonListiner() {
 		rematch.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -57,29 +94,5 @@ public class GameResultDialog extends Stage {
 				close();
 			}
 		});
-		
-		Button exit = new Button("Main menu");
-		exit.setCancelButton(true);
-		exit.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				System.out.println("Back to main menu");
-				PaperSoccer.getMainWindow().showMenu();
-				close();
-			}
-		});
-		
-		HBox hBox = new HBox();
-        hBox.setAlignment(Pos.BASELINE_CENTER);
-        hBox.setSpacing(40.0);
-        hBox.getChildren().addAll(rematch, exit);
-
-        VBox vBox = new VBox();
-        vBox.setAlignment(Pos.BASELINE_CENTER);
-        vBox.setSpacing(20.0);
-        vBox.getChildren().addAll(message, score, hBox);
-
-        setScene(new Scene(vBox, 300, 150));
 	}
 }
