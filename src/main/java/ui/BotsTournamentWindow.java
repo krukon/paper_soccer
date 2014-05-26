@@ -130,6 +130,7 @@ public class BotsTournamentWindow extends BorderPane {
 	 */
 	private HBox getStartBackButton() {
 		HBox buttonBox = new HBox();
+		buttonBox.setSpacing(10);
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.getChildren().addAll(getStartButton(), getBackButton());
 		

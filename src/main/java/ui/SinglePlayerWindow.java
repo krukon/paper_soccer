@@ -127,6 +127,7 @@ public class SinglePlayerWindow extends BorderPane {
 	private HBox addStartBackButton() {
 		HBox buttonBox = new HBox();
 		buttonBox.setAlignment(Pos.CENTER);
+		buttonBox.setSpacing(10);
 		buttonBox.getChildren().addAll(getStartButton(), getBackButton());
 		
 		return buttonBox;
