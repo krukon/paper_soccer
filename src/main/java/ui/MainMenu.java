@@ -13,7 +13,6 @@ import javafx.scene.text.Font;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 
 public class MainMenu extends BorderPane {	
@@ -28,8 +27,7 @@ public class MainMenu extends BorderPane {
 		GridPane mainMenu = new GridPane();
 		mainMenu.setPrefSize(prefWidth, prefHeight);
 		mainMenu.setAlignment(Pos.CENTER);
-		mainMenu.setStyle("-fx-background-color: GREEN;");
-		
+		mainMenu.setStyle("-fx-background-image: url('paper_soccer_background.jpg'); -fx-background-repeat: stretch;");
 		mainMenu.add(generateTitleLabel(), 0, 0);
 		mainMenu.add(generateSinglePlayer(), 0, 1);
 		mainMenu.add(generateTwoPlayersButton(), 0, 2);
