@@ -43,6 +43,9 @@ public class SinglePlayerWindow extends BorderPane {
 
 
 	public SinglePlayerWindow() {
+		setPrefSize(PaperSoccer.WIDTH, PaperSoccer.HEIGHT);
+		setStyle("-fx-background-image: url('paper_soccer_background.jpg');");
+		
 		playerOneName = new TextField("Player");
 		boardWidth = new TextField("8");
 		boardHeight = new TextField("10");
@@ -53,7 +56,6 @@ public class SinglePlayerWindow extends BorderPane {
 		setTop(addWindowTitle());
 		setCenter(addGridPane());
 		setBottom(addStartBackButton());
-		setStyle("-fx-background-image: url('paper_soccer_background.jpg'); -fx-background-repeat: stretch;");
 	}
 	
 	/**

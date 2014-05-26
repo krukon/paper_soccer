@@ -18,8 +18,8 @@ import ui.MainWindow;
 public class PaperSoccer {
 	private static MainWindow mainWindow;
 	public static final String sync = "SYNCHRONIZING STRING"; //object on which thread can synchronize, probably should be replaced
-	public static final int WIDTH = 400;
-	public static final int  HEIGHT = 600;
+	public static final int WIDTH = 433;
+	public static final int  HEIGHT = 650;
 	
 	public static void main(String[] args) throws InterruptedException {
 		synchronized (sync) {

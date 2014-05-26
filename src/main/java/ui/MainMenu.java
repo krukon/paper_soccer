@@ -18,7 +18,7 @@ import javafx.scene.layout.HBox;
 public class MainMenu extends BorderPane {	
 	
 	public MainMenu() {
-		//setStyle("-fx-background-image: url('paper_soccer_background.jpg');");
+		setStyle("-fx-background-image: url('paper_soccer_background.jpg');");
 		setCenter(addGridPane());
 	}
 	

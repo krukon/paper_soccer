@@ -45,6 +45,9 @@ public class BotsTournamentWindow extends BorderPane {
 
 
 	public BotsTournamentWindow() {
+		setPrefSize(PaperSoccer.WIDTH, PaperSoccer.HEIGHT);
+		setStyle("-fx-background-image: url('paper_soccer_background.jpg');");
+		
 		boardWidth = new TextField("8");
 		boardHeight = new TextField("10");
 		
@@ -53,7 +56,7 @@ public class BotsTournamentWindow extends BorderPane {
 		setPadding(insets);
 		setTop(getWindowTitle());
 		setCenter(getGridPane());
-		//setStyle("-fx-background-image: url('paper_soccer_background.jpg'); -fx-background-repeat: stretch;");
+		
 		setBottom(getStartBackButton());
 	}
 	

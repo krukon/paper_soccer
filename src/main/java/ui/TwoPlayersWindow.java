@@ -44,6 +44,9 @@ public class TwoPlayersWindow extends BorderPane {
 
 	
 	public TwoPlayersWindow() {
+		setPrefSize(PaperSoccer.WIDTH, PaperSoccer.HEIGHT);
+		setStyle("-fx-background-image: url('paper_soccer_background.jpg');");
+		
 		playerOneName = new TextField("Player 1");
 		playerTwoName = new TextField("Player 2");
 		boardWidth = new TextField("8");

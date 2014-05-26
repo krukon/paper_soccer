@@ -45,6 +45,9 @@ public class NetworkWindow extends BorderPane {
 	
 	
 	public NetworkWindow() {
+		setPrefSize(PaperSoccer.WIDTH, PaperSoccer.HEIGHT);
+		setStyle("-fx-background-image: url('paper_soccer_background.jpg');");
+		
 		playerName = new TextField("Player");
 		boardWidth = new TextField("8");
 		boardHeight = new TextField("10");
