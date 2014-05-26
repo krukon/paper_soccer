@@ -31,6 +31,7 @@ public class HelpWindow extends Stage {
 			}
 			webEngine.loadContent(sb.toString());
 	        setScene(new Scene(webView, 300, 600));
+	        setResizable(false);
 		} catch(Exception e) {
 			e.printStackTrace();
 			close();

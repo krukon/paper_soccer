@@ -53,6 +53,7 @@ public class BotsTournamentWindow extends BorderPane {
 		setPadding(insets);
 		setTop(getWindowTitle());
 		setCenter(getGridPane());
+		//setStyle("-fx-background-image: url('paper_soccer_background.jpg'); -fx-background-repeat: stretch;");
 		setBottom(getStartBackButton());
 	}
 	
@@ -251,6 +252,7 @@ public class BotsTournamentWindow extends BorderPane {
 		grid.setHgap(10);
 		grid.setVgap(10);
 		grid.setPadding(insets);
+		//grid.setStyle("-fx-background-image: url('paper_soccer_background.jpg'); -fx-background-repeat: stretch;");
 		
 		addBotsLabels(grid);
 		addBotsComboBoxes(grid);

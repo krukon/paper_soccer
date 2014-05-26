@@ -1,5 +1,7 @@
 package ui;
 
+import java.nio.file.Paths;
+
 import controller.PaperSoccer;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -17,16 +19,17 @@ import javafx.stage.Stage;
  */
 
 public class MainWindow extends Application {
-	private final int prefWidth = 400;
-	private final int prefHeight = 600;
 	
 	private Group mainView;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		mainView = new Group();
+		mainView.setId("aaa");
 		
-		Scene scene = new Scene(mainView, prefWidth, prefHeight, Color.GREEN);
+		System.out.println(Paths.get("."));
+		Scene scene = new Scene(mainView, PaperSoccer.WIDTH, PaperSoccer.HEIGHT, Color.GREEN);
+		scene.getStylesheets().add(MainWindow.class.getResource("style.css").toExternalForm());
 		
 		primaryStage.setTitle("Paper soccer");
 		primaryStage.setResizable(false);

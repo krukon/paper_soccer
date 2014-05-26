@@ -53,6 +53,7 @@ public class SinglePlayerWindow extends BorderPane {
 		setTop(addWindowTitle());
 		setCenter(addGridPane());
 		setBottom(addStartBackButton());
+		setStyle("-fx-background-image: url('paper_soccer_background.jpg'); -fx-background-repeat: stretch;");
 	}
 	
 	/**
@@ -252,7 +253,7 @@ public class SinglePlayerWindow extends BorderPane {
 	 */
 	private GridPane addGridPane() {
 		GridPane grid = new GridPane();
-		grid.setMinSize(300, 400);
+		grid.setPrefSize(300, 400);
 		
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);

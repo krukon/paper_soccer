@@ -241,12 +241,13 @@ public class TwoPlayersWindow extends BorderPane {
 	 */
 	private GridPane addGridPane() {
 		GridPane grid = new GridPane();
-		grid.setMinSize(300, 400);
+		grid.setPrefSize(300, 400);
 		
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);
 		grid.setVgap(10);
 		grid.setPadding(insets);
+		//grid.setStyle("-fx-background-image: url('paper_soccer_background.jpg'); -fx-background-repeat: stretch;");
 		
 		addPlayersLabels(grid);
 		addPlayersTextFields(grid);

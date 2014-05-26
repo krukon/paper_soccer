@@ -16,18 +16,17 @@ import javafx.scene.layout.HBox;
 
 
 public class MainMenu extends BorderPane {	
-	private final int prefWidth = 400;
-	private final int prefHeight = 550;
 	
 	public MainMenu() {
+		//setStyle("-fx-background-image: url('paper_soccer_background.jpg');");
 		setCenter(addGridPane());
 	}
 	
 	private GridPane addGridPane() {
 		GridPane mainMenu = new GridPane();
-		mainMenu.setPrefSize(prefWidth, prefHeight);
+		mainMenu.setPrefSize(PaperSoccer.WIDTH, PaperSoccer.HEIGHT);
 		mainMenu.setAlignment(Pos.CENTER);
-		mainMenu.setStyle("-fx-background-image: url('paper_soccer_background.jpg'); -fx-background-repeat: stretch;");
+		//mainMenu.setStyle("-fx-background-image: url('paper_soccer_background.jpg'); -fx-background-repeat: stretch;");
 		mainMenu.add(generateTitleLabel(), 0, 0);
 		mainMenu.add(generateSinglePlayer(), 0, 1);
 		mainMenu.add(generateTwoPlayersButton(), 0, 2);
