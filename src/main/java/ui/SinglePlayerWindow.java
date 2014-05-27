@@ -19,6 +19,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -80,19 +82,21 @@ public class SinglePlayerWindow extends BorderPane {
 		
 		startButton.setOnAction(new EventHandler<ActionEvent>() {
 			
-			//TODO Showing board and size validation
 			@Override
 			public void handle(ActionEvent event) {				
-				try {
-					int width = Integer.parseInt(boardWidth.getCharacters().toString());
-					int height = Integer.parseInt(boardHeight.getCharacters().toString());
-					
-					System.out.println("Constructing board " + width + " x " + height);
-					startGame(playerOneName.getText(), comboBox.getValue(), width, height);
-				} catch (Exception e) {
-					System.out.println("Size is not an integer");
+				System.out.println("Constructing board");
+				startGame(playerOneName.getText(), comboBox.getValue());
+			}
+		});
+		
+		startButton.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent key) {
+				if (key.getCode() == KeyCode.ENTER) {
+					System.out.println("Constructing board");
+					startGame(playerOneName.getText(), comboBox.getValue());
 				}
-			
 			}
 		});
 		
@@ -106,6 +110,7 @@ public class SinglePlayerWindow extends BorderPane {
 	private Button getBackButton() {
 		Button exitButton = new Button("BACK");
 		exitButton.setMinSize(100, 50);
+		exitButton.setCancelButton(true);
 		
 		exitButton.setOnAction(new EventHandler<ActionEvent>() {
 			
@@ -281,7 +286,10 @@ public class SinglePlayerWindow extends BorderPane {
 	 * @param height width of the board
 	 *
 	 */
-	private void startGame(final String playerOne, final String bot, final int width, final int height) {
+	private void startGame(final String playerOne, final String bot) {
+		final int width = Integer.parseInt(boardWidth.getCharacters().toString());
+		final int height = Integer.parseInt(boardHeight.getCharacters().toString());
+		
 		GameWindow view = new GameWindow(playerOne, Color.BLUE, Color.RED);
 		final Player host = view;
 		final Player guest;

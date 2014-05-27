@@ -20,6 +20,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -84,11 +86,19 @@ public class TwoPlayersWindow extends BorderPane {
 			
 			@Override
 			public void handle(ActionEvent event) {				
-				int width = Integer.parseInt(boardWidth.getCharacters().toString());
-				int height = Integer.parseInt(boardHeight.getCharacters().toString());
-				
-				System.out.println("Constructing board " + width + " x " + height);
-				startGame(playerOneName.getText(), playerTwoName.getText(), width, height);
+				System.out.println("Constructing board");
+				startGame(playerOneName.getText(), playerTwoName.getText());
+			}
+		});
+		
+		startButton.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent key) {
+				if (key.getCode() == KeyCode.ENTER) {
+					System.out.println("Constructing board");
+					startGame(playerOneName.getText(), playerTwoName.getText());
+				}
 			}
 		});
 		
@@ -102,6 +112,7 @@ public class TwoPlayersWindow extends BorderPane {
 	private Button getBackButton() {
 		Button exitButton = new Button("BACK");
 		exitButton.setMinSize(100, 50);
+		exitButton.setCancelButton(true);
 		
 		exitButton.setOnAction(new EventHandler<ActionEvent>() {
 			
@@ -270,7 +281,10 @@ public class TwoPlayersWindow extends BorderPane {
 	 *
 	 * @author krukon
 	 */
-	private void startGame(final String playerOne, final String playerTwo, final int width, final int height) {
+	private void startGame(final String playerOne, final String playerTwo) {
+		final int width = Integer.parseInt(boardWidth.getCharacters().toString());
+		final int height = Integer.parseInt(boardHeight.getCharacters().toString());
+		
 		final Player host = new TwoPlayersGameWindow(playerOne, Color.BLUE, Color.RED, true);
 		final Player guest = new TwoPlayersGameWindow(playerTwo, Color.RED, Color.BLUE, false);
 		

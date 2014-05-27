@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -41,6 +43,7 @@ public class MainMenu extends BorderPane {
 	private HBox generateExitButton() {
 		Button exit = new Button("EXIT");
 		exit.setMinSize(150,60);
+		exit.setCancelButton(true);
 
 		exit.setOnAction(new EventHandler<ActionEvent>() {
 			
@@ -98,6 +101,17 @@ public class MainMenu extends BorderPane {
 				System.out.println("Two players");
 				PaperSoccer.getMainWindow().showTwoPlayersWindow();
 				
+			}			
+		});
+		
+		play.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent key) {
+				if (key.getCode() == KeyCode.ENTER) {
+					System.out.println("Two players");
+					PaperSoccer.getMainWindow().showTwoPlayersWindow();
+				}
 			}
 		});
 		
@@ -123,6 +137,17 @@ public class MainMenu extends BorderPane {
 			}
 		});
 		
+		singlePlayer.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent key) {
+				if (key.getCode() == KeyCode.ENTER) {
+					System.out.println("SinglePlayer");
+					PaperSoccer.getMainWindow().showSinglePlayerWindow();
+				}
+			}
+		});
+		
 		HBox buttonBox = new HBox();
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.getChildren().add(singlePlayer);
@@ -145,6 +170,17 @@ public class MainMenu extends BorderPane {
 			}
 		});
 		
+		botsTournament.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent key) {
+				if (key.getCode() == KeyCode.ENTER) {
+					System.out.println("Bots Tournament");
+					PaperSoccer.getMainWindow().showBotsTournametWindow();
+				}
+			}
+		});
+		
 		HBox buttonBox = new HBox();
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.getChildren().add(botsTournament);
@@ -162,6 +198,17 @@ public class MainMenu extends BorderPane {
 			public void handle(ActionEvent event) {
 				System.out.println("Network game");
 				PaperSoccer.getMainWindow().showNetworkWindow();
+			}
+		});
+		
+		networkGame.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent key) {
+				if (key.getCode() == KeyCode.ENTER) {
+					System.out.println("Network game");
+					PaperSoccer.getMainWindow().showNetworkWindow();
+				}
 			}
 		});
 		

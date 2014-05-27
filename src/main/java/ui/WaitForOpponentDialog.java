@@ -7,9 +7,6 @@ package ui;
  */
 
 import controller.PaperSoccer;
-import controller.PaperSoccerController;
-
-import helpers.GameResult;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -32,6 +29,7 @@ public class WaitForOpponentDialog extends Stage {
 		message.setAlignment(Pos.BASELINE_CENTER);
 		
 		Button exit = new Button("Back");
+		exit.setCancelButton(true);
 		exit.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override

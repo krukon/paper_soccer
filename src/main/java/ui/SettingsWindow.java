@@ -2,21 +2,14 @@ package ui;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import bots.BotLoader;
-import bots.BotLoader.BotLoaderException;
-import helpers.Player;
 import controller.PaperSoccer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import controller.PaperSoccerController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -24,7 +17,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import model.Board;
 
 public class SettingsWindow extends BorderPane {
 
@@ -71,6 +63,7 @@ public class SettingsWindow extends BorderPane {
 	private Button getOkButton() {
 		okButton = new Button("OK");
 		okButton.setMinSize(100, 50);
+		okButton.setDefaultButton(true);
 		
 		okButton.setOnAction(new EventHandler<ActionEvent>() {
 			
@@ -104,6 +97,7 @@ public class SettingsWindow extends BorderPane {
 	private Button getBackButton() {
 		Button exitButton = new Button("BACK");
 		exitButton.setMinSize(100, 50);
+		exitButton.setCancelButton(true);
 		
 		exitButton.setOnAction(new EventHandler<ActionEvent>() {
 			
