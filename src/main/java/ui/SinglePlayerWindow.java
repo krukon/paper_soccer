@@ -43,6 +43,9 @@ public class SinglePlayerWindow extends BorderPane {
 
 
 	public SinglePlayerWindow() {
+		setPrefSize(PaperSoccer.WIDTH, PaperSoccer.HEIGHT);
+		setStyle("-fx-background-image: url('paper_soccer_background.jpg');");
+		
 		playerOneName = new TextField("Player");
 		boardWidth = new TextField("8");
 		boardHeight = new TextField("10");
@@ -124,6 +127,7 @@ public class SinglePlayerWindow extends BorderPane {
 	private HBox addStartBackButton() {
 		HBox buttonBox = new HBox();
 		buttonBox.setAlignment(Pos.CENTER);
+		buttonBox.setSpacing(10);
 		buttonBox.getChildren().addAll(getStartButton(), getBackButton());
 		
 		return buttonBox;
@@ -252,7 +256,7 @@ public class SinglePlayerWindow extends BorderPane {
 	 */
 	private GridPane addGridPane() {
 		GridPane grid = new GridPane();
-		grid.setMinSize(300, 400);
+		grid.setPrefSize(300, 400);
 		
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);

@@ -2,6 +2,7 @@ package ui;
 
 import controller.PaperSoccer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
@@ -15,8 +16,6 @@ import javafx.stage.Stage;
  */
 
 public class MainWindow extends Application {
-	private final int prefWidth = 400;
-	private final int prefHeight = 600;
 	
 	private Group mainView;
 	
@@ -24,7 +23,7 @@ public class MainWindow extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		mainView = new Group();
 		
-		Scene scene = new Scene(mainView, prefWidth, prefHeight, Color.GREEN);
+		Scene scene = new Scene(mainView, PaperSoccer.WIDTH, PaperSoccer.HEIGHT, Color.GREEN);
 		
 		primaryStage.setTitle("Paper soccer");
 		primaryStage.setResizable(false);
@@ -105,6 +104,17 @@ public class MainWindow extends Application {
 	public void joinNetworkGame(String player) {
 		mainView.getChildren().clear();
 		mainView.getChildren().add(new GamesListWindow(player));
+		
+	}
+	
+	public void showHelpWindow() {
+		Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				new HelpWindow().show();
+			}
+		});
 		
 	}
 }

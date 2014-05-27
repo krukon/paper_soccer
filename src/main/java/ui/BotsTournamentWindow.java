@@ -45,6 +45,9 @@ public class BotsTournamentWindow extends BorderPane {
 
 
 	public BotsTournamentWindow() {
+		setPrefSize(PaperSoccer.WIDTH, PaperSoccer.HEIGHT);
+		setStyle("-fx-background-image: url('paper_soccer_background.jpg');");
+		
 		boardWidth = new TextField("8");
 		boardHeight = new TextField("10");
 		
@@ -53,6 +56,7 @@ public class BotsTournamentWindow extends BorderPane {
 		setPadding(insets);
 		setTop(getWindowTitle());
 		setCenter(getGridPane());
+		
 		setBottom(getStartBackButton());
 	}
 	
@@ -126,6 +130,7 @@ public class BotsTournamentWindow extends BorderPane {
 	 */
 	private HBox getStartBackButton() {
 		HBox buttonBox = new HBox();
+		buttonBox.setSpacing(10);
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.getChildren().addAll(getStartButton(), getBackButton());
 		
@@ -251,6 +256,7 @@ public class BotsTournamentWindow extends BorderPane {
 		grid.setHgap(10);
 		grid.setVgap(10);
 		grid.setPadding(insets);
+		//grid.setStyle("-fx-background-image: url('paper_soccer_background.jpg'); -fx-background-repeat: stretch;");
 		
 		addBotsLabels(grid);
 		addBotsComboBoxes(grid);

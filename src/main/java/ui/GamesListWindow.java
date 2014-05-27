@@ -6,44 +6,28 @@ package ui;
  * @author ljk
  */
 
-import javafx.application.Application;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import helpers.Player;
 import controller.PaperSoccer;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import controller.PaperSoccerController;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import model.Board;
 
 public class GamesListWindow extends BorderPane{
 
@@ -51,7 +35,10 @@ public class GamesListWindow extends BorderPane{
 	private Insets insets = new Insets(25, 25, 25, 25);
 
 	public GamesListWindow(String player)
-	{		
+	{	
+		setPrefSize(PaperSoccer.WIDTH, PaperSoccer.HEIGHT);
+		setStyle("-fx-background-image: url('paper_soccer_background.jpg');");
+		
 		windowTitle.setFill(Color.WHITE);
 		
 		setPadding(insets);
@@ -237,12 +224,13 @@ public class GamesListWindow extends BorderPane{
 	 */
 	private GridPane addGridPane() {
 		GridPane grid = new GridPane();
-		grid.setMinSize(300, 400);
+		grid.setPrefSize(300, 400);
 		
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);
 		grid.setVgap(10);
 		grid.setPadding(insets);
+		//grid.setStyle("-fx-background-image: url('paper_soccer_background.jpg'); -fx-background-repeat: stretch;");
 		
 		addList(grid);
 				

@@ -38,6 +38,9 @@ public class SettingsWindow extends BorderPane {
 	private Button okButton;
 	
 	public SettingsWindow() {
+		setPrefSize(PaperSoccer.WIDTH, PaperSoccer.HEIGHT);
+		setStyle("-fx-background-image: url('paper_soccer_background.jpg');");
+		
 		this.serverAddress = new TextField("SERVER");
 		this.portName = new TextField("PORT");
 		
