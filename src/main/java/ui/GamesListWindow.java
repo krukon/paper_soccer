@@ -388,6 +388,7 @@ public class GamesListWindow extends BorderPane{
 					
 					final GameWindow guest = new GameWindow(guestName, Color.RED, Color.BLUE);
 					guest.registerNames(hostName, guestName);
+					guest.registerGameID(gameId);
 					Platform.runLater(new Runnable() {
 						
 						@Override
