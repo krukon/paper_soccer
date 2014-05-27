@@ -8,6 +8,7 @@ import helpers.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+import controller.PaperSoccer;
 import controller.PaperSoccerController;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -36,8 +37,8 @@ public class GameWindow extends BorderPane implements Player {
 
 	private Group root;
 	private Shape ball;
-	private double pixelWidth = 400;
-	private double pixelHeight = 600;
+	protected double pixelWidth = PaperSoccer.WIDTH;
+	protected double pixelHeight = 600;
 	private double gridSize;
     private Shape currentHighlightPoint = null;
 	private final double errorMargin = 0.2;
@@ -334,8 +335,6 @@ public class GameWindow extends BorderPane implements Player {
 	 * @author krukon
 	 */
 	private void prepareWindow() {
-		pixelWidth = getScene().getWidth();
-		pixelHeight = getScene().getHeight();
 		gridSize = Math.min(pixelHeight / (fieldHeight + 4), pixelWidth / (fieldWidth + 4));
 		Canvas canvas = new Canvas(pixelWidth, pixelHeight);
 		GraphicsContext gc = canvas.getGraphicsContext2D();

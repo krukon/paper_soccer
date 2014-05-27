@@ -355,7 +355,8 @@ public class GamesListWindow extends BorderPane{
 					
 					String gameId = startGameData.get("id").toString();
 					
-					final GameWindow guest = new GameWindow(guestName, Color.RED, Color.BLUE);
+					final GameWindowOnline guest = new GameWindowOnline(guestName, Color.RED, Color.BLUE);
+					guest.registerGameID(gameId);
 					Platform.runLater(new Runnable() {
 						
 						@Override

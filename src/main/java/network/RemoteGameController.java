@@ -11,17 +11,18 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import ui.GameWindow;
+import ui.GameWindowOnline;
 import controller.PaperSoccer;
 import helpers.Move;
 import helpers.Player;
 import helpers.Point;
 
 public class RemoteGameController {
-	private GameWindow guest;
+	private GameWindowOnline guest;
 	private ServerInquiry server;
 	public static String gameID;
 	
-	public RemoteGameController(GameWindow guest, String gameID) {
+	public RemoteGameController(GameWindowOnline guest, String gameID) {
 		this.guest = guest;
 		this.server = PaperSoccer.server;
 		RemoteGameController.gameID = gameID;
