@@ -6,7 +6,6 @@ package ui;
  * @author jakub
  */
 
-import network.RemoteGameController;
 import controller.PaperSoccer;
 import controller.PaperSoccerController;
 
@@ -27,27 +26,27 @@ import javafx.stage.Stage;
 public class GameResultDialog extends Stage {
 	protected Button rematch, exit;
 	protected PaperSoccerController controller;
-	
+
 	public GameResultDialog(GameResult result, final PaperSoccerController controller) {
 		initModality(Modality.APPLICATION_MODAL);
 		this.controller = controller;
-		
+
 		Label message = new Label("Scored: " + result.getWinner().getName());
 		message.setFont(Font.font(20));
 		message.setAlignment(Pos.BASELINE_CENTER);
-		
+
 		Label score = new Label(result.toString());
 		score.setFont(Font.font(15));
 		score.setAlignment(Pos.BASELINE_CENTER);
-		
+
 		rematch = new Button("Rematch");
 		rematch.setDefaultButton(true);
 		addRematchButtonListiner();
-		
+
 		exit = new Button("Main menu");
 		exit.setCancelButton(true);
 		addExitButtonListiner();
-		
+
 		HBox hBox = new HBox();
         hBox.setAlignment(Pos.BASELINE_CENTER);
         hBox.setSpacing(40.0);
@@ -80,9 +79,9 @@ public class GameResultDialog extends Stage {
 			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("Rematch");
-				
+
 				Thread controllerThread = new Thread(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						controller.prepareRematch();
@@ -91,7 +90,7 @@ public class GameResultDialog extends Stage {
 				});
 				controllerThread.setDaemon(true);
 				controllerThread.start();
-				
+
 				close();
 			}
 		});
