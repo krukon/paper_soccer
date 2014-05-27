@@ -6,6 +6,7 @@ package ui;
  * @author jakub
  */
 
+import network.RemoteGameController;
 import controller.PaperSoccer;
 import controller.PaperSoccerController;
 

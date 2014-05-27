@@ -32,6 +32,7 @@ import javafx.stage.Stage;
 
 public class WaitForOpponentDialog extends Stage {
 	private ServerInquiry server = PaperSoccer.server;
+	private String gameId;
 	
 	public WaitForOpponentDialog(GameWindowOnline host, String hostName, int width, int height) {
 		constructView();
@@ -39,13 +40,13 @@ public class WaitForOpponentDialog extends Stage {
 	}
 	
 	private void waitForGuest(final GameWindowOnline host, final String hostName, final int width, final int height) {
-		new Thread(new Runnable() {
+		Thread waitingForGuest = new Thread(new Runnable() {
 			
 			@SuppressWarnings("unchecked")
 			@Override
 			public void run() {
 				System.out.println("Wait for guest - begin");
-				String guestName, gameID = null;
+				String guestName;
 				BufferedReader reader = null;
 				BufferedReader joinReader = null;
 				try {
@@ -70,9 +71,18 @@ public class WaitForOpponentDialog extends Stage {
 					JSONObject createGameResponse = (JSONObject) JSONValue.parse(raw);
 					JSONObject createGameData = (JSONObject) createGameResponse.get("data");
 					System.out.println("Wait for guest - response " + createGameData.toString());
-					gameID = createGameData.get("id").toString();
-					host.registerGameID(gameID);
+
+					gameId = createGameData.get("id").toString();
+					host.registerGameID(gameId);
+
 					System.out.println("Wait for guest - after response " + raw);
+					Platform.runLater(new Runnable() {
+						
+						@Override
+						public void run() {
+							WaitForOpponentDialog.this.show();
+						}
+					});
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -92,7 +102,7 @@ public class WaitForOpponentDialog extends Stage {
 					}
 				}
 				final String finalGuestName = guestName;
-				final String finalGameId = gameID;
+				final String finalGameId = gameId;
 
 				System.out.println("Run game");
 				Platform.runLater(new Runnable() {
@@ -127,7 +137,9 @@ public class WaitForOpponentDialog extends Stage {
 				controllerThread.setDaemon(true);
 				controllerThread.start();
 			}
-		}).start();
+		});
+		waitingForGuest.setDaemon(true);
+		waitingForGuest.start();
 	}
 
 	private void constructView() {
@@ -144,6 +156,7 @@ public class WaitForOpponentDialog extends Stage {
 			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("Back to network menu");
+				server.closeGame(gameId);
 				PaperSoccer.getMainWindow().showNetworkWindow();
 				close();
 			}

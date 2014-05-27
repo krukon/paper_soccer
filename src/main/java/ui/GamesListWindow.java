@@ -61,14 +61,14 @@ public class GamesListWindow extends BorderPane{
 	}
 	
 	private void loadGamesList() {
-		new Thread(new Runnable() {
+		Thread listLoader = new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
 				ServerInquiry server = PaperSoccer.server;
-				server.send("{\"type\":\"list_games\"}");
 				try {
 					BufferedReader reader = server.subscribeToGame();
+					server.send("{\"type\":\"list_games\"}");
 					String raw = reader.readLine();
 					System.out.println("raw " + raw);
 					JSONObject request = (JSONObject) JSONValue.parse(raw);
@@ -86,7 +86,9 @@ public class GamesListWindow extends BorderPane{
 					e.printStackTrace();
 				}
 			}
-		}).start();
+		});
+		listLoader.setDaemon(true);
+		listLoader.start();
 	}
 	
 	private void renderGamesList(JSONArray data) {
@@ -164,7 +166,7 @@ public class GamesListWindow extends BorderPane{
     
 	private TableView<Record> tableView = new TableView<>();
     private final ObservableList<Record> recordList = FXCollections.observableArrayList();
-    
+
     public void addList(GridPane grid) {
         tableView.setEditable(false);
  

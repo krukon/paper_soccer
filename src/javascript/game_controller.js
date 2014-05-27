@@ -34,6 +34,9 @@ module.exports = (function () {
             }
         }
 
+        sock.roles = sock.roles || {}
+        sock.roles[gameId] = 'host'
+
         games[gameId] = game;
         gameId++
 
@@ -58,6 +61,9 @@ module.exports = (function () {
             }
         }
 
+        sock.roles = sock.roles || {}
+        sock.roles[id] = 'guest'
+
         notify(game['host'], response)
         notifyAll(id, response)
     }
@@ -81,6 +87,9 @@ module.exports = (function () {
             }
         }
 
+        sock.roles = sock.roles || {}
+        sock.roles[id] = 'host'
+
         notify(sock, response)
     }
 
@@ -90,7 +99,7 @@ module.exports = (function () {
                 sock.write(JSON.stringify(response) + '\n')
                 console.log('Sending: ' + JSON.stringify(response) + '\n')
             }
-        } catch (e) {}
+        } catch (e) { console.log("notify ERROR",e)}
     }
 
     notifyAll = function(id, response) {
@@ -187,7 +196,7 @@ module.exports = (function () {
         notifyAll(id, response)
     }
 
-    finishGame = function(sock, id, result) {
+    finishGame = function(sock, id, data) {
         var response, game;
         
         validate(sock, id, ['host'])
@@ -196,10 +205,19 @@ module.exports = (function () {
 
         response = {
             'type': 'finish_game',
-            'data': result
+            'data': data
         }
 
         notifyAll(id, response)
+    }
+
+    removeRoles = function(id) {
+        var i, game = games[id];
+        delete game['host'].roles[id]
+        delete game['guest'].roles[id]
+        for (i in game['spectators']) {
+            delete game['spectators'][i].roles[id]
+        }
     }
 
     closeGame = function(sock, id) {
@@ -212,9 +230,10 @@ module.exports = (function () {
 
         validate(sock, id, ['player'])
 
+        removeRoles(id)
+
         notify(games[id]['host'], response)
         notifyAll(id, response)
-
         delete games[id]
     }
 
@@ -224,12 +243,13 @@ module.exports = (function () {
         for (id in games)
             try {
                 game = games[id]
-                if (game['host'] === sock || game['guest'] === sock)
-                    closeGame(game['id'])
+                if (game['host'] === sock || game['guest'] === sock) {
+                    closeGame(sock, id)
+                }
                 game['spectators'] = game['spectators'].filter(function(e) {
                     return e != sock;
                 })
-            } catch (e) {}
+            } catch (e) { console.log("removeClient error:", e)}
     }
 
     sendChatMessage = function(sock, id, data) {
@@ -252,7 +272,7 @@ module.exports = (function () {
 
         if (arr === undefined)
             arr = []
-
+        
         if (game === undefined)
             errors.push("Such game does not exist.")
         

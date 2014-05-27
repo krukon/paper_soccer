@@ -29,7 +29,7 @@ public class PaperSoccer {
 		}
 		addMainMenu();
 		try {
-			server = new ServerInquiry("178.37.109.133", 1444);
+			server = new ServerInquiry("localhost", 1444);
 			server.start();
 		} catch (Exception e) {}
 	}

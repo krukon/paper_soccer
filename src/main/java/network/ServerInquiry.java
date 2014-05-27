@@ -25,7 +25,7 @@ public class ServerInquiry {
 	public ServerInquiry(String address, int port) throws UnknownHostException, IOException {
 		socket = new Socket(address, port);
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		out = new PrintWriter(socket.getOutputStream());
+		out = new PrintWriter(socket.getOutputStream(), true);
 		chatWriter = new PipedWriter();
 		gameWriter = new PipedWriter();
 		joinGameWriter = new PipedWriter();
@@ -68,8 +68,10 @@ public class ServerInquiry {
 	}
 	
 	public synchronized void send(String message) {
-		out.write(message);
-		out.flush();
+		//out.write(message + '\n');
+		//out.flush();
+		out.println(message);
+		//out.flush();
 	}
 	
 	public void send(JSONObject message) {
@@ -94,24 +96,30 @@ public class ServerInquiry {
 		return new BufferedReader(pipe);
 	}
 	
+	public void closeGame(String id) {
+		JSONObject closeGame = new JSONObject();
+		JSONObject data = new JSONObject();
+		data.put("id", id);
+		closeGame.put("type", "close_game");
+		closeGame.put("data", data);
+		send(closeGame);
+	}
 	
 	
-//	public static void main(String[] args) throws IOException {
-//		ServerInquiry inquiry = new ServerInquiry("178.37.109.133", 1444);
-//		
-//		inquiry.start();
-//		inquiry.send("{\"type\":\"create_game\", \"data\": {\"host_name\":\"Kuba\", \"width\":8, \"height\": 10}}");
-//		inquiry.send("{\"type\":\"chat\", \"data\": {\"id\":5, \"message\":\"Moja wiadomosc\"}}");
-//		BufferedReader chat = inquiry.subscribeToChat(), game = inquiry.subscribeToGame(),
-//				game2 = inquiry.subscribeToGame();
-//		System.out.println("From game pipe: " + game.readLine());
-//		System.out.println("From game pipe2: " + game2.readLine());
-//		while (true) {
-//			String x = chat.readLine();
-//			System.out.println("From chat pipe: " + x);
-//			//chat.close();
-//			Thread.yield();
-//		}
-//		
-//	}
+	public static void main(String[] args) throws IOException {
+		ServerInquiry inquiry = new ServerInquiry("localhost", 1444);
+		
+		inquiry.start();
+		inquiry.send("{\"type\":\"create_game\", \"data\": {\"host_name\":\"Kuba\", \"width\":8, \"height\": 10}}");
+		//inquiry.send("{\"type\":\"chat\", \"data\": {\"id\":5, \"message\":\"Moja wiadomosc\"}}");
+		BufferedReader chat = inquiry.subscribeToChat(), game = inquiry.subscribeToGame();
+		System.out.println("From game pipe: " + game.readLine());
+		while (true) {
+			String x = game.readLine();
+			System.out.println("From chat pipe: " + x);
+			//chat.close();
+			Thread.yield();
+		}
+		
+	}
 }

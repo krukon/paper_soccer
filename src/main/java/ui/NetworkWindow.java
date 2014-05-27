@@ -334,6 +334,6 @@ public class NetworkWindow extends BorderPane {
 	private void createNetworkGame(String hostName, int width, int height) {
 		final GameWindowOnline host = new GameWindowOnline(hostName, Color.BLUE, Color.RED);
 		PaperSoccer.getMainWindow().showSinglePlayerGameWindow(host);
-		new WaitForOpponentDialog(host, hostName, width, height).show();
+		new WaitForOpponentDialog(host, hostName, width, height);
 	}
 }

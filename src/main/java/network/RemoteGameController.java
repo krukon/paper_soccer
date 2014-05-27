@@ -19,12 +19,12 @@ import helpers.Point;
 public class RemoteGameController {
 	private GameWindow guest;
 	private ServerInquiry server;
-	private String gameID;
+	public static String gameID;
 	
 	public RemoteGameController(GameWindow guest, String gameID) {
 		this.guest = guest;
 		this.server = PaperSoccer.server;
-		this.gameID = gameID;
+		RemoteGameController.gameID = gameID;
 	}
 	
 	@SuppressWarnings("unchecked")

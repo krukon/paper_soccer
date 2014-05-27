@@ -60,8 +60,12 @@ public class RemoteGuestPlayer implements Player {
 	@SuppressWarnings("unchecked")
 	public void finishGame(GameResult result) {
 		JSONObject message = new JSONObject();
+		JSONObject data = new JSONObject();
+		data.put("id", gameID);
+		data.put("host_result", result.getOpponentResult());
+		data.put("guest_result", result.getMyResult());
 		message.put("type", "finish_game");
-		message.put("data", null);
+		message.put("data", data);
 		
 		server.send(message);
 	}
