@@ -7,7 +7,7 @@ module.exports = (function () {
     var games, gameId, createGame, listGames, joinGame, watchGame,
         registerMove, getNextMove, startGame, finishGame, closeGame, notifyAll, notify,
         removeClient, requestNextMove, sendChatMessage, printAll,
-        validate;
+        validate, removeRole;
 
     games = {}
     gameId = 0
@@ -211,13 +211,18 @@ module.exports = (function () {
         notifyAll(id, response)
     }
 
+    removeRole = function (sock, id) {
+        try {
+            delete sock.roles[id];
+        } catch (e) {}
+    }
+
     removeRoles = function(id) {
         var i, game = games[id];
-        delete game['host'].roles[id]
-        delete game['guest'].roles[id]
-        for (i in game['spectators']) {
-            delete game['spectators'][i].roles[id]
-        }
+        removeRole(game['host'], id)
+        removeRole(game['guest'], id)
+        for (i in game['spectators'])
+            removeRole(game['spectators'][i], id)
     }
 
     closeGame = function(sock, id) {

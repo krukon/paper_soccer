@@ -57,14 +57,6 @@ net.createServer(function(sock) {
                 console.log("Incorrect request: " + e)
             }
         }
-/*
-        if (typeof request === 'object')
-            handleRequest(request)
-        else if (typeof request === 'array')
-            request.each(function(e) {
-                handleRequest(e)
-            })
-        else if (typeof request === 'string')*/
 
         blocks = raw.toString().split('\n')
 
