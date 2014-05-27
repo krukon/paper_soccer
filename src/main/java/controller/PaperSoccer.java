@@ -29,9 +29,11 @@ public class PaperSoccer {
 		}
 		addMainMenu();
 		try {
-			server = new ServerInquiry("localhost", 1444);
+			server = new ServerInquiry("77.254.221.48", 1444);
 			server.start();
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static MainWindow getMainWindow() {
