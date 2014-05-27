@@ -388,7 +388,9 @@ public class GamesListWindow extends BorderPane{
 					String hostName = startGameData.get("host_name").toString();
 					
 					final GameWindowOnline guest = new GameWindowOnline(guestName, Color.RED, Color.BLUE);
+
 					guest.registerNames(hostName, guestName);
+
 					guest.registerGameID(gameId);
 					Platform.runLater(new Runnable() {
 						
