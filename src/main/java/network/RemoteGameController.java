@@ -100,5 +100,14 @@ public class RemoteGameController {
 				System.err.println("ERROR: " + raw);
 			}
 		}
+		server.unsubcribeFromGame();
+		Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				PaperSoccer.getMainWindow().showMenu();
+				
+			}
+		});
 	}
 }

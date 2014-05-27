@@ -264,9 +264,7 @@ public class GamesListWindow extends BorderPane{
             int id = recordList.get(index).getId();
             runControllerThread(id);
             
-        	} catch (Exception e) {
-        		e.printStackTrace();
-        	}
+        	} catch (Exception e) {}
         }
     }
     

@@ -21,6 +21,8 @@ public class PaperSoccer {
 	public static final String sync = "SYNCHRONIZING STRING"; //object on which thread can synchronize, probably should be replaced
 	public static final int WIDTH = 433;
 	public static final int  HEIGHT = 650;
+	public static String address = "localhost";
+	public static int port = 1444;
 	
 	public static void main(String[] args) throws InterruptedException {
 		synchronized (sync) {
@@ -29,7 +31,7 @@ public class PaperSoccer {
 		}
 		addMainMenu();
 		try {
-			server = new ServerInquiry("localhost", 1444);
+			server = new ServerInquiry(address, port);
 			server.start();
 		} catch (Exception e) {
 			e.printStackTrace();

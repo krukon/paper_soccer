@@ -47,17 +47,24 @@ public class ServerInquiry {
 						System.out.println("Message from server " + raw);
 						
 						if (type.equals("chat")) {
-							chatWriter.write(raw + '\n');
-							chatWriter.flush();
+							if (chatWriter != null) {
+								chatWriter.write(raw + '\n');
+								chatWriter.flush();
+							}
 						} else if (type.equals("join_game")) {
-							joinGameWriter.write(raw + '\n');
-							joinGameWriter.flush();
+							if (joinGameWriter != null) {
+								joinGameWriter.write(raw + '\n');
+								joinGameWriter.flush();
+							}
 						} else {
-							gameWriter.write(raw + '\n');
-							gameWriter.flush();
+							if (gameWriter != null) {
+								System.out.println("Raw " + raw);
+								gameWriter.write(raw + '\n');
+								gameWriter.flush();
+							}
 						}
 					} catch (Exception e) {
-						e.printStackTrace();
+						//////e.printStackTrace();
 					}
 					Thread.yield();
 				}
@@ -79,7 +86,10 @@ public class ServerInquiry {
 	}
 	
 	public BufferedReader subscribeToChat() throws IOException {
-		return new BufferedReader(new PipedReader(chatWriter));
+		PipedReader pipe = new PipedReader();
+		chatWriter = new PipedWriter();
+		chatWriter.connect(pipe);
+		return new BufferedReader(pipe);
 	}
 	
 	public BufferedReader subscribeToGame() throws IOException {
@@ -94,6 +104,27 @@ public class ServerInquiry {
 		joinGameWriter = new PipedWriter();
 		joinGameWriter.connect(pipe);
 		return new BufferedReader(pipe);
+	}
+	
+	public void unsubcribeFromChat() {
+		try {
+			chatWriter.close();
+		} catch (IOException e) {}
+		chatWriter = null;
+	}
+	
+	public void unsubcribeFromGame() {
+		try {
+			gameWriter.close();
+		} catch (IOException e) {}
+		gameWriter = null;
+	}
+	
+	public void unsubcribeFromJoinGame() {
+		try {
+			joinGameWriter.close();
+		} catch (IOException e) {}
+		joinGameWriter = null;
 	}
 	
 	public void closeGame(String id) {

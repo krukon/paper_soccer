@@ -1,7 +1,10 @@
 package ui;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import network.ServerInquiry;
 import controller.PaperSoccer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -33,8 +36,8 @@ public class SettingsWindow extends BorderPane {
 		setPrefSize(PaperSoccer.WIDTH, PaperSoccer.HEIGHT);
 		setStyle("-fx-background-image: url('paper_soccer_background.jpg');");
 		
-		this.serverAddress = new TextField("SERVER");
-		this.portName = new TextField("PORT");
+		this.serverAddress = new TextField(PaperSoccer.address);
+		this.portName = new TextField(((Integer) PaperSoccer.port).toString());
 		
 		windowTitle.setFill(Color.WHITE);
 		
@@ -69,21 +72,32 @@ public class SettingsWindow extends BorderPane {
 			
 			//TODO Showing board and size validation
 			@Override
-			public void handle(ActionEvent event) {				
-				try {
-					String server = serverAddress.getCharacters().toString();
-					String port = portName.getCharacters().toString();
+			public void handle(ActionEvent event) {
+				final String server = serverAddress.getCharacters().toString();
+				final String port = portName.getCharacters().toString();
+				
+				
+				//TODO apply changes
+				PaperSoccer.getMainWindow().showNetworkWindow();
+				PaperSoccer.address = server;
+				PaperSoccer.port = Integer.parseInt(port);
+				Thread connectingThread = new Thread(new Runnable() {
 					
-					System.out.println("Passing:");
-					System.out.println("server: " + server);
-					System.out.println("port: " + port);
-					
-					//TODO apply changes
-					PaperSoccer.getMainWindow().showNetworkWindow();
-				} catch (Exception e) {
-					System.out.println("Wrong server addres or port.");
-				}
-			
+					@Override
+					public void run() {
+						try {
+							PaperSoccer.server = new ServerInquiry(PaperSoccer.address, PaperSoccer.port);
+
+							PaperSoccer.server.start();
+							System.out.println("server: " + server);
+							System.out.println("port: " + port);
+						} catch (UnknownHostException e) {
+							System.err.println("Could not connect to server");
+						} catch (IOException e) {}
+					}
+				});
+				connectingThread.setDaemon(true);
+				connectingThread.start();
 			}
 		});
 		
