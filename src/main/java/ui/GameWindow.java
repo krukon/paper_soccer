@@ -17,6 +17,7 @@ import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
@@ -70,6 +71,8 @@ public class GameWindow extends BorderPane implements Player {
 	 * @param playerName the name of the player
 	 */
 	public GameWindow(String playerName, Color playerColor, Color opponentColor) {
+		setPrefSize(PaperSoccer.WIDTH, PaperSoccer.HEIGHT);
+		
 		if (playerName == null || playerName.length() == 0) playerName = "PLAYER";
 		
 		this.playerName = playerName;
@@ -83,7 +86,7 @@ public class GameWindow extends BorderPane implements Player {
 		setTop(currentPlayer);
 		
 		root = new Group();
-		this.setCenter(root);
+		setCenter(root);
 		root.addEventHandler(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
@@ -259,7 +262,7 @@ public class GameWindow extends BorderPane implements Player {
 	 */
 	private void drawBounds(GraphicsContext gc) {
 		int x = fieldWidth / 2,
-				y = fieldHeight / 2;
+				y = fieldHeight / 2;		
 		gc.setStroke(Color.WHITE);
 		gc.setLineWidth(2.5);
 		double cornersX[] = { -x, -1, -1, 1, 1, x, x, 1, 1, -1, -1, -x };
@@ -283,7 +286,11 @@ public class GameWindow extends BorderPane implements Player {
 	private void drawGrid(GraphicsContext gc) {
 		int maxX = fieldWidth / 2,
 				maxY = fieldHeight / 2;
-		gc.setStroke(Color.rgb(255, 255, 255, 0.3));
+		
+		Image grass = new Image("grass.jpg");
+		gc.drawImage(grass, translateX(-maxX - 1), translateY(maxY + 1), translateX(maxX), translateY(-maxY + 1));
+		
+		gc.setStroke(Color.rgb(255, 255, 255, 0.5));
 		for (int x = -maxX - 1; x <= maxX + 1; x++)
 			strokeLine(gc, x, -maxY - 1, x, maxY + 1);
 		for (int y = -maxY - 1; y <= maxY + 1; y++)
@@ -337,7 +344,7 @@ public class GameWindow extends BorderPane implements Player {
 	private void prepareWindow() {
 		gridSize = Math.min(pixelHeight / (fieldHeight + 4), pixelWidth / (fieldWidth + 4));
 		Canvas canvas = new Canvas(pixelWidth, pixelHeight);
-		GraphicsContext gc = canvas.getGraphicsContext2D();
+		GraphicsContext gc = canvas.getGraphicsContext2D();		
 		drawGrid(gc);
 		drawBounds(gc);
 		root.getChildren().removeAll();
