@@ -83,6 +83,7 @@ public class GameWindow extends BorderPane implements Player {
 		currentPlayer.setTextFill(playerColor);
 		currentPlayer.setFont(Font.font(30));
 		setAlignment(currentPlayer, Pos.CENTER);
+		setStyle("-fx-background-image: url('game.jpg');");
 		setTop(currentPlayer);
 		
 		root = new Group();
