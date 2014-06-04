@@ -128,7 +128,7 @@ public class GameWindow extends BorderPane implements Player {
 		
 		hostLabel = new Label();
 		hostLabel.setTextFill(Color.BLUE);
-		hostLabel.setFont(Font.font(20));
+		hostLabel.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 20));
 		hostLabel.setText(hostName);
 		hostLabel.setLineSpacing(10);
 		
