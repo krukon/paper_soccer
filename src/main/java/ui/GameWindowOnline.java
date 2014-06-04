@@ -45,7 +45,6 @@ public class GameWindowOnline extends GameWindow implements Player {
 
 	public void registerGameID(String gameID) {
 		this.gameID = gameID;
-		openChat();
 	}
 
 	@Override
@@ -61,10 +60,10 @@ public class GameWindowOnline extends GameWindow implements Player {
 	}
 
 	public BorderPane addChatWindow() {
-		listView = new ListView();
-		listView.setMaxHeight(chatHeight);
-		listView.setMinWidth(PaperSoccer.WIDTH - 50);
-		listView.setItems(chatItems);
+//		listView = new ListView();
+//		listView.setMaxHeight(chatHeight);
+//		listView.setMinWidth(PaperSoccer.WIDTH - 50);
+//		listView.setItems(chatItems);
 
 		textField = new TextField();
 		textField.setMinWidth(textFieldWidth);
@@ -74,9 +73,11 @@ public class GameWindowOnline extends GameWindow implements Player {
 		btn.setDefaultButton(true);
 
 		btn.setOnAction(new EventHandler<ActionEvent>() {
-
+			
+			@SuppressWarnings("unchecked")
 			@Override
 			public void handle(ActionEvent event) {
+				System.out.println("chat event " + event);
 				JSONObject json = new JSONObject();
 				JSONObject data = new JSONObject();
 				data.put("message", textField.getText());
@@ -92,12 +93,12 @@ public class GameWindowOnline extends GameWindow implements Player {
 		borderPane = new BorderPane();
 		HBox bottom = new HBox(textField, btn);
 		borderPane.setPadding(insets);
-		borderPane.setCenter(listView);
+		//borderPane.setCenter(listView);
 		borderPane.setBottom(bottom);
 		return borderPane;
 	}
 	
-	private void openChat() {
+	public void startChat() {
 		Thread chatThread = new Thread(new Runnable() {
 			
 			@Override
@@ -105,7 +106,13 @@ public class GameWindowOnline extends GameWindow implements Player {
 				try {
 					BufferedReader chat = PaperSoccer.server.subscribeToChat();
 					while (true) {
+						if (!chat.ready()) {
+							Thread.yield();
+							continue;
+						}
 						String rawJson = chat.readLine();
+						System.out.println("Waiting for chat message");
+					
 						JSONObject json = (JSONObject) JSONValue.parse(rawJson);
 						JSONObject data = (JSONObject) json.get("data");
 						final String message = data.get("message").toString();
@@ -125,7 +132,8 @@ public class GameWindowOnline extends GameWindow implements Player {
 					return;
 				}
 			}
-		});
+		}, "Chat Thread");
+		PaperSoccer.getMainWindow().registerChatThread(chatThread);
 		chatThread.setDaemon(true);
 		chatThread.start();
 	}

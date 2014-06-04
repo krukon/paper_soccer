@@ -395,6 +395,7 @@ public class GamesListWindow extends BorderPane{
 					guest.registerNames(hostName, guestName);
 
 					guest.registerGameID(gameId);
+					guest.startChat();
 					Platform.runLater(new Runnable() {
 						
 						@Override

@@ -51,7 +51,7 @@ public class ServerInquiry {
 								chatWriter.write(raw + '\n');
 								chatWriter.flush();
 							}
-						} else if (type.equals("join_game") || type.equals("close_game")) {
+						} else if (type.equals("join_game") || type.equals("close_game") || type.equals("create_game")) {
 							if (sessionWriter != null) {
 								sessionWriter.write(raw + '\n');
 								sessionWriter.flush();

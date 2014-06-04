@@ -26,6 +26,7 @@ public class MainWindow extends Application {
 	private Group mainView;
 	private GameState state;
 	private Thread controllerThread;
+	private Thread chatThread;
 	private String gameID;
 	
 	@Override
@@ -48,6 +49,7 @@ public class MainWindow extends Application {
 						PaperSoccer.server.unsubcribeFromGame();
 						PaperSoccer.server.unsubcribeFromSession();
 						controllerThread.interrupt();
+						chatThread.stop();
 						PaperSoccer.server.closeGame(gameID);
 					}
 					
@@ -178,6 +180,11 @@ public class MainWindow extends Application {
 	
 	public void registerControllerThread(Thread controllerThread) {
 		this.controllerThread = controllerThread;
+	}
+	
+
+	public void registerChatThread(Thread chatThread) {
+		this.chatThread = chatThread;
 	}
 	
 	public void registerGameID(String gameID) {
