@@ -45,7 +45,6 @@ public class GameWindowOnline extends GameWindow implements Player {
 
 	public void registerGameID(String gameID) {
 		this.gameID = gameID;
-		openChat();
 	}
 
 	@Override
@@ -65,6 +64,8 @@ public class GameWindowOnline extends GameWindow implements Player {
 		listView.setMaxHeight(chatHeight);
 		listView.setMinWidth(PaperSoccer.WIDTH - 50);
 		listView.setItems(chatItems);
+		listView.setEditable(false);
+		//listView.setOnEditCancel(null);
 
 		textField = new TextField();
 		textField.setMinWidth(textFieldWidth);
@@ -74,9 +75,11 @@ public class GameWindowOnline extends GameWindow implements Player {
 		btn.setDefaultButton(true);
 
 		btn.setOnAction(new EventHandler<ActionEvent>() {
-
+			
+			@SuppressWarnings("unchecked")
 			@Override
 			public void handle(ActionEvent event) {
+				System.out.println("chat event " + event);
 				JSONObject json = new JSONObject();
 				JSONObject data = new JSONObject();
 				data.put("message", textField.getText());
@@ -97,15 +100,28 @@ public class GameWindowOnline extends GameWindow implements Player {
 		return borderPane;
 	}
 	
-	private void openChat() {
+	public void startChat() {
 		Thread chatThread = new Thread(new Runnable() {
+			private BufferedReader sessionReader;
 			
 			@Override
 			public void run() {
 				try {
 					BufferedReader chat = PaperSoccer.server.subscribeToChat();
+					sessionReader = PaperSoccer.server.subscribeToSession();
 					while (true) {
+						if (isSessionClosed()) {
+							PaperSoccer.getMainWindow().unsubscribeFromGame();
+							return;
+						}
+						
+						if (!chat.ready()) {
+							Thread.yield();
+							continue;
+						}
 						String rawJson = chat.readLine();
+						System.out.println("Waiting for chat message");
+					
 						JSONObject json = (JSONObject) JSONValue.parse(rawJson);
 						JSONObject data = (JSONObject) json.get("data");
 						final String message = data.get("message").toString();
@@ -125,8 +141,29 @@ public class GameWindowOnline extends GameWindow implements Player {
 					return;
 				}
 			}
-		});
+			
+			private boolean isSessionClosed() {
+				try {
+					if (sessionReader.ready()) {
+						String raw;
+						raw = sessionReader.readLine();
+						
+						JSONObject message = (JSONObject) JSONValue.parse(raw);
+						String type = message.get("type").toString();
+						if (type.equals("close_game"))
+							return true;
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return false;
+			}
+			
+		}, "Chat Thread");
+		PaperSoccer.getMainWindow().registerChatThread(chatThread);
 		chatThread.setDaemon(true);
 		chatThread.start();
 	}
+	
+	
 }

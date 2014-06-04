@@ -32,9 +32,14 @@ public class RemoteGameController {
 	
 	@SuppressWarnings("unchecked")
 	public void runGame() throws IOException {
+		BufferedReader reader = server.subscribeToGame();
 		
 		while (true) {
-			System.out.println("Reading from server...");
+			if (!reader.ready()) {
+				Thread.yield();
+				continue;
+			}
+			
 			String raw = reader.readLine();
 			
 			JSONObject message = (JSONObject) JSONValue.parse(raw);
@@ -54,11 +59,14 @@ public class RemoteGameController {
 				System.out.println(data);
 				//TODO notify game result
 			}
-			else if (type.equals("close_game")) break;
 			else if (type.equals("request_next_move")) {
 				System.out.println("Waiting for player to make move");
 				Move move = guest.getNextMove();
 
+				if (move == null) {
+					break;
+				}
+				
 				System.out.println("Got: " + move.start + " - " + move.end);
 				JSONObject startPoint = new JSONObject();
 				startPoint.put("x", move.start.x);
@@ -102,14 +110,5 @@ public class RemoteGameController {
 				System.err.println("ERROR: " + raw);
 			}
 		}
-		server.unsubcribeFromGame();
-		Platform.runLater(new Runnable() {
-			
-			@Override
-			public void run() {
-				PaperSoccer.getMainWindow().showMenu();
-				
-			}
-		});
 	}
 }

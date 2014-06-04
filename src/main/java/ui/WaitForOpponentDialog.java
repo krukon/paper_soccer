@@ -48,10 +48,10 @@ public class WaitForOpponentDialog extends Stage {
 				System.out.println("Wait for guest - begin");
 				String guestName;
 				BufferedReader reader = null;
-				BufferedReader joinReader = null;
+				BufferedReader sessionReader = null;
 				try {
 					reader = server.subscribeToGame();
-					joinReader = server.subscribeToJoinGame();
+					sessionReader = server.subscribeToSession();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -67,7 +67,7 @@ public class WaitForOpponentDialog extends Stage {
 				server.send(message);
 				System.out.println("Wait for guest - waiting for response");
 				try {
-					String raw = reader.readLine();
+					String raw = sessionReader.readLine();
 					JSONObject createGameResponse = (JSONObject) JSONValue.parse(raw);
 					JSONObject createGameData = (JSONObject) createGameResponse.get("data");
 					System.out.println("Wait for guest - response " + createGameData.toString());
@@ -90,7 +90,7 @@ public class WaitForOpponentDialog extends Stage {
 				while(true) {
 					try {
 						System.out.println("Waiting...");
-						String raw = joinReader.readLine();
+						String raw = sessionReader.readLine();
 						System.out.println("From server: " + raw);
 						JSONObject joinGameData = (JSONObject) JSONValue.parse(raw);
 						if (joinGameData.get("type").toString().equals("join_game")) {
@@ -106,6 +106,9 @@ public class WaitForOpponentDialog extends Stage {
 				final String finalGameId = gameId;
 				
 				host.registerNames(host.getName(), finalGuestName);
+				host.startChat();
+				PaperSoccer.getMainWindow().registerGameID(finalGameId);
+
 				System.out.println("Run game");
 				Platform.runLater(new Runnable() {
 					
@@ -136,6 +139,7 @@ public class WaitForOpponentDialog extends Stage {
 						
 					}
 				});
+				PaperSoccer.getMainWindow().registerControllerThread(controllerThread);
 				controllerThread.setDaemon(true);
 				controllerThread.start();
 			}

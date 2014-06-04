@@ -1,8 +1,5 @@
 package controller;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-
 import network.ServerInquiry;
 import javafx.application.Platform;
 import ui.MainWindow;
@@ -21,7 +18,7 @@ public class PaperSoccer {
 	public static final String sync = "SYNCHRONIZING STRING"; //object on which thread can synchronize, probably should be replaced
 	public static final int WIDTH = 433;
 	public static final int  HEIGHT = 650;
-	public static String address = "localhost";
+	public static String address = "users.v-lo.krakow.pl";
 	public static int port = 1444;
 	
 	public static void main(String[] args) throws InterruptedException {

@@ -88,6 +88,7 @@ public class GameWindow extends BorderPane implements Player {
 		
 		root = new Group();
 		setCenter(root);
+
 		root.addEventHandler(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
@@ -105,6 +106,7 @@ public class GameWindow extends BorderPane implements Player {
 				}
             }
         });
+		
 		root.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {

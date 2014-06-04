@@ -57,15 +57,16 @@ public class PaperSoccerController {
 			try {
 				move = currentPlayer.getNextMove();
 			} catch(Exception e) { return ;}
-			if(game.isValidMove(move))  {
-				try {
+			
+			try {
+				if(game.isValidMove(move))  {
 					game.registerMove(move);
 					host.registerMove(move);
 					guest.registerMove(move);
 					notifyMove(move);
-				} catch (IllegalMove e) { }
-				catch (Exception e) { return; }
-			}
+				}
+			} catch (IllegalMove e) { }
+			catch (Exception e) { return; }
 		}
 
 		try {

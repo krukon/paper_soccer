@@ -366,8 +366,9 @@ public class GamesListWindow extends BorderPane{
 				
 				try {
 					System.out.println("Joining");
-					BufferedReader joinReader = server.subscribeToJoinGame();
+					
 					final BufferedReader gamePipe = server.subscribeToGame();
+					BufferedReader joinReader = server.subscribeToSession();
 					
 					JSONObject message = new JSONObject();
 					message.put("type", "join_game");
@@ -380,21 +381,28 @@ public class GamesListWindow extends BorderPane{
 					
 					String raw = joinReader.readLine();
 					System.out.println("Joined " + raw);
+					server.unsubcribeFromSession();
+					joinReader.close();
 					
 					JSONObject response = (JSONObject) JSONValue.parse(raw);
 					JSONObject startGameData = (JSONObject) response.get("data");
 					
-					String gameId = startGameData.get("id").toString();
 					String hostName = startGameData.get("host_name").toString();
+					final String gameId = startGameData.get("id").toString();
 					
 					final GameWindowOnline guest = new GameWindowOnline(guestName, Color.RED, Color.BLUE);
+
 					guest.registerNames(hostName, guestName);
+
 					guest.registerGameID(gameId);
+					guest.startChat();
 					Platform.runLater(new Runnable() {
 						
 						@Override
 						public void run() {
 							PaperSoccer.getMainWindow().showSinglePlayerGameWindow(guest);
+							PaperSoccer.getMainWindow().registerOnlineGameState();
+							PaperSoccer.getMainWindow().registerGameID(gameId);
 						}
 					});
 					
@@ -408,6 +416,7 @@ public class GamesListWindow extends BorderPane{
 				}
 			}
 		});
+		PaperSoccer.getMainWindow().registerControllerThread(controllerThread);
         controllerThread.setDaemon(true);
         controllerThread.start();
 	}
