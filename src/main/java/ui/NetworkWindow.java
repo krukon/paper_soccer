@@ -198,6 +198,7 @@ public class NetworkWindow extends BorderPane {
 	 */
 	private HBox addSettingsBackButton() {
 		HBox buttonBox = new HBox();
+		buttonBox.setSpacing(10);
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.getChildren().addAll(getSettingsButton(), getBackButton());
 		
@@ -334,6 +335,7 @@ public class NetworkWindow extends BorderPane {
 	private void createNetworkGame(String hostName, int width, int height) {
 		final GameWindowOnline host = new GameWindowOnline(hostName, Color.BLUE, Color.RED);
 		PaperSoccer.getMainWindow().showSinglePlayerGameWindow(host);
+		PaperSoccer.getMainWindow().registerOnlineGameState();
 		new WaitForOpponentDialog(host, hostName, width, height);
 	}
 }

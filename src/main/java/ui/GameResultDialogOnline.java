@@ -37,6 +37,8 @@ public class GameResultDialogOnline extends GameResultDialog {
 				System.out.println("Back to main menu");
 				PaperSoccer.getMainWindow().showMenu();
 				server.unsubcribeFromGame();
+				server.unsubcribeFromChat();
+				
 				close();
 			}
 		});

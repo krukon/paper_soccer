@@ -3,8 +3,11 @@ package ui;
 import controller.PaperSoccer;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -16,14 +19,33 @@ import javafx.stage.Stage;
  */
 
 public class MainWindow extends Application {
+	private enum GameState {
+		SINGLE_PLAYER, BOTS_TOURNAMENT, TWO_PLAYERS_OFFLINE, TWO_PLAYERS_ONLINE, OTHER
+	}
 	
 	private Group mainView;
+	private GameState state;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		mainView = new Group();
 		
 		Scene scene = new Scene(mainView, PaperSoccer.WIDTH, PaperSoccer.HEIGHT, Color.GREEN);
+		
+		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			
+			@Override
+			public void handle(KeyEvent event) {
+				if (state == GameState.OTHER) return;
+				
+				System.out.println("Button pressed " + event.getCode());
+
+				if (event.getCode() == KeyCode.ESCAPE) {
+					System.out.println("Escape pressed - back to main menu");
+					PaperSoccer.getMainWindow().showMenu();
+				}
+			}
+		});
 		
 		primaryStage.setTitle("Paper soccer");
 		primaryStage.setResizable(false);
@@ -46,6 +68,8 @@ public class MainWindow extends Application {
 	 * Shows the menu.
 	 */
 	public void showMenu() {
+		state = GameState.OTHER;
+		
 		mainView.getChildren().clear();
 		mainView.getChildren().add(new MainMenu());
 	}
@@ -54,11 +78,15 @@ public class MainWindow extends Application {
 	 * Shows two players window.
 	 */
 	public void showTwoPlayersWindow() {
+		state = GameState.OTHER;
+		
 		mainView.getChildren().clear();
 		mainView.getChildren().add(new TwoPlayersWindow());
 	}
 	
 	public void showTwoPlayersGameWindow(GameWindow host, GameWindow guest) {
+		state = GameState.TWO_PLAYERS_OFFLINE;
+		
 		mainView.getChildren().clear();
 		mainView.getChildren().addAll(host, guest);
 		host.setVisible(false);
@@ -74,37 +102,51 @@ public class MainWindow extends Application {
 	}
 	
 	public void showSinglePlayerWindow() {
+		state = GameState.OTHER;
+		
 		mainView.getChildren().clear();
 		mainView.getChildren().add(new SinglePlayerWindow());
 	}
 	
 	public void showSinglePlayerGameWindow(GameWindow host) {
+		state = GameState.SINGLE_PLAYER;
+		
 		mainView.getChildren().clear();
 		mainView.getChildren().add(host);
 	}
 	
 	public void showBotsTournametWindow() {
+		state = GameState.OTHER;
+		
 		mainView.getChildren().clear();
 		mainView.getChildren().add(new BotsTournamentWindow());
 	}
 	
 	public void showBotsTournametGameWindow(GameWindow spectator) {
+		state = GameState.BOTS_TOURNAMENT;
+		
 		mainView.getChildren().clear();
 		mainView.getChildren().add(spectator);
 	}
 
 	public void showNetworkWindow() {
+		state = GameState.OTHER;
+		
 		mainView.getChildren().clear();
 		mainView.getChildren().add(new NetworkWindow());
 	}
 	
 
 	public void showSettingsWindow() {
+		state = GameState.OTHER;
+		
 		mainView.getChildren().clear();
 		mainView.getChildren().add(new SettingsWindow());
 	}
 
 	public void joinNetworkGame(String player) {
+		state = GameState.OTHER;
+		
 		mainView.getChildren().clear();
 		mainView.getChildren().add(new GamesListWindow(player));
 		
@@ -118,6 +160,9 @@ public class MainWindow extends Application {
 				new HelpWindow().show();
 			}
 		});
-		
+	}
+	
+	public void registerOnlineGameState() {
+		state = GameState.TWO_PLAYERS_ONLINE;
 	}
 }

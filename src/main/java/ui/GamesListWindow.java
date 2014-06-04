@@ -397,6 +397,7 @@ public class GamesListWindow extends BorderPane{
 						@Override
 						public void run() {
 							PaperSoccer.getMainWindow().showSinglePlayerGameWindow(guest);
+							PaperSoccer.getMainWindow().registerOnlineGameState();
 						}
 					});
 					
