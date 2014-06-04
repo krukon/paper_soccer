@@ -1,4 +1,4 @@
-var net, PORT, controller;
+var net, PORT, controller, sockets;
 
 net = require('net')
 
@@ -6,9 +6,15 @@ PORT = 1444
 
 controller = require('./game_controller')
 
+sockets = {}
+
 net.createServer(function(sock) {
-    
-    console.log('CONNECTED: ' + sock.remoteAddress +':'+ sock.remotePort);
+
+    sock.address = sock.remoteAddress +':'+ sock.remotePort
+    sockets[sock.address] = sock
+
+    console.log('CONNECTED: ' + sock.address);
+
     sock.on("error", function(err){
     	console.log("Caught flash policy server socket error: ")
     	console.log(err.stack)
@@ -16,7 +22,7 @@ net.createServer(function(sock) {
     sock.on('data', function(raw) {
         var message, data, handleRequest, blocks;
         console.log('REQUEST: ' + raw)
-        console.log('FROM: ', sock.roles, '\n')
+        console.log('FROM: ', sock.address, sock.roles, '\n')
 
         handleRequest = function(request) {
             try {
@@ -57,7 +63,7 @@ net.createServer(function(sock) {
                         controller.sendChatMessage(sock, data['id'], data); break;
                 }
             } catch (e) {
-                console.log("Incorrect request: " + e)
+                console.log("INCORRECT REQUEST: " + e)
             }
         }
 
@@ -66,9 +72,8 @@ net.createServer(function(sock) {
         for (var i = 0; i < blocks.length; i++)
             if (blocks[i].length > 0)
                 try {
-                    console.log('BLOCK: ', blocks[i])
                     handleRequest(blocks[i])
-                } catch (e) { console.log("ERRRRROR:", e)}
+                } catch (e) { console.log("HANDLING ERROR:", e)}
 
     });
 
@@ -76,9 +81,19 @@ net.createServer(function(sock) {
         console.log('CLOSED: ' + sock.roles);
         try {
             controller.removeClient(sock)
-        } catch (e) { console.log('closing error:',e) }
+        } catch (e) { console.log('CLOSING ERROR:',e) }
     });
 
 }).listen(PORT);
 
 console.log('Server listening on ' + PORT);
+
+setInterval(function() {
+    for (var address in sockets) {
+        var sock = sockets[address];
+        if (!sock.writable) {
+            controller.removeClient(sock);
+            delete sockets[address];
+        }
+    }
+}, 10000)

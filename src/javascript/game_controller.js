@@ -97,9 +97,9 @@ module.exports = (function () {
         try {
             if (sock.writable) {
                 sock.write(JSON.stringify(response) + '\n')
-                console.log('Sending: ' + JSON.stringify(response) + '\n')
+                console.log('SENDING (' + sock.address + '): ' + JSON.stringify(response) + '\n')
             }
-        } catch (e) { console.log("notify ERROR",e)}
+        } catch (e) { console.log("NOTIFY ERROR", e)}
     }
 
     notifyAll = function(id, response) {
@@ -254,7 +254,7 @@ module.exports = (function () {
                 game['spectators'] = game['spectators'].filter(function(e) {
                     return e != sock;
                 })
-            } catch (e) { console.log("removeClient error:", e)}
+            } catch (e) { console.log("REMOVING CLIENT ERROR:", e)}
     }
 
     sendChatMessage = function(sock, id, data) {
