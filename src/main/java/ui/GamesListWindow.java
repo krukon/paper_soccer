@@ -41,8 +41,8 @@ import javafx.scene.text.Text;
 
 public class GamesListWindow extends BorderPane{
 
-	private Text windowTitle = new Text("Network game is waiting for you!");
-	private Insets insets = new Insets(25, 25, 25, 25);
+	private Text windowTitle = new Text("");
+	private Insets insets = new Insets(25, 5, 25, 5);
 	private String guestName;
 
 	public GamesListWindow(String guestName)
@@ -218,36 +218,36 @@ public class GamesListWindow extends BorderPane{
         colId.setCellValueFactory(
                 new PropertyValueFactory<Record, String>("id"));
         colId.setCellFactory(integerCellFactory);
-        colId.setPrefWidth(20);
+        colId.setPrefWidth(30);
         
         
         TableColumn colName = new TableColumn("Name");
         colName.setCellValueFactory(
                 new PropertyValueFactory<Record, String>("name"));
         colName.setCellFactory(stringCellFactory);
-        colName.setPrefWidth(60);
+        colName.setPrefWidth(140);
         
         
         TableColumn colBoardWidth = new TableColumn("Width");
         colBoardWidth.setCellValueFactory(
                 new PropertyValueFactory<Record, String>("BoardWidth"));
         colBoardWidth.setCellFactory(integerCellFactory);
-        colBoardWidth.setPrefWidth(60);
+        colBoardWidth.setPrefWidth(75);
         
         TableColumn colBoardHeight = new TableColumn("Height");
         colBoardHeight.setCellValueFactory(
                 new PropertyValueFactory<Record, String>("BoardHeight"));
         colBoardHeight.setCellFactory(integerCellFactory);
-        colBoardHeight.setPrefWidth(60);
+        colBoardHeight.setPrefWidth(75);
         
         TableColumn colActive = new TableColumn("Acitve");
         colActive.setCellValueFactory(new PropertyValueFactory<Record, String>("Active"));
         colActive.setCellFactory(activeCellFactory);
-        colActive.setPrefWidth(50);
+        colActive.setPrefWidth(70);
         
         tableView.setItems(recordList);
         tableView.getColumns().addAll(colId, colName, colBoardWidth, colBoardHeight, colActive);
-         
+        tableView.setPrefSize(400, 400);
         grid.add(tableView, 0, 0);
     }
  
@@ -307,7 +307,7 @@ public class GamesListWindow extends BorderPane{
 	 */
 	private GridPane addGridPane() {
 		GridPane grid = new GridPane();
-		grid.setPrefSize(300, 400);
+		grid.setPrefSize(400, 400);
 		
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);

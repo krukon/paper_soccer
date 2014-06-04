@@ -51,7 +51,7 @@ public class MainWindow extends Application {
 						else {
 							controllerThread.stop();
 						}
-					} catch (Exception e) {e.printStackTrace();}
+					} catch (Exception e) {}
 					
 					System.out.println("Escape pressed - back to main menu");
 					PaperSoccer.getMainWindow().showMenu();

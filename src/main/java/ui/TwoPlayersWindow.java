@@ -30,7 +30,7 @@ import javafx.scene.text.Text;
 import model.Board;
 
 public class TwoPlayersWindow extends BorderPane {
-	private Text windowTitle = new Text("Enter your names \n and board size");
+	private Text windowTitle = new Text("");
 	private Insets insets = new Insets(25, 25, 25, 25);
 	
 	private TextField playerOneName;

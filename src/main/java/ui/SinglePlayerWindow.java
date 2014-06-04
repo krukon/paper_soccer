@@ -30,7 +30,7 @@ import model.Board;
 
 public class SinglePlayerWindow extends BorderPane {
 	private String botLoadingError = "Could not load specified bot.";
-	private Text windowTitle = new Text("Enter your names \n and board size");
+	private Text windowTitle = new Text("");
 	private Insets insets = new Insets(25, 25, 25, 25);
 	
 	private TextField playerOneName;

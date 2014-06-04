@@ -28,7 +28,7 @@ import javafx.scene.text.Text;
 import model.Board;
 
 public class NetworkWindow extends BorderPane {
-	private Text windowTitle = new Text("Network game is waiting for you!");
+	private Text windowTitle = new Text("");
 	private Insets insets = new Insets(25, 25, 25, 25);
 	
 	private TextField playerName;
@@ -310,14 +310,14 @@ public class NetworkWindow extends BorderPane {
 		
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);
-		grid.setVgap(10);
+		grid.setVgap(15);
 		grid.setPadding(insets);
 		
 		addPlayerLabel(grid);
 		addPlayerTextField(grid);
 		addBoardSize(grid);
-		grid.add(getCreateButton(), 0, 9);
-		grid.add(getJoinButton(), 1, 9);
+		grid.add(getCreateButton(), 1, 8);
+		grid.add(getJoinButton(), 1, 2);
 		
 		return grid;
 	}
