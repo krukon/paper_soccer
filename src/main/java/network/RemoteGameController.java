@@ -11,25 +11,27 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import ui.GameWindow;
+import ui.GameWindowOnline;
 import controller.PaperSoccer;
 import helpers.Move;
 import helpers.Player;
 import helpers.Point;
 
 public class RemoteGameController {
-	private GameWindow guest;
+	private GameWindowOnline guest;
 	private ServerInquiry server;
+	private BufferedReader reader;
 	public static String gameID;
 	
-	public RemoteGameController(GameWindow guest, String gameID) {
+	public RemoteGameController(GameWindowOnline guest, String gameID, BufferedReader reader) {
 		this.guest = guest;
 		this.server = PaperSoccer.server;
+		this.reader = reader;
 		RemoteGameController.gameID = gameID;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void runGame() throws IOException {
-		BufferedReader reader = server.subscribeToGame();
 		
 		while (true) {
 			System.out.println("Reading from server...");
