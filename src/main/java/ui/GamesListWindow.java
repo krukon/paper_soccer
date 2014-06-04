@@ -100,7 +100,8 @@ public class GamesListWindow extends BorderPane{
 					Integer.parseInt(game.get("id").toString()),
 					game.get("host_name").toString(),
 					Integer.parseInt(game.get("width").toString()),
-					Integer.parseInt(game.get("height").toString())));
+					Integer.parseInt(game.get("height").toString()),
+					game.get("active").toString()));
 		}
 	}
 
@@ -123,12 +124,17 @@ public class GamesListWindow extends BorderPane{
         private final SimpleStringProperty name;
         private final SimpleIntegerProperty boardWidth;
         private final SimpleIntegerProperty boardHeight;
+        private final SimpleStringProperty active;
  
-        public Record(int id, String name, int boardWidth, int boardHeight) {
+        public Record(int id, String name, int boardWidth, int boardHeight, String active) {
             this.id = new SimpleIntegerProperty(id);
             this.name = new SimpleStringProperty(name);
             this.boardWidth = new SimpleIntegerProperty(boardWidth);
             this.boardHeight = new SimpleIntegerProperty(boardHeight);
+            if(active == "false")
+        		this.active = new SimpleStringProperty("Waiting");
+        	else
+        		this.active = new SimpleStringProperty("In Game");
         }
  
         public int getId() {
@@ -141,6 +147,14 @@ public class GamesListWindow extends BorderPane{
  
         public String getName() {
             return this.name.get();
+        }
+
+        public void setActive(String status) {
+            this.active.set(status);
+        }
+        
+        public String getActive() {
+        	return this.active.get();
         }
  
         public void setName(String name) {
@@ -189,34 +203,50 @@ public class GamesListWindow extends BorderPane{
                 return cell;
             }
         };
+        
+        Callback<TableColumn, TableCell> activeCellFactory =
+                new Callback<TableColumn, TableCell>() {
+            @Override
+            public TableCell call(TableColumn p) {
+                MyStringTableCell cell = new MyStringTableCell();
+                cell.addEventFilter(MouseEvent.MOUSE_CLICKED, new MyEventHandler());
+                return cell;
+            }
+        };
  
         TableColumn colId = new TableColumn("ID");
         colId.setCellValueFactory(
                 new PropertyValueFactory<Record, String>("id"));
         colId.setCellFactory(integerCellFactory);
+        colId.setPrefWidth(20);
         
         
         TableColumn colName = new TableColumn("Name");
         colName.setCellValueFactory(
                 new PropertyValueFactory<Record, String>("name"));
         colName.setCellFactory(stringCellFactory);
-        colName.setMinWidth(70);
+        colName.setPrefWidth(60);
         
         
         TableColumn colBoardWidth = new TableColumn("Width");
         colBoardWidth.setCellValueFactory(
                 new PropertyValueFactory<Record, String>("BoardWidth"));
         colBoardWidth.setCellFactory(integerCellFactory);
-        colBoardWidth.setMinWidth(60);
+        colBoardWidth.setPrefWidth(60);
         
         TableColumn colBoardHeight = new TableColumn("Height");
         colBoardHeight.setCellValueFactory(
                 new PropertyValueFactory<Record, String>("BoardHeight"));
         colBoardHeight.setCellFactory(integerCellFactory);
-        colBoardHeight.setMinWidth(60);
+        colBoardHeight.setPrefWidth(60);
+        
+        TableColumn colActive = new TableColumn("Acitve");
+        colActive.setCellValueFactory(new PropertyValueFactory<Record, String>("Active"));
+        colActive.setCellFactory(activeCellFactory);
+        colActive.setPrefWidth(50);
         
         tableView.setItems(recordList);
-        tableView.getColumns().addAll(colId, colName, colBoardWidth, colBoardHeight);
+        tableView.getColumns().addAll(colId, colName, colBoardWidth, colBoardHeight, colActive);
          
         grid.add(tableView, 0, 0);
     }
