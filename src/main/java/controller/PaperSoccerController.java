@@ -20,7 +20,6 @@ public class PaperSoccerController {
 	private Player host;
 	private Player guest;
 	private Player currentPlayer;
-	private Player changeLabels;
 	private Game game;
 	private int width;
 	private int height;
@@ -39,7 +38,6 @@ public class PaperSoccerController {
 		this.guest = guest;
 		this.width = width;
 		this.height = height;
-		this.changeLabels = host;
 		spectators = new ArrayList<>();
 		game = new Game(host, guest, width, height);
 	}

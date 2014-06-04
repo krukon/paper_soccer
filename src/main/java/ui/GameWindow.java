@@ -125,7 +125,6 @@ public class GameWindow extends BorderPane implements Player {
 		hostLabel.setFont(Font.font(20));
 		hostLabel.setText(hostName);
 		hostLabel.setLineSpacing(10);
-		//hostLabel.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 20));
 		
 		guestLabel = new Label();
 		guestLabel.setTextFill(Color.RED);
@@ -134,7 +133,6 @@ public class GameWindow extends BorderPane implements Player {
 		guestLabel.setLineSpacing(10);
 		
 		HBox playerLabels = new HBox();
-		//playerLabels.setPadding(new Insets(10, 50, 50, 50));
 		playerLabels.setSpacing(10);
 		playerLabels.setAlignment(Pos.CENTER);
 		playerLabels.getChildren().add(hostLabel);
@@ -207,7 +205,7 @@ public class GameWindow extends BorderPane implements Player {
 			
 			@Override
 			public void run() {
-				myTurn();
+				setMyTurnLabel();
 			}
 		});
 		try {
@@ -220,14 +218,14 @@ public class GameWindow extends BorderPane implements Player {
 				
 				@Override
 				public void run() {
-					opponentTurn();
+					setOpponentTurnLabel();
 					
 				}
 			});
 		}
 		return null;
 	}
-	void myTurn() {
+	void setMyTurnLabel() {
 		if(hostName == playerName) {
 			guestLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, 20));
 			hostLabel.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 20));
@@ -236,7 +234,7 @@ public class GameWindow extends BorderPane implements Player {
 			hostLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, 20));
 		}
 	}
-	void opponentTurn() {
+	void setOpponentTurnLabel() {
 		if(guestName == playerName) {
 			guestLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, 20));
 			hostLabel.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 20));
