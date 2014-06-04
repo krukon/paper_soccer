@@ -57,7 +57,8 @@ module.exports = (function () {
             'type': 'join_game',
             'data': {
                 'id': id,
-                'guest_name': guestName
+                'guest_name': guestName,
+                'host_name': game['host_name']
             }
         }
 
