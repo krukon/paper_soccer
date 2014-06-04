@@ -9,7 +9,10 @@ controller = require('./game_controller')
 net.createServer(function(sock) {
     
     console.log('CONNECTED: ' + sock.remoteAddress +':'+ sock.remotePort);
-
+    sock.on("error", function(err){
+    	console.log("Caught flash policy server socket error: ")
+    	console.log(err.stack)
+    });
     sock.on('data', function(raw) {
         var message, data, handleRequest, blocks;
         console.log('REQUEST: ' + raw)
