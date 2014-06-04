@@ -51,7 +51,7 @@ public class WaitForOpponentDialog extends Stage {
 				BufferedReader joinReader = null;
 				try {
 					reader = server.subscribeToGame();
-					joinReader = server.subscribeToJoinGame();
+					joinReader = server.subscribeToSession();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -111,6 +111,7 @@ public class WaitForOpponentDialog extends Stage {
 					
 					@Override
 					public void run() {
+						PaperSoccer.getMainWindow().registerGameID(finalGameId);
 						WaitForOpponentDialog.this.close();
 					}
 				});
@@ -136,6 +137,7 @@ public class WaitForOpponentDialog extends Stage {
 						
 					}
 				});
+				PaperSoccer.getMainWindow().registerControllerThread(controllerThread);
 				controllerThread.setDaemon(true);
 				controllerThread.start();
 			}

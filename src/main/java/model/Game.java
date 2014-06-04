@@ -29,8 +29,10 @@ public class Game {
 	/**
 	 *  Function responsible for returning if move is valid;
 	 *  @param move to validate
+	 * @throws IllegalMove 
 	 */
-	public boolean isValidMove(Move move) {
+	public boolean isValidMove(Move move) throws IllegalMove {
+		if(move == null) throw new IllegalMove();
 		if(move.start.x != board.getCurrentX() || move.start.y != board.getCurrentY())
 			return false;
 		return board.canMoveTo(move.end.x, move.end.y);

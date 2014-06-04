@@ -20,7 +20,7 @@ public class ServerInquiry {
 	private final PrintWriter out;
 	private PipedWriter chatWriter;
 	private PipedWriter gameWriter;
-	private PipedWriter joinGameWriter;
+	private PipedWriter sessionWriter;
 	
 	public ServerInquiry(String address, int port) throws UnknownHostException, IOException {
 		socket = new Socket(address, port);
@@ -28,7 +28,7 @@ public class ServerInquiry {
 		out = new PrintWriter(socket.getOutputStream(), true);
 		chatWriter = new PipedWriter();
 		gameWriter = new PipedWriter();
-		joinGameWriter = new PipedWriter();
+		sessionWriter = new PipedWriter();
 	}
 	
 	public void start() {
@@ -51,10 +51,10 @@ public class ServerInquiry {
 								chatWriter.write(raw + '\n');
 								chatWriter.flush();
 							}
-						} else if (type.equals("join_game")) {
-							if (joinGameWriter != null) {
-								joinGameWriter.write(raw + '\n');
-								joinGameWriter.flush();
+						} else if (type.equals("join_game") || type.equals("close_game")) {
+							if (sessionWriter != null) {
+								sessionWriter.write(raw + '\n');
+								sessionWriter.flush();
 							}
 						} else {
 							if (gameWriter != null) {
@@ -64,7 +64,7 @@ public class ServerInquiry {
 							}
 						}
 					} catch (Exception e) {
-						//////e.printStackTrace();
+						e.printStackTrace();
 					}
 					Thread.yield();
 				}
@@ -99,10 +99,10 @@ public class ServerInquiry {
 		return new BufferedReader(pipe);
 	}
 	
-	public BufferedReader subscribeToJoinGame() throws IOException {
+	public BufferedReader subscribeToSession() throws IOException {
 		PipedReader pipe = new PipedReader();
-		joinGameWriter = new PipedWriter();
-		joinGameWriter.connect(pipe);
+		sessionWriter = new PipedWriter();
+		sessionWriter.connect(pipe);
 		return new BufferedReader(pipe);
 	}
 	
@@ -120,13 +120,14 @@ public class ServerInquiry {
 		gameWriter = null;
 	}
 	
-	public void unsubcribeFromJoinGame() {
+	public void unsubcribeFromSession() {
 		try {
-			joinGameWriter.close();
+			sessionWriter.close();
 		} catch (IOException e) {}
-		joinGameWriter = null;
+		sessionWriter = null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void closeGame(String id) {
 		JSONObject closeGame = new JSONObject();
 		JSONObject data = new JSONObject();
@@ -134,23 +135,5 @@ public class ServerInquiry {
 		closeGame.put("type", "close_game");
 		closeGame.put("data", data);
 		send(closeGame);
-	}
-	
-	
-	public static void main(String[] args) throws IOException {
-		ServerInquiry inquiry = new ServerInquiry("localhost", 1444);
-		
-		inquiry.start();
-		inquiry.send("{\"type\":\"create_game\", \"data\": {\"host_name\":\"Kuba\", \"width\":8, \"height\": 10}}");
-		//inquiry.send("{\"type\":\"chat\", \"data\": {\"id\":5, \"message\":\"Moja wiadomosc\"}}");
-		BufferedReader chat = inquiry.subscribeToChat(), game = inquiry.subscribeToGame();
-		System.out.println("From game pipe: " + game.readLine());
-		while (true) {
-			String x = game.readLine();
-			System.out.println("From chat pipe: " + x);
-			//chat.close();
-			Thread.yield();
-		}
-		
 	}
 }

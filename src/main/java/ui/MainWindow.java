@@ -25,6 +25,8 @@ public class MainWindow extends Application {
 	
 	private Group mainView;
 	private GameState state;
+	private Thread controllerThread;
+	private String gameID;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -41,6 +43,14 @@ public class MainWindow extends Application {
 				System.out.println("Button pressed " + event.getCode());
 
 				if (event.getCode() == KeyCode.ESCAPE) {
+					if (state == GameState.TWO_PLAYERS_ONLINE) {
+						PaperSoccer.server.unsubcribeFromChat();
+						PaperSoccer.server.unsubcribeFromGame();
+						PaperSoccer.server.unsubcribeFromSession();
+						controllerThread.interrupt();
+						PaperSoccer.server.closeGame(gameID);
+					}
+					
 					System.out.println("Escape pressed - back to main menu");
 					PaperSoccer.getMainWindow().showMenu();
 				}
@@ -164,5 +174,13 @@ public class MainWindow extends Application {
 	
 	public void registerOnlineGameState() {
 		state = GameState.TWO_PLAYERS_ONLINE;
+	}
+	
+	public void registerControllerThread(Thread controllerThread) {
+		this.controllerThread = controllerThread;
+	}
+	
+	public void registerGameID(String gameID) {
+		this.gameID = gameID;
 	}
 }
