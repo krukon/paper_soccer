@@ -297,6 +297,7 @@ public class BotsTournamentWindow extends BorderPane {
 					controller.runGame();
 				}
 			});
+			PaperSoccer.getMainWindow().registerControllerThread(controllerThread);
 			controllerThread.setDaemon(true);
 			controllerThread.start();
 			

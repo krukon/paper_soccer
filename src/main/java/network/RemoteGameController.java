@@ -22,7 +22,6 @@ public class RemoteGameController {
 	private ServerInquiry server;
 	private BufferedReader reader;
 	public static String gameID;
-	private BufferedReader sessionReader;
 	
 	public RemoteGameController(GameWindowOnline guest, String gameID, BufferedReader reader) {
 		this.guest = guest;
@@ -34,13 +33,8 @@ public class RemoteGameController {
 	@SuppressWarnings("unchecked")
 	public void runGame() throws IOException {
 		BufferedReader reader = server.subscribeToGame();
-		sessionReader = server.subscribeToSession();
 		
 		while (true) {
-			
-			if (isSessionClosed())
-				break;
-			
 			if (!reader.ready()) {
 				Thread.yield();
 				continue;
@@ -69,6 +63,10 @@ public class RemoteGameController {
 				System.out.println("Waiting for player to make move");
 				Move move = guest.getNextMove();
 
+				if (move == null) {
+					break;
+				}
+				
 				System.out.println("Got: " + move.start + " - " + move.end);
 				JSONObject startPoint = new JSONObject();
 				startPoint.put("x", move.start.x);
@@ -112,34 +110,5 @@ public class RemoteGameController {
 				System.err.println("ERROR: " + raw);
 			}
 		}
-		server.unsubcribeFromGame();
-		server.unsubcribeFromSession();
-		reader.close();
-		sessionReader.close();
-		Platform.runLater(new Runnable() {
-			
-			@Override
-			public void run() {
-				PaperSoccer.getMainWindow().showMenu();
-				
-			}
-		});
-	}
-
-	private boolean isSessionClosed() {
-		try {
-			if (sessionReader.ready()) {
-				String raw;
-				raw = sessionReader.readLine();
-				
-				JSONObject message = (JSONObject) JSONValue.parse(raw);
-				String type = message.get("type").toString();
-				if (type.equals("close_game"))
-					return true;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return false;
 	}
 }

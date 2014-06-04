@@ -35,7 +35,7 @@ public class MainWindow extends Application {
 		
 		Scene scene = new Scene(mainView, PaperSoccer.WIDTH, PaperSoccer.HEIGHT, Color.GREEN);
 		
-		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+		scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 			
 			@Override
 			public void handle(KeyEvent event) {
@@ -44,14 +44,14 @@ public class MainWindow extends Application {
 				System.out.println("Button pressed " + event.getCode());
 
 				if (event.getCode() == KeyCode.ESCAPE) {
-					if (state == GameState.TWO_PLAYERS_ONLINE) {
-						PaperSoccer.server.unsubcribeFromChat();
-						PaperSoccer.server.unsubcribeFromGame();
-						PaperSoccer.server.unsubcribeFromSession();
-						controllerThread.interrupt();
-						chatThread.stop();
-						PaperSoccer.server.closeGame(gameID);
-					}
+					try {
+						if (state == GameState.TWO_PLAYERS_ONLINE) {
+							unsubscribeFromGame();
+						}
+						else {
+							controllerThread.stop();
+						}
+					} catch (Exception e) {e.printStackTrace();}
 					
 					System.out.println("Escape pressed - back to main menu");
 					PaperSoccer.getMainWindow().showMenu();
@@ -66,6 +66,23 @@ public class MainWindow extends Application {
 		
 		PaperSoccer.registerWindowGame(this);
 		synchronized (PaperSoccer.sync) { PaperSoccer.sync.notifyAll(); } //notifies PaperSoccer that window construction is finished
+	}
+	
+	public void unsubscribeFromGame() {
+		PaperSoccer.server.unsubcribeFromChat();
+		PaperSoccer.server.unsubcribeFromGame();
+		PaperSoccer.server.unsubcribeFromSession();
+		controllerThread.interrupt();
+		chatThread.interrupt();
+		PaperSoccer.server.closeGame(gameID);
+		
+		Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				PaperSoccer.getMainWindow().showMenu();
+			}
+		});
 	}
 	
 	/**

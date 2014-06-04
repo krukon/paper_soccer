@@ -60,10 +60,12 @@ public class GameWindowOnline extends GameWindow implements Player {
 	}
 
 	public BorderPane addChatWindow() {
-//		listView = new ListView();
-//		listView.setMaxHeight(chatHeight);
-//		listView.setMinWidth(PaperSoccer.WIDTH - 50);
-//		listView.setItems(chatItems);
+		listView = new ListView();
+		listView.setMaxHeight(chatHeight);
+		listView.setMinWidth(PaperSoccer.WIDTH - 50);
+		listView.setItems(chatItems);
+		listView.setEditable(false);
+		//listView.setOnEditCancel(null);
 
 		textField = new TextField();
 		textField.setMinWidth(textFieldWidth);
@@ -93,19 +95,26 @@ public class GameWindowOnline extends GameWindow implements Player {
 		borderPane = new BorderPane();
 		HBox bottom = new HBox(textField, btn);
 		borderPane.setPadding(insets);
-		//borderPane.setCenter(listView);
+		borderPane.setCenter(listView);
 		borderPane.setBottom(bottom);
 		return borderPane;
 	}
 	
 	public void startChat() {
 		Thread chatThread = new Thread(new Runnable() {
+			private BufferedReader sessionReader;
 			
 			@Override
 			public void run() {
 				try {
 					BufferedReader chat = PaperSoccer.server.subscribeToChat();
+					sessionReader = PaperSoccer.server.subscribeToSession();
 					while (true) {
+						if (isSessionClosed()) {
+							PaperSoccer.getMainWindow().unsubscribeFromGame();
+							return;
+						}
+						
 						if (!chat.ready()) {
 							Thread.yield();
 							continue;
@@ -132,9 +141,29 @@ public class GameWindowOnline extends GameWindow implements Player {
 					return;
 				}
 			}
+			
+			private boolean isSessionClosed() {
+				try {
+					if (sessionReader.ready()) {
+						String raw;
+						raw = sessionReader.readLine();
+						
+						JSONObject message = (JSONObject) JSONValue.parse(raw);
+						String type = message.get("type").toString();
+						if (type.equals("close_game"))
+							return true;
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return false;
+			}
+			
 		}, "Chat Thread");
 		PaperSoccer.getMainWindow().registerChatThread(chatThread);
 		chatThread.setDaemon(true);
 		chatThread.start();
 	}
+	
+	
 }
