@@ -354,8 +354,10 @@ public class GamesListWindow extends BorderPane{
 					JSONObject startGameData = (JSONObject) response.get("data");
 					
 					String gameId = startGameData.get("id").toString();
+					String hostName = startGameData.get("host_name").toString();
 					
 					final GameWindow guest = new GameWindow(guestName, Color.RED, Color.BLUE);
+					guest.registerNames(hostName, guestName);
 					Platform.runLater(new Runnable() {
 						
 						@Override
@@ -365,7 +367,7 @@ public class GamesListWindow extends BorderPane{
 					});
 					
 					RemoteGameController controller = new RemoteGameController(guest, gameId);
-					
+	
 					controller.runGame();
 					
 				} catch (IOException e) {

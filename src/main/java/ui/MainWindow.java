@@ -61,6 +61,7 @@ public class MainWindow extends Application {
 	public void showTwoPlayersGameWindow(GameWindow host, GameWindow guest) {
 		mainView.getChildren().clear();
 		mainView.getChildren().addAll(host, guest);
+		changeTopGameWindow(host);
 	}
 	
 	public void changeTopGameWindow(GameWindow window) {

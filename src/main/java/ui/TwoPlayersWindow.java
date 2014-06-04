@@ -287,7 +287,8 @@ public class TwoPlayersWindow extends BorderPane {
 		
 		final Player host = new TwoPlayersGameWindow(playerOne, Color.BLUE, Color.RED, true);
 		final Player guest = new TwoPlayersGameWindow(playerTwo, Color.RED, Color.BLUE, false);
-		
+		((GameWindow)host).registerNames(playerOne, playerTwo);
+		((GameWindow)guest).registerNames(playerOne, playerTwo);
 		((TwoPlayersGameWindow)host).registerWindows((GameWindow)guest, (GameWindow)host);
 		((TwoPlayersGameWindow)guest).registerWindows((GameWindow)host, (GameWindow)guest);
 		
