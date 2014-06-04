@@ -78,7 +78,7 @@ net.createServer(function(sock) {
     });
 
     sock.on('close', function(data) {
-        console.log('CLOSED: ' + sock.roles);
+        console.log('CLOSED: ' + sock.address + " " + JSON.stringify(sock.roles));
         try {
             controller.removeClient(sock)
         } catch (e) { console.log('CLOSING ERROR:',e) }
