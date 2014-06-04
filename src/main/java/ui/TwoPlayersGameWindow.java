@@ -50,8 +50,8 @@ public class TwoPlayersGameWindow extends GameWindow{
 
 			@Override
 			public void run() {
-				currentPlayer.setText(playerName);
 				PaperSoccer.getMainWindow().changeTopGameWindow(playerWindow);
+				setMyTurnLabel();
 			}
 		});
 		try {
@@ -64,8 +64,8 @@ public class TwoPlayersGameWindow extends GameWindow{
 
 				@Override
 				public void run() {
-					currentPlayer.setText("");
 					PaperSoccer.getMainWindow().changeTopGameWindow(opponentWindow);
+					setOpponentTurnLabel();
 				}
 			});
 		}

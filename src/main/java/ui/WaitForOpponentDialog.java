@@ -74,6 +74,7 @@ public class WaitForOpponentDialog extends Stage {
 
 					gameId = createGameData.get("id").toString();
 					host.registerGameID(gameId);
+					
 
 					System.out.println("Wait for guest - after response " + raw);
 					Platform.runLater(new Runnable() {
@@ -103,7 +104,8 @@ public class WaitForOpponentDialog extends Stage {
 				}
 				final String finalGuestName = guestName;
 				final String finalGameId = gameId;
-
+				
+				host.registerNames(host.getName(), finalGuestName);
 				System.out.println("Run game");
 				Platform.runLater(new Runnable() {
 					

@@ -8,9 +8,11 @@ import helpers.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+import controller.PaperSoccer;
 import controller.PaperSoccerController;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
@@ -18,11 +20,14 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 /**
  * Window displaying the field of the game. Responsible
@@ -61,7 +66,10 @@ public class GameWindow extends BorderPane implements Player {
 	protected Point click;
 	protected String playerName;
 	protected final Object syncMove = new Object();
-	protected Label currentPlayer;
+	protected Label hostLabel;
+	protected Label guestLabel;
+	protected String hostName;
+	protected String guestName;
 
 	/**
 	 * Construct a view for the game
@@ -74,12 +82,6 @@ public class GameWindow extends BorderPane implements Player {
 		this.playerName = playerName;
 		this.playerColor = playerColor;
 		this.opponentColor = opponentColor;
-		
-		currentPlayer = new Label();
-		currentPlayer.setTextFill(playerColor);
-		currentPlayer.setFont(Font.font(30));
-		setAlignment(currentPlayer, Pos.CENTER);
-		setTop(currentPlayer);
 		
 		root = new Group();
 		this.setCenter(root);
@@ -114,6 +116,36 @@ public class GameWindow extends BorderPane implements Player {
 				}
 			}
 		});
+	}
+	
+	public void placeLabels() {
+		
+		hostLabel = new Label();
+		hostLabel.setTextFill(Color.BLUE);
+		hostLabel.setFont(Font.font(20));
+		hostLabel.setText(hostName);
+		hostLabel.setLineSpacing(10);
+		
+		guestLabel = new Label();
+		guestLabel.setTextFill(Color.RED);
+		guestLabel.setFont(Font.font(20));
+		guestLabel.setText(guestName);
+		guestLabel.setLineSpacing(10);
+		
+		HBox playerLabels = new HBox();
+		playerLabels.setSpacing(10);
+		playerLabels.setAlignment(Pos.CENTER);
+		playerLabels.getChildren().add(hostLabel);
+		playerLabels.getChildren().add(guestLabel);
+		playerLabels.setPrefWidth(PaperSoccer.WIDTH);
+		
+		setTop(playerLabels);
+	}
+	
+	public void registerNames(String hostName, String guestName) {
+		this.hostName = hostName;
+		this.guestName = guestName;
+		placeLabels();
 	}
 
 	/**
@@ -169,14 +201,47 @@ public class GameWindow extends BorderPane implements Player {
 	 */
 	@Override
 	public Move getNextMove() {
+		Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				setMyTurnLabel();
+			}
+		});
 		try {
 			synchronized (syncMove) { syncMove.wait(); }
 			return new Move(head, click, this);
 		} catch (Exception e) {
 		} finally {
 			click = null;
+			Platform.runLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					setOpponentTurnLabel();
+					
+				}
+			});
 		}
 		return null;
+	}
+	void setMyTurnLabel() {
+		if(hostName == playerName) {
+			guestLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, 20));
+			hostLabel.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 20));
+		} else {
+			guestLabel.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 20));
+			hostLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, 20));
+		}
+	}
+	void setOpponentTurnLabel() {
+		if(guestName == playerName) {
+			guestLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, 20));
+			hostLabel.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 20));
+		} else {
+			guestLabel.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 20));
+			hostLabel.setFont(Font.font("Verdana", FontWeight.NORMAL, 20));
+		}
 	}
 
 	/**

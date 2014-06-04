@@ -291,6 +291,7 @@ public class SinglePlayerWindow extends BorderPane {
 		final int height = Integer.parseInt(boardHeight.getCharacters().toString());
 		
 		GameWindow view = new GameWindow(playerOne, Color.BLUE, Color.RED);
+		view.registerNames(playerOne, bot);
 		final Player host = view;
 		final Player guest;
 		try {
