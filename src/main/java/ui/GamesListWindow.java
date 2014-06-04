@@ -313,7 +313,7 @@ public class GamesListWindow extends BorderPane{
 		grid.setHgap(10);
 		grid.setVgap(10);
 		grid.setPadding(insets);
-		//grid.setStyle("-fx-background-image: url('paper_soccer_background.jpg'); -fx-background-repeat: stretch;");
+
 		
 		addList(grid);
 				
@@ -387,8 +387,8 @@ public class GamesListWindow extends BorderPane{
 					JSONObject response = (JSONObject) JSONValue.parse(raw);
 					JSONObject startGameData = (JSONObject) response.get("data");
 					
-					String hostName = startGameData.get("host_name").toString();
 					final String gameId = startGameData.get("id").toString();
+					final String hostName = startGameData.get("host_name").toString();
 					
 					final GameWindowOnline guest = new GameWindowOnline(guestName, Color.RED, Color.BLUE);
 

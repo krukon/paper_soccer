@@ -79,6 +79,7 @@ public class GameWindow extends BorderPane implements Player {
 	 */
 	public GameWindow(String playerName, Color playerColor, Color opponentColor) {
 		setPrefSize(PaperSoccer.WIDTH, PaperSoccer.HEIGHT);
+		setStyle("-fx-background-image: url('paper_soccer_background.jpg');");
 		
 		if (playerName == null || playerName.length() == 0) playerName = "PLAYER";
 		
@@ -150,7 +151,13 @@ public class GameWindow extends BorderPane implements Player {
 	public void registerNames(String hostName, String guestName) {
 		this.hostName = hostName;
 		this.guestName = guestName;
-		placeLabels();
+		Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				placeLabels();
+			}
+		});
 	}
 
 	/**
@@ -353,8 +360,8 @@ public class GameWindow extends BorderPane implements Player {
 		int maxX = fieldWidth / 2,
 				maxY = fieldHeight / 2;
 		
-		Image grass = new Image("grass.jpg");
-		gc.drawImage(grass, translateX(-maxX - 1), translateY(maxY + 1), translateX(maxX), translateY(-maxY + 1));
+		Image grass = new Image("grass2.jpg");
+		gc.drawImage(grass, translateX(-maxX - 1), translateY(maxY + 1), (fieldWidth + 2) * gridSize, (fieldHeight + 2) * gridSize);
 		
 		gc.setStroke(Color.rgb(255, 255, 255, 0.5));
 		for (int x = -maxX - 1; x <= maxX + 1; x++)

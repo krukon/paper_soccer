@@ -106,6 +106,7 @@ public class WaitForOpponentDialog extends Stage {
 				final String finalGameId = gameId;
 				
 				host.registerNames(host.getName(), finalGuestName);
+				
 				host.startChat();
 				PaperSoccer.getMainWindow().registerGameID(finalGameId);
 
